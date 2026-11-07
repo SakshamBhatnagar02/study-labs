@@ -1,17 +1,21 @@
 {
   "expo": {
-    "name": "study-labs",
+    "name": "Study Labs",
     "slug": "study-labs",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "scheme": "studylabs",
+    "userInterfaceStyle": "automatic",
+    "primaryColor": "#F97316",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "io.study.labs"
     },
     "android": {
+      "package": "io.study.labs",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#FFF7ED",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -19,7 +23,9 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png",
+      "name": "Study Labs — AI Education Platform"
     }
   }
 }
