@@ -13,6 +13,12 @@ import { Button } from '../components/common/Button';
 import { Badge } from '../components/common/Badge';
 import { SAMPLE_QUESTIONS } from '../data/curriculumData';
 import { StorageService } from '../services/storage';
+import { CelebrationManager } from '../services/celebrationManager';
+import { SoundManager } from '../services/soundManager';
+import { HapticManager } from '../services/hapticManager';
+import { CelebrationOverlay } from '../components/celebration/CelebrationOverlay';
+import { MathRenderer } from '../components/common/MathRenderer';
+import { CelebrationEvent, TestAttempt } from '../types';
 import { 
   Bookmark, 
   Clock, 
@@ -34,6 +40,8 @@ export const TestEngineScreen: React.FC = () => {
   const [secondsElapsed, setSecondsElapsed] = useState(0);
   const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([]);
   const [numericalInput, setNumericalInput] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [celebrationEvent, setCelebrationEvent] = useState<CelebrationEvent | null>(null);
 
   const questions = SAMPLE_QUESTIONS;
   const currentQ = questions[currentIdx];
@@ -51,6 +59,7 @@ export const TestEngineScreen: React.FC = () => {
   }, [isSubmitted]);
 
   const toggleBookmark = async (qId: string) => {
+    HapticManager.triggerSelection();
     const updated = await StorageService.toggleBookmark(qId);
     setBookmarkedIds(updated);
   };
@@ -58,16 +67,33 @@ export const TestEngineScreen: React.FC = () => {
   const handleSelectOption = (optId: string) => {
     if (isSubmitted) return;
     setUserAnswers((prev) => ({ ...prev, [currentQ.id]: optId }));
+
+    // Instant digital cyber feedback in practice mode
+    if (isPracticeMode) {
+      const isCorrect = currentQ.options?.find((o) => o.id === optId)?.isCorrect;
+      if (isCorrect) {
+        SoundManager.play('correct');
+        HapticManager.triggerSuccess();
+      } else {
+        SoundManager.play('incorrect');
+        HapticManager.triggerError();
+      }
+    } else {
+      HapticManager.triggerSelection();
+    }
   };
 
   const handleSaveNumerical = () => {
     const val = parseFloat(numericalInput);
     if (!isNaN(val)) {
       setUserAnswers((prev) => ({ ...prev, [currentQ.id]: val }));
+      HapticManager.triggerSelection();
     }
   };
 
   const handleSubmitTest = async () => {
+    if (isSubmitted || isSubmitting) return;
+    setIsSubmitting(true);
     setIsSubmitted(true);
     let correct = 0;
     let incorrect = 0;
@@ -95,7 +121,7 @@ export const TestEngineScreen: React.FC = () => {
     const maxScore = total * 4;
     const percentage = parseFloat(((Math.max(0, score) / maxScore) * 100).toFixed(1));
 
-    await StorageService.saveTestAttempt({
+    const attempt: TestAttempt = {
       id: 'att_' + Date.now(),
       testTitle: 'High-Yield Chapter Drill',
       mode: isPracticeMode ? 'untimed' : 'timed',
@@ -109,7 +135,20 @@ export const TestEngineScreen: React.FC = () => {
       percentage,
       date: new Date().toISOString(),
       answers: userAnswers,
-    });
+    };
+
+    // 1. Persist attempt
+    await StorageService.saveTestAttempt(attempt);
+
+    // 2. Trigger Cyber Celebration Suite
+    try {
+      const event = await CelebrationManager.evaluateAndCelebrate(attempt);
+      setCelebrationEvent(event);
+    } catch {
+      // Graceful fallback
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleRestart = () => {
@@ -221,9 +260,17 @@ export const TestEngineScreen: React.FC = () => {
                 <Text style={[styles.resultScore, { color: colors.primary }]}>
                   Score: {totalScore} / {maxPossible} ({((Math.max(0, totalScore) / maxPossible) * 100).toFixed(0)}%)
                 </Text>
-                <Text style={[styles.resultStats, { color: colors.textSecondary }]}>
-                  ✅ {correctCount} Correct · ❌ {incorrectCount} Incorrect · ⚪ {questions.length - attemptedCount} Skipped
-                </Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 4 }}>
+                  <Text style={[styles.resultStats, { color: colors.success }]}>
+                    ● {correctCount} Correct
+                  </Text>
+                  <Text style={[styles.resultStats, { color: colors.error }]}>
+                    ● {incorrectCount} Incorrect
+                  </Text>
+                  <Text style={[styles.resultStats, { color: colors.textSecondary }]}>
+                    ● {questions.length - attemptedCount} Skipped
+                  </Text>
+                </View>
               </View>
               <Button title="Retake" variant="outline" size="sm" onPress={handleRestart} />
             </View>
@@ -242,6 +289,9 @@ export const TestEngineScreen: React.FC = () => {
         {/* Question Prompt Card */}
         <Card style={styles.promptCard}>
           <Text style={[styles.promptText, { color: colors.text }]}>{currentQ.prompt}</Text>
+          {currentQ.prompt.includes('\\') && (
+            <MathRenderer math={currentQ.prompt} displayMode={true} />
+          )}
         </Card>
 
         {/* Option Selection Area */}
@@ -322,6 +372,9 @@ export const TestEngineScreen: React.FC = () => {
               <Text style={[styles.explanationHeading, { color: colors.primary }]}>Step-by-Step Solution</Text>
             </View>
             <Text style={[styles.explanationText, { color: colors.text }]}>{currentQ.explanation}</Text>
+            {currentQ.explanation.includes('\\') && (
+              <MathRenderer math={currentQ.explanation} displayMode={true} />
+            )}
           </Card>
         )}
       </ScrollView>
@@ -368,6 +421,12 @@ export const TestEngineScreen: React.FC = () => {
           />
         )}
       </View>
+
+      {/* Signature Study Labs Cyber Celebration Overlay */}
+      <CelebrationOverlay
+        event={celebrationEvent}
+        onClose={() => setCelebrationEvent(null)}
+      />
     </View>
   );
 };

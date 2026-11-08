@@ -151,3 +151,30 @@ export interface ChatMessage {
   isMathFormula?: boolean;
 }
 
+export type ParticleIntensity = 'low' | 'standard' | 'high';
+
+export interface AppSettings {
+  masterSound: boolean;
+  correctSound: boolean;
+  incorrectSound: boolean;
+  completionSound: boolean;
+  hapticFeedback: boolean;
+  celebrationParticles: boolean;
+  reducedMotion: boolean;
+  particleIntensity: ParticleIntensity;
+}
+
+export type CelebrationTier = 'normal' | 'excellent' | 'personal_best';
+
+export interface CelebrationEvent {
+  tier: CelebrationTier;
+  score: number;
+  maxScore: number;
+  percentage: number;
+  isPersonalBest: boolean;
+  correctAnswers: number;
+  incorrectAnswers: number;
+  timeSpentStr: string;
+}
+
+

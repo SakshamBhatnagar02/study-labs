@@ -26,6 +26,10 @@
       "bundler": "metro",
       "favicon": "./assets/favicon.png",
       "name": "Study Labs — AI Education Platform"
-    }
+    },
+    "plugins": [
+      "expo-audio",
+      "expo-asset"
+    ]
   }
 }

@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { OfflineTestRecord, TestAttempt, UserProfile } from '../types';
+import { AppSettings, OfflineTestRecord, TestAttempt, UserProfile } from '../types';
 
 const KEYS = {
   USER_PROFILE: '@study_labs_user_profile',
@@ -8,6 +8,18 @@ const KEYS = {
   BOOKMARKS: '@study_labs_bookmarks',
   SYLLABUS_PROGRESS: '@study_labs_syllabus_progress',
   CHAT_MESSAGES: '@study_labs_chat_messages',
+  SETTINGS: '@study_labs_settings',
+};
+
+export const DEFAULT_SETTINGS: AppSettings = {
+  masterSound: true,
+  correctSound: true,
+  incorrectSound: true,
+  completionSound: true,
+  hapticFeedback: true,
+  celebrationParticles: true,
+  reducedMotion: false,
+  particleIntensity: 'standard',
 };
 
 // Default User Profile for immediate local functionality
@@ -183,8 +195,28 @@ export const StorageService = {
     await AsyncStorage.setItem(KEYS.BOOKMARKS, JSON.stringify(updated));
     return updated;
   },
+
+  async getSettings(): Promise<AppSettings> {
+    try {
+      const data = await AsyncStorage.getItem(KEYS.SETTINGS);
+      if (data) {
+        return { ...DEFAULT_SETTINGS, ...JSON.parse(data) };
+      }
+      return DEFAULT_SETTINGS;
+    } catch {
+      return DEFAULT_SETTINGS;
+    }
+  },
+
+  async saveSettings(partial: Partial<AppSettings>): Promise<AppSettings> {
+    const current = await this.getSettings();
+    const updated: AppSettings = { ...current, ...partial };
+    await AsyncStorage.setItem(KEYS.SETTINGS, JSON.stringify(updated));
+    return updated;
+  },
 };
 
 export const storageService = StorageService;
+
 
 

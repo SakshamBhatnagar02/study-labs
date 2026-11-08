@@ -26,7 +26,9 @@ import {
   XCircle, 
   HelpCircle,
   BarChart3,
-  Filter
+  Filter,
+  BookOpen,
+  Sparkles
 } from 'lucide-react-native';
 
 export const OfflineTrackerScreen: React.FC = () => {
@@ -308,15 +310,23 @@ export const OfflineTrackerScreen: React.FC = () => {
 
               {/* Notes & Syllabus if available */}
               {test.syllabusCovered ? (
-                <Text style={[styles.notesText, { color: colors.textSecondary }]} numberOfLines={2}>
-                  📘 <Text style={{ fontWeight: '600' }}>Syllabus:</Text> {test.syllabusCovered}
-                </Text>
+                <View style={styles.metaRowWithIcon}>
+                  <BookOpen size={13} color={colors.primary} />
+                  <Text style={[styles.notesText, { color: colors.textSecondary }]} numberOfLines={2}>
+                    <Text style={{ fontWeight: '600', color: colors.text }}>Syllabus: </Text>
+                    {test.syllabusCovered}
+                  </Text>
+                </View>
               ) : null}
 
               {test.notes ? (
-                <Text style={[styles.notesText, { color: colors.textSecondary }]} numberOfLines={2}>
-                  💡 <Text style={{ fontWeight: '600' }}>Notes:</Text> {test.notes}
-                </Text>
+                <View style={styles.metaRowWithIcon}>
+                  <Sparkles size={13} color={colors.warning} />
+                  <Text style={[styles.notesText, { color: colors.textSecondary }]} numberOfLines={2}>
+                    <Text style={{ fontWeight: '600', color: colors.text }}>Notes: </Text>
+                    {test.notes}
+                  </Text>
+                </View>
               ) : null}
 
               {/* Delete Action */}
@@ -656,8 +666,13 @@ const styles = StyleSheet.create({
   },
   notesText: {
     fontSize: 12,
-    marginTop: 8,
     lineHeight: 16,
+  },
+  metaRowWithIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 6,
   },
   cardFooter: {
     marginTop: 10,

@@ -58,6 +58,12 @@ export const getThemeColors = (mode: ThemeMode) => {
     warningBg: isDark ? '#78350F' : palette.warningLight,
     info: palette.info,
     infoBg: isDark ? '#1E3A8A' : palette.infoLight,
+    cyan: '#22D3EE',
+    cyanBg: isDark ? 'rgba(34, 211, 238, 0.2)' : '#CFFAFE',
+    violet: '#A855F7',
+    magenta: '#EC4899',
+    gold: '#FACC15',
+    goldBg: isDark ? 'rgba(250, 204, 21, 0.2)' : '#FEF9C3',
     shadow: isDark ? 'rgba(0, 0, 0, 0.4)' : 'rgba(249, 115, 22, 0.1)',
   };
 };

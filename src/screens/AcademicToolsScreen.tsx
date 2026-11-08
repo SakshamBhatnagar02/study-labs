@@ -14,6 +14,8 @@ import { Badge } from '../components/common/Badge';
 import { PERIODIC_TABLE, CATEGORY_COLORS } from '../data/periodicTable';
 import { PHYSICAL_CONSTANTS, REACTIVITY_SERIES } from '../data/academicConstants';
 import { PeriodicElement } from '../types';
+import { evaluateMathExpression } from '../utils/mathEvaluator';
+import { AppIcon, IconName } from '../components/common/AppIcon';
 import { 
   Calculator as CalcIcon, 
   FlaskConical, 
@@ -21,7 +23,8 @@ import {
   Scale, 
   Bookmark, 
   ChevronRight,
-  Sparkles
+  Sparkles,
+  Droplets
 } from 'lucide-react-native';
 
 export const AcademicToolsScreen: React.FC = () => {
@@ -49,27 +52,12 @@ export const AcademicToolsScreen: React.FC = () => {
       return;
     }
     if (btn === '=') {
-      try {
-        // Safe evaluation
-        const sanitized = calcExpr
-          .replace(/×/g, '*')
-          .replace(/÷/g, '/')
-          .replace(/π/g, 'Math.PI')
-          .replace(/e/g, 'Math.E')
-          .replace(/sin\(/g, 'Math.sin(')
-          .replace(/cos\(/g, 'Math.cos(')
-          .replace(/tan\(/g, 'Math.tan(')
-          .replace(/log\(/g, 'Math.log10(')
-          .replace(/ln\(/g, 'Math.log(')
-          .replace(/√\(/g, 'Math.sqrt(');
-        
-        // eslint-disable-next-line no-eval
-        const result = Function(`"use strict"; return (${sanitized})`)();
-        const formatted = typeof result === 'number' ? parseFloat(result.toFixed(6)).toString() : 'Error';
-        setCalcDisplay(formatted);
-        setCalcExpr(formatted);
-      } catch {
-        setCalcDisplay('Error');
+      const res = evaluateMathExpression(calcExpr);
+      if (res.success && res.formatted !== undefined) {
+        setCalcDisplay(res.formatted);
+        setCalcExpr(res.formatted);
+      } else {
+        setCalcDisplay(res.error || 'Error');
       }
       return;
     }
@@ -141,35 +129,45 @@ export const AcademicToolsScreen: React.FC = () => {
       {/* Tool Navigation Chips */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.navRow}>
         {[
-          { key: 'calc', label: 'Scientific Calc', icon: '🧮' },
-          { key: 'periodic', label: 'Periodic Table', icon: '🧪' },
-          { key: 'converter', label: 'Unit Converter', icon: '⚖️' },
-          { key: 'constants', label: 'Constants', icon: '⚛️' },
-          { key: 'reactivity', label: 'Reactivity Series', icon: '🔥' },
-        ].map((item) => (
-          <TouchableOpacity
-            key={item.key}
-            activeOpacity={0.7}
-            onPress={() => setActiveSection(item.key as any)}
-            style={[
-              styles.navChip,
-              {
-                backgroundColor: activeSection === item.key ? colors.primary : colors.card,
-                borderColor: activeSection === item.key ? colors.primary : colors.borderSubtle,
-              },
-            ]}
-          >
-            <Text style={{ fontSize: 14 }}>{item.icon}</Text>
-            <Text
+          { key: 'calc', label: 'Scientific Calc', iconName: 'calculator' as IconName },
+          { key: 'periodic', label: 'Periodic Table', iconName: 'flask' as IconName },
+          { key: 'converter', label: 'Unit Converter', iconName: 'scale' as IconName },
+          { key: 'constants', label: 'Constants', iconName: 'atom' as IconName },
+          { key: 'reactivity', label: 'Reactivity Series', iconName: 'flame' as IconName },
+        ].map((item) => {
+          const isSelected = activeSection === item.key;
+          return (
+            <TouchableOpacity
+              key={item.key}
+              activeOpacity={0.7}
+              onPress={() => setActiveSection(item.key as any)}
               style={[
-                styles.navChipText,
-                { color: activeSection === item.key ? '#FFFFFF' : colors.text },
+                styles.navChip,
+                {
+                  backgroundColor: isSelected ? colors.primary : colors.card,
+                  borderColor: isSelected ? colors.primary : colors.borderSubtle,
+                },
               ]}
             >
-              {item.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <AppIcon 
+                name={item.iconName} 
+                size="xs" 
+                color={isSelected ? '#FFFFFF' : colors.primary} 
+              />
+              <Text
+                style={[
+                  styles.navChipText,
+                  { 
+                    color: isSelected ? '#FFFFFF' : colors.text,
+                    fontWeight: isSelected ? '700' : '500',
+                  },
+                ]}
+              >
+                {item.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -422,9 +420,12 @@ export const AcademicToolsScreen: React.FC = () => {
                     <Text style={[styles.reactivityLevel, { color: m.rank <= 3 ? colors.error : colors.textSecondary }]}>
                       Reactivity: {m.reactivity}
                     </Text>
-                    <Text style={[styles.reactivityWater, { color: colors.textSecondary }]}>
-                      💧 {m.reactionWithWater}
-                    </Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 }}>
+                      <Droplets size={12} color={colors.info} />
+                      <Text style={[styles.reactivityWater, { color: colors.textSecondary }]}>
+                        {m.reactionWithWater}
+                      </Text>
+                    </View>
                   </View>
                 </View>
               </Card>

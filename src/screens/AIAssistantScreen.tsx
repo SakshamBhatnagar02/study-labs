@@ -16,6 +16,7 @@ import { Badge } from '../components/common/Badge';
 import { Button } from '../components/common/Button';
 import { GeminiAIService, AIResponse } from '../services/gemini';
 import { ChatMessage } from '../types';
+import { MathRenderer } from '../components/common/MathRenderer';
 import { 
   Sparkles, 
   Send, 
@@ -171,6 +172,9 @@ export const AIAssistantScreen: React.FC = () => {
                 >
                   {m.text}
                 </Text>
+                {!isUser && m.text.includes('\\') && (
+                  <MathRenderer math={m.text} displayMode={false} />
+                )}
                 <Text
                   style={[
                     styles.timestampText,

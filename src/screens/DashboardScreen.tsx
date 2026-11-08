@@ -4,6 +4,7 @@ import { useTheme } from '../theme';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
 import { Badge } from '../components/common/Badge';
+import { AppIcon } from '../components/common/AppIcon';
 import { NavTab } from '../components/navigation/BottomNav';
 import { 
   CheckCircle2, 
@@ -165,7 +166,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigate }) 
           style={[styles.toolChip, { backgroundColor: colors.card, borderColor: colors.borderSubtle }]}
           onPress={() => onNavigate('analytics')}
         >
-          <Text style={styles.toolIcon}>📊</Text>
+          <AppIcon name="chart" color={colors.primary} size="md" />
           <Text style={[styles.toolTitle, { color: colors.text }]}>Analytics</Text>
         </TouchableOpacity>
 
@@ -174,7 +175,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigate }) 
           style={[styles.toolChip, { backgroundColor: colors.card, borderColor: colors.borderSubtle }]}
           onPress={() => onNavigate('syllabus')}
         >
-          <Text style={styles.toolIcon}>📅</Text>
+          <AppIcon name="calendar" color={colors.info} size="md" />
           <Text style={[styles.toolTitle, { color: colors.text }]}>Syllabus</Text>
         </TouchableOpacity>
 
@@ -183,7 +184,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigate }) 
           style={[styles.toolChip, { backgroundColor: colors.card, borderColor: colors.borderSubtle }]}
           onPress={() => onNavigate('playground')}
         >
-          <Text style={styles.toolIcon}>📈</Text>
+          <AppIcon name="activity" color={colors.cyan || '#22D3EE'} size="md" />
           <Text style={[styles.toolTitle, { color: colors.text }]}>Playground</Text>
         </TouchableOpacity>
 
@@ -192,7 +193,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onNavigate }) 
           style={[styles.toolChip, { backgroundColor: colors.card, borderColor: colors.borderSubtle }]}
           onPress={() => onNavigate('tools')}
         >
-          <Text style={styles.toolIcon}>🧪</Text>
+          <AppIcon name="flask" color={colors.success} size="md" />
           <Text style={[styles.toolTitle, { color: colors.text }]}>Tools</Text>
         </TouchableOpacity>
       </View>
