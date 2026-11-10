@@ -19,7 +19,11 @@ export type NavTab =
   | 'syllabus' 
   | 'playground' 
   | 'tools' 
-  | 'ai';
+  | 'ai'
+  | 'leaderboard'
+  | 'dailyGoal'
+  | 'notebooks'
+  | 'profile';
 
 interface BottomNavProps {
   activeTab: NavTab;
@@ -45,7 +49,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) 
         styles.navContainer,
         {
           backgroundColor: colors.card,
-          borderTopColor: colors.borderSubtle,
+          borderTopColor: colors.border,
           shadowColor: colors.shadow,
         },
       ]}
@@ -54,8 +58,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) 
         // Highlighting active state including sub-tabs
         const isActive = 
           activeTab === key || 
+          (key === 'dashboard' && (activeTab === 'leaderboard' || activeTab === 'dailyGoal' || activeTab === 'profile')) ||
           (key === 'tracker' && activeTab === 'analytics') ||
-          (key === 'study' && activeTab === 'syllabus') ||
+          (key === 'study' && (activeTab === 'syllabus' || activeTab === 'notebooks')) ||
           (key === 'tools' && activeTab === 'playground');
 
         const iconColor = isActive ? colors.primary : colors.textSecondary;
@@ -64,7 +69,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) 
           <TouchableOpacity
             key={key}
             activeOpacity={0.7}
-            onPress={() => onTabChange(key)}
+            onPress={() => {
+              onTabChange(key);
+            }}
             style={styles.tabButton}
           >
             <View

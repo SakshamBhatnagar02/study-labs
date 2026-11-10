@@ -1,5 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AppSettings, OfflineTestRecord, TestAttempt, UserProfile } from '../types';
+import {
+  AppSettings,
+  CustomNotebook,
+  CustomTestConfig,
+  DailyGoalConfig,
+  FormulaStatus,
+  OfflineTestRecord,
+  Question,
+  QuestionAttemptStat,
+  QuestionViewSettings,
+  TestAttempt,
+  UserProfile,
+} from '../types';
+import { buildSeedAttemptLogs, XP_ATTEMPTED, XP_CORRECT } from '../utils/activityStats';
 
 const KEYS = {
   USER_PROFILE: '@study_labs_user_profile',
@@ -9,6 +22,14 @@ const KEYS = {
   SYLLABUS_PROGRESS: '@study_labs_syllabus_progress',
   CHAT_MESSAGES: '@study_labs_chat_messages',
   SETTINGS: '@study_labs_settings',
+  QUESTION_VIEW_SETTINGS: '@study_labs_question_view_settings',
+  ATTEMPT_LOGS: '@study_labs_attempt_logs',
+  QUESTION_NOTES: '@study_labs_question_notes',
+  DAILY_GOAL: '@study_labs_daily_goal',
+  NOTEBOOKS: '@study_labs_notebooks',
+  FORMULA_STATUSES: '@study_labs_formula_statuses',
+  CUSTOM_TESTS: '@study_labs_custom_tests',
+  CUSTOM_QUESTIONS: '@study_labs_custom_questions',
 };
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -16,11 +37,50 @@ export const DEFAULT_SETTINGS: AppSettings = {
   correctSound: true,
   incorrectSound: true,
   completionSound: true,
+  clickSound: true,
   hapticFeedback: true,
   celebrationParticles: true,
   reducedMotion: false,
   particleIntensity: 'standard',
+  aiReasoningPower: 'auto',
 };
+
+export const DEFAULT_QUESTION_VIEW_SETTINGS: QuestionViewSettings = {
+  showHints: true,
+  alwaysShowMyNote: false,
+  solutionModeOnReopen: false,
+  autoStartTimer: true,
+  playSounds: true,
+  deferCorrectAnswer: true,
+  textSize: 'medium',
+  showPeerInsights: true,
+};
+
+export const DEFAULT_DAILY_GOAL: DailyGoalConfig = {
+  targetQuestions: 15,
+  reminderEnabled: true,
+  reminderTime: '20:00',
+  scoreAlertsEnabled: true,
+  pushNotifications: true,
+  emailNotifications: false,
+};
+
+export const SEED_NOTEBOOKS: CustomNotebook[] = [
+  {
+    id: 'nb_high_yield',
+    name: 'High-Yield Must Revise',
+    color: '#F97316',
+    questionIds: ['q_p1', 'q_c1', 'q_m2'],
+    createdAt: '2026-11-01T10:00:00.000Z',
+  },
+  {
+    id: 'nb_tricky_concepts',
+    name: 'Tricky Numerical & Mechanisms',
+    color: '#22D3EE',
+    questionIds: ['q_p2', 'q_m1'],
+    createdAt: '2026-11-03T12:00:00.000Z',
+  },
+];
 
 // Default User Profile for immediate local functionality
 export const DEFAULT_USER: UserProfile = {
@@ -32,7 +92,8 @@ export const DEFAULT_USER: UserProfile = {
   board: 'JEE_MAIN',
   classGrade: 'Class 12',
   stream: 'Science (PCM)',
-  targetExams: ['JEE Main 2025', 'JEE Advanced', 'BITSAT'],
+  targetYear: 2027,
+  targetExams: ['JEE Main', 'JEE Advanced', 'BITSAT'],
   preferredMode: 'Normal',
   studyStreakDays: 14,
   totalXp: 3420,
@@ -213,6 +274,230 @@ export const StorageService = {
     const updated: AppSettings = { ...current, ...partial };
     await AsyncStorage.setItem(KEYS.SETTINGS, JSON.stringify(updated));
     return updated;
+  },
+
+  async getQuestionViewSettings(): Promise<QuestionViewSettings> {
+    try {
+      const data = await AsyncStorage.getItem(KEYS.QUESTION_VIEW_SETTINGS);
+      if (data) {
+        return { ...DEFAULT_QUESTION_VIEW_SETTINGS, ...JSON.parse(data) };
+      }
+      return DEFAULT_QUESTION_VIEW_SETTINGS;
+    } catch {
+      return DEFAULT_QUESTION_VIEW_SETTINGS;
+    }
+  },
+
+  async saveQuestionViewSettings(
+    partial: Partial<QuestionViewSettings>
+  ): Promise<QuestionViewSettings> {
+    const current = await this.getQuestionViewSettings();
+    const updated: QuestionViewSettings = { ...current, ...partial };
+    await AsyncStorage.setItem(KEYS.QUESTION_VIEW_SETTINGS, JSON.stringify(updated));
+    return updated;
+  },
+
+  async resetQuestionViewSettings(): Promise<QuestionViewSettings> {
+    await AsyncStorage.setItem(
+      KEYS.QUESTION_VIEW_SETTINGS,
+      JSON.stringify(DEFAULT_QUESTION_VIEW_SETTINGS)
+    );
+    return DEFAULT_QUESTION_VIEW_SETTINGS;
+  },
+
+  async getAttemptLogs(): Promise<QuestionAttemptStat[]> {
+    try {
+      const data = await AsyncStorage.getItem(KEYS.ATTEMPT_LOGS);
+      if (data) return JSON.parse(data);
+      const seeded = buildSeedAttemptLogs();
+      await AsyncStorage.setItem(KEYS.ATTEMPT_LOGS, JSON.stringify(seeded));
+      return seeded;
+    } catch {
+      return buildSeedAttemptLogs();
+    }
+  },
+
+  async recordQuestionAttempt(stat: QuestionAttemptStat): Promise<QuestionAttemptStat[]> {
+    const existing = await this.getAttemptLogs();
+    const updated = [...existing, stat];
+    await AsyncStorage.setItem(KEYS.ATTEMPT_LOGS, JSON.stringify(updated));
+
+    // Credit XP and level smoothly in UserProfile
+    try {
+      const profile = await this.getUserProfile();
+      const xpGain = stat.isCorrect ? XP_CORRECT : XP_ATTEMPTED;
+      const nextXp = (profile.totalXp || 0) + xpGain;
+      const nextLevel = Math.max(1, Math.floor(nextXp / 450) + 1);
+      await this.saveUserProfile({
+        ...profile,
+        totalXp: nextXp,
+        level: nextLevel,
+      });
+    } catch {
+      // Non-fatal if profile update fails
+    }
+
+    return updated;
+  },
+
+  async getQuestionNotes(): Promise<Record<string, string>> {
+    try {
+      const data = await AsyncStorage.getItem(KEYS.QUESTION_NOTES);
+      if (data) return JSON.parse(data);
+      const initial: Record<string, string> = {
+        q_p1: 'Shortcut: For any rolling body with I = kMR², acceleration down incline is (g sin θ)/(1 + k).',
+      };
+      await AsyncStorage.setItem(KEYS.QUESTION_NOTES, JSON.stringify(initial));
+      return initial;
+    } catch {
+      return {};
+    }
+  },
+
+  async saveQuestionNote(questionId: string, noteText: string): Promise<Record<string, string>> {
+    const notes = await this.getQuestionNotes();
+    const trimmed = noteText.trim();
+    const updated = { ...notes };
+    if (trimmed) {
+      updated[questionId] = noteText;
+    } else {
+      delete updated[questionId];
+    }
+    await AsyncStorage.setItem(KEYS.QUESTION_NOTES, JSON.stringify(updated));
+    return updated;
+  },
+
+  async getDailyGoalConfig(): Promise<DailyGoalConfig> {
+    try {
+      const data = await AsyncStorage.getItem(KEYS.DAILY_GOAL);
+      if (data) {
+        return { ...DEFAULT_DAILY_GOAL, ...JSON.parse(data) };
+      }
+      await AsyncStorage.setItem(KEYS.DAILY_GOAL, JSON.stringify(DEFAULT_DAILY_GOAL));
+      return DEFAULT_DAILY_GOAL;
+    } catch {
+      return DEFAULT_DAILY_GOAL;
+    }
+  },
+
+  async saveDailyGoalConfig(partial: Partial<DailyGoalConfig>): Promise<DailyGoalConfig> {
+    const current = await this.getDailyGoalConfig();
+    const updated: DailyGoalConfig = { ...current, ...partial };
+    await AsyncStorage.setItem(KEYS.DAILY_GOAL, JSON.stringify(updated));
+    return updated;
+  },
+
+  async getNotebooks(): Promise<CustomNotebook[]> {
+    try {
+      const data = await AsyncStorage.getItem(KEYS.NOTEBOOKS);
+      if (data) return JSON.parse(data);
+      await AsyncStorage.setItem(KEYS.NOTEBOOKS, JSON.stringify(SEED_NOTEBOOKS));
+      return SEED_NOTEBOOKS;
+    } catch {
+      return SEED_NOTEBOOKS;
+    }
+  },
+
+  async createNotebook(name: string, color = '#F97316'): Promise<CustomNotebook[]> {
+    const notebooks = await this.getNotebooks();
+    const created: CustomNotebook = {
+      id: 'nb_' + Date.now(),
+      name: name.trim() || 'Untitled Notebook',
+      color,
+      questionIds: [],
+      createdAt: new Date().toISOString(),
+    };
+    const updated = [created, ...notebooks];
+    await AsyncStorage.setItem(KEYS.NOTEBOOKS, JSON.stringify(updated));
+    return updated;
+  },
+
+  async toggleQuestionInNotebook(notebookId: string, questionId: string): Promise<CustomNotebook[]> {
+    const notebooks = await this.getNotebooks();
+    const updated = notebooks.map((nb) => {
+      if (nb.id !== notebookId) return nb;
+      const exists = nb.questionIds.includes(questionId);
+      return {
+        ...nb,
+        questionIds: exists
+          ? nb.questionIds.filter((id) => id !== questionId)
+          : [...nb.questionIds, questionId],
+      };
+    });
+    await AsyncStorage.setItem(KEYS.NOTEBOOKS, JSON.stringify(updated));
+    return updated;
+  },
+
+  async deleteNotebook(notebookId: string): Promise<CustomNotebook[]> {
+    const notebooks = await this.getNotebooks();
+    const updated = notebooks.filter((nb) => nb.id !== notebookId);
+    await AsyncStorage.setItem(KEYS.NOTEBOOKS, JSON.stringify(updated));
+    return updated;
+  },
+
+  async getFormulaStatuses(): Promise<Record<string, FormulaStatus>> {
+    try {
+      const data = await AsyncStorage.getItem(KEYS.FORMULA_STATUSES);
+      if (data) return JSON.parse(data);
+      const initial: Record<string, FormulaStatus> = {
+        f_p1: 'seen',
+        f_p3: 'need_revision',
+        f_c1: 'seen',
+      };
+      await AsyncStorage.setItem(KEYS.FORMULA_STATUSES, JSON.stringify(initial));
+      return initial;
+    } catch {
+      return {};
+    }
+  },
+
+  async setFormulaStatus(formulaId: string, status: FormulaStatus): Promise<Record<string, FormulaStatus>> {
+    const map = await this.getFormulaStatuses();
+    const updated = { ...map, [formulaId]: status };
+    await AsyncStorage.setItem(KEYS.FORMULA_STATUSES, JSON.stringify(updated));
+    return updated;
+  },
+
+  async getCustomTests(): Promise<CustomTestConfig[]> {
+    try {
+      const data = await AsyncStorage.getItem(KEYS.CUSTOM_TESTS);
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  async saveCustomTest(config: CustomTestConfig): Promise<CustomTestConfig[]> {
+    const list = await this.getCustomTests();
+    const updated = [config, ...list.filter((t) => t.id !== config.id)];
+    await AsyncStorage.setItem(KEYS.CUSTOM_TESTS, JSON.stringify(updated));
+    return updated;
+  },
+
+  async deleteCustomTest(testId: string): Promise<CustomTestConfig[]> {
+    const list = await this.getCustomTests();
+    const updated = list.filter((t) => t.id !== testId);
+    await AsyncStorage.setItem(KEYS.CUSTOM_TESTS, JSON.stringify(updated));
+    return updated;
+  },
+
+  async getCustomQuestions(): Promise<Question[]> {
+    try {
+      const data = await AsyncStorage.getItem(KEYS.CUSTOM_QUESTIONS);
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  async saveCustomQuestions(newQuestions: Question[]): Promise<Question[]> {
+    const existing = await this.getCustomQuestions();
+    const map = new Map<string, Question>();
+    for (const q of existing) map.set(q.id, q);
+    for (const q of newQuestions) map.set(q.id, q);
+    const merged = Array.from(map.values()).slice(-150);
+    await AsyncStorage.setItem(KEYS.CUSTOM_QUESTIONS, JSON.stringify(merged));
+    return merged;
   },
 };
 

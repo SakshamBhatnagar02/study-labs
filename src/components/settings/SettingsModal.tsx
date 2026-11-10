@@ -27,15 +27,23 @@ import {
 interface SettingsModalProps {
   visible: boolean;
   onClose: () => void;
+  onOpenReminderSettings?: () => void;
 }
 
-export const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onClose }) => {
+export const SettingsModal: React.FC<SettingsModalProps> = ({
+  visible,
+  onClose,
+  onOpenReminderSettings,
+}) => {
   const { colors, mode } = useTheme();
   const [settings, setSettings] = useState<AppSettings | null>(null);
 
   useEffect(() => {
     if (visible) {
-      StorageService.getSettings().then(setSettings);
+      StorageService.getSettings().then((s) => {
+        SoundManager.setCachedSettings(s);
+        setSettings(s);
+      });
     }
   }, [visible]);
 
@@ -44,29 +52,38 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onClose }
   const updateSetting = async <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => {
     const next = { ...settings, [key]: value };
     setSettings(next);
+    SoundManager.setCachedSettings(next);
     await StorageService.saveSettings({ [key]: value });
 
-    // Haptic feedback when flipping switches
+    // Play click SFX only when enabling MCQ click sound
+    if (key === 'clickSound' && value) {
+      SoundManager.playClick();
+    }
     if (key === 'hapticFeedback' ? Boolean(value) : settings.hapticFeedback) {
       HapticManager.triggerSelection();
     }
   };
 
-  const handleTestSound = () => {
-    SoundManager.play('correct');
+  const handleTestSound = (
+    effect: 'click' | 'correct' | 'incorrect' | 'hint' | 'test_complete' = 'correct'
+  ) => {
+    SoundManager.play(effect);
   };
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View style={styles.overlay}>
-        <View style={[styles.container, { backgroundColor: colors.card, borderColor: colors.borderSubtle }]}>
+        <View style={[styles.container, { backgroundColor: colors.card, borderColor: colors.border }]}>
           {/* Header */}
           <View style={[styles.header, { borderBottomColor: colors.borderSubtle }]}>
             <View style={styles.titleRow}>
               <Sliders size={20} color={colors.primary} />
               <Text style={[styles.title, { color: colors.text }]}>Sound & Cyber Effects</Text>
             </View>
-            <TouchableOpacity onPress={onClose} style={[styles.closeBtn, { backgroundColor: colors.surface }]}>
+            <TouchableOpacity
+              onPress={onClose}
+              style={[styles.closeBtn, { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.borderSubtle }]}
+            >
               <X size={18} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
@@ -98,6 +115,21 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onClose }
 
             {/* Sub-sound toggles */}
             <View style={[styles.subGroup, !settings.masterSound && { opacity: 0.45 }]}>
+              <View style={[styles.settingRow, { borderBottomColor: colors.borderSubtle }]}>
+                <View style={styles.labelCol}>
+                  <Text style={[styles.settingTitle, { color: colors.text }]}>MCQ Click SFX</Text>
+                  <Text style={[styles.settingDesc, { color: colors.textSecondary }]}>
+                    Crisp tactile click SFX while solving MCQ questions
+                  </Text>
+                </View>
+                <Switch
+                  disabled={!settings.masterSound}
+                  value={settings.clickSound !== false}
+                  onValueChange={(val) => updateSetting('clickSound', val)}
+                  trackColor={{ false: '#64748B', true: colors.primary }}
+                />
+              </View>
+
               <View style={[styles.settingRow, { borderBottomColor: colors.borderSubtle }]}>
                 <View style={styles.labelCol}>
                   <Text style={[styles.settingTitle, { color: colors.text }]}>Correct Answer Chime</Text>
@@ -188,7 +220,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onClose }
 
             {/* Particle Intensity Selector */}
             {settings.celebrationParticles && (
-              <View style={[styles.intensityBox, { backgroundColor: colors.surface }]}>
+              <View style={[styles.intensityBox, { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.borderSubtle }]}>
                 <Text style={[styles.intensityTitle, { color: colors.text }]}>Particle Budget Tier</Text>
                 <View style={styles.tierRow}>
                   {(['low', 'standard', 'high'] as ParticleIntensity[]).map((tier) => (
@@ -238,16 +270,50 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onClose }
               />
             </View>
 
-            {/* Test Sound Button */}
+            {/* Test Sound Preview Strip */}
             {settings.masterSound && (
+              <View style={styles.previewSection}>
+                <Text style={[styles.sectionLabel, { color: colors.textSecondary, marginTop: 14 }]}>
+                  PREVIEW DOWNLOADED SFX
+                </Text>
+                <View style={styles.previewRow}>
+                  {[
+                    { key: 'click' as const, label: 'Click' },
+                    { key: 'correct' as const, label: 'Correct' },
+                    { key: 'incorrect' as const, label: 'Wrong' },
+                    { key: 'hint' as const, label: 'Hint' },
+                    { key: 'test_complete' as const, label: 'Done' },
+                  ].map((sfx) => (
+                    <TouchableOpacity
+                      key={sfx.key}
+                      onPress={() => handleTestSound(sfx.key)}
+                      style={[styles.previewPill, { borderColor: colors.primary, backgroundColor: colors.surface }]}
+                      activeOpacity={0.7}
+                    >
+                      <Volume2 size={13} color={colors.primary} />
+                      <Text style={[styles.previewPillText, { color: colors.primary }]}>
+                        {sfx.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {onOpenReminderSettings && (
               <TouchableOpacity
-                onPress={handleTestSound}
-                style={[styles.testSoundBtn, { borderColor: colors.primary }]}
-                activeOpacity={0.7}
+                activeOpacity={0.75}
+                onPress={() => {
+                  onClose();
+                  onOpenReminderSettings();
+                }}
+                style={[
+                  styles.reminderShortcutBtn,
+                  { backgroundColor: mode === 'dark' ? '#431407' : '#FFEDD5', borderColor: colors.primary },
+                ]}
               >
-                <Volume2 size={16} color={colors.primary} />
-                <Text style={[styles.testSoundText, { color: colors.primary }]}>
-                  Play Preview Chime
+                <Text style={[styles.reminderShortcutText, { color: colors.primary }]}>
+                  Configure Daily Score & Streak Reminders →
                 </Text>
               </TouchableOpacity>
             )}
@@ -358,18 +424,41 @@ const styles = StyleSheet.create({
   tierBtnText: {
     fontSize: 11,
   },
-  testSoundBtn: {
+  previewSection: {
+    marginTop: 6,
+  },
+  previewRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  previewPill: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
-    borderWidth: 1.5,
-    borderRadius: 12,
-    paddingVertical: 12,
-    marginTop: 18,
+    gap: 5,
+    borderWidth: 1.25,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    minWidth: '22%',
+    flex: 1,
   },
-  testSoundText: {
-    fontSize: 13,
+  previewPillText: {
+    fontSize: 11.5,
+    fontWeight: '700',
+  },
+  reminderShortcutBtn: {
+    marginTop: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  reminderShortcutText: {
+    fontSize: 12.5,
     fontWeight: '700',
   },
 });
+

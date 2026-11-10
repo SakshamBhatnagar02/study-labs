@@ -93,9 +93,9 @@ export const GraphPlaygroundScreen: React.FC = () => {
       </View>
 
       {/* Mode Switcher */}
-      <View style={[styles.tabBar, { backgroundColor: colors.surface }]}>
+      <View style={[styles.tabBar, { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.borderSubtle }]}>
         <TouchableOpacity
-          onPress={() => setActiveMode('math')}
+          onPress={() => { setActiveMode('math'); }}
           style={[styles.tabBtn, activeMode === 'math' && { backgroundColor: colors.primary }]}
         >
           <Text style={[styles.tabText, { color: activeMode === 'math' ? '#FFF' : colors.textSecondary }]}>
@@ -103,7 +103,7 @@ export const GraphPlaygroundScreen: React.FC = () => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => setActiveMode('physics')}
+          onPress={() => { setActiveMode('physics'); }}
           style={[styles.tabBtn, activeMode === 'physics' && { backgroundColor: colors.primary }]}
         >
           <Text style={[styles.tabText, { color: activeMode === 'physics' ? '#FFF' : colors.textSecondary }]}>
@@ -111,7 +111,7 @@ export const GraphPlaygroundScreen: React.FC = () => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => setActiveMode('chemistry')}
+          onPress={() => { setActiveMode('chemistry'); }}
           style={[styles.tabBtn, activeMode === 'chemistry' && { backgroundColor: colors.primary }]}
         >
           <Text style={[styles.tabText, { color: activeMode === 'chemistry' ? '#FFF' : colors.textSecondary }]}>
@@ -145,7 +145,7 @@ export const GraphPlaygroundScreen: React.FC = () => {
           </View>
 
           {/* Graph Simulation Canvas */}
-          <View style={[styles.canvasFrame, { backgroundColor: themeMode === 'dark' ? '#0F172A' : '#FAFAFA' }]}>
+          <View style={[styles.canvasFrame, { backgroundColor: themeMode === 'dark' ? '#0F172A' : '#FAFAFA', borderColor: colors.border }]}>
             {/* Grid Lines */}
             <View style={[styles.axisX, { top: GRAPH_HEIGHT / 2, backgroundColor: colors.border }]} />
             <View style={[styles.axisY, { left: GRAPH_WIDTH / 2, backgroundColor: colors.border }]} />
@@ -214,10 +214,14 @@ export const GraphPlaygroundScreen: React.FC = () => {
                 {(['sine', 'quadratic', 'exponential'] as const).map((func) => (
                   <TouchableOpacity
                     key={func}
-                    onPress={() => setMathFunc(func)}
+                    onPress={() => { setMathFunc(func); }}
                     style={[
                       styles.presetBtn,
-                      { backgroundColor: mathFunc === func ? colors.primary : colors.surface }
+                      {
+                        backgroundColor: mathFunc === func ? colors.primary : colors.surface,
+                        borderWidth: 1,
+                        borderColor: mathFunc === func ? colors.primary : colors.borderSubtle,
+                      }
                     ]}
                   >
                     <Text style={{ color: mathFunc === func ? '#FFF' : colors.textPrimary, fontSize: 12, fontWeight: '600' }}>
@@ -231,10 +235,14 @@ export const GraphPlaygroundScreen: React.FC = () => {
                 {(['projectile', 'shm', 'vt_graph'] as const).map((p) => (
                   <TouchableOpacity
                     key={p}
-                    onPress={() => setPhysicsPreset(p)}
+                    onPress={() => { setPhysicsPreset(p); }}
                     style={[
                       styles.presetBtn,
-                      { backgroundColor: physicsPreset === p ? colors.primary : colors.surface }
+                      {
+                        backgroundColor: physicsPreset === p ? colors.primary : colors.surface,
+                        borderWidth: 1,
+                        borderColor: physicsPreset === p ? colors.primary : colors.borderSubtle,
+                      }
                     ]}
                   >
                     <Text style={{ color: physicsPreset === p ? '#FFF' : colors.textPrimary, fontSize: 12, fontWeight: '600' }}>
@@ -253,7 +261,7 @@ export const GraphPlaygroundScreen: React.FC = () => {
             IUPAC Structure & 2D Bonding Schema
           </Text>
 
-          <View style={[styles.chemVisualBox, { backgroundColor: themeMode === 'dark' ? '#0F172A' : '#FAFAFA' }]}>
+          <View style={[styles.chemVisualBox, { backgroundColor: themeMode === 'dark' ? '#0F172A' : '#FAFAFA', borderColor: colors.border }]}>
             {chemPreset === 'benzene' && (
               <View style={styles.chemCenter}>
                 <Text style={[styles.chemFormula, { color: colors.primary }]}>C₆H₆</Text>
@@ -297,10 +305,14 @@ export const GraphPlaygroundScreen: React.FC = () => {
             {(['benzene', 'ester', 'alcohol', 'alkane'] as const).map((cp) => (
               <TouchableOpacity
                 key={cp}
-                onPress={() => setChemPreset(cp)}
+                onPress={() => { setChemPreset(cp); }}
                 style={[
                   styles.presetBtn,
-                  { backgroundColor: chemPreset === cp ? colors.primary : colors.surface }
+                  {
+                    backgroundColor: chemPreset === cp ? colors.primary : colors.surface,
+                    borderWidth: 1,
+                    borderColor: chemPreset === cp ? colors.primary : colors.borderSubtle,
+                  }
                 ]}
               >
                 <Text style={{ color: chemPreset === cp ? '#FFF' : colors.textPrimary, fontSize: 12, fontWeight: '600' }}>

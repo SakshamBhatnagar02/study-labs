@@ -195,3 +195,4 @@ export const AppIcon: React.FC<AppIconProps> = ({
     </View>
   );
 };
+

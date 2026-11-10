@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
-  Alert,
 } from 'react-native';
 import { useTheme } from '../theme';
 import { Card } from '../components/common/Card';
@@ -15,6 +14,7 @@ import { Button } from '../components/common/Button';
 import { Badge } from '../components/common/Badge';
 import { OfflineTestRecord } from '../types';
 import { StorageService } from '../services/storage';
+import { SupabaseService } from '../services/supabase';
 import { 
   Plus, 
   Trash2, 
@@ -26,9 +26,9 @@ import {
   XCircle, 
   HelpCircle,
   BarChart3,
-  Filter,
   BookOpen,
-  Sparkles
+  Sparkles,
+  AlertTriangle
 } from 'lucide-react-native';
 
 export const OfflineTrackerScreen: React.FC = () => {
@@ -52,6 +52,7 @@ export const OfflineTrackerScreen: React.FC = () => {
   const [totalCandidates, setTotalCandidates] = useState('');
   const [syllabus, setSyllabus] = useState('');
   const [notes, setNotes] = useState('');
+  const [formError, setFormError] = useState<string | null>(null);
 
   useEffect(() => {
     loadTests();
@@ -63,19 +64,20 @@ export const OfflineTrackerScreen: React.FC = () => {
   };
 
   const handleAddTest = async () => {
+    setFormError(null);
     const max = parseFloat(maxMarks);
     const obt = parseFloat(obtainedMarks);
 
     if (!testName.trim()) {
-      alert('Please enter a test name.');
+      setFormError('Please enter a test name.');
       return;
     }
     if (isNaN(max) || max <= 0) {
-      alert('Maximum marks must be a positive number.');
+      setFormError('Maximum marks must be a positive number.');
       return;
     }
     if (isNaN(obt) || obt < 0 || obt > max) {
-      alert('Obtained marks must be between 0 and maximum marks.');
+      setFormError(`Obtained marks must be between 0 and ${max}.`);
       return;
     }
 
@@ -102,6 +104,7 @@ export const OfflineTrackerScreen: React.FC = () => {
 
     const updated = await StorageService.saveOfflineTest(newRecord);
     setTests(updated);
+    void SupabaseService.syncOfflineTests(updated);
     setModalVisible(false);
     resetForm();
   };
@@ -109,9 +112,11 @@ export const OfflineTrackerScreen: React.FC = () => {
   const handleDelete = async (id: string) => {
     const updated = await StorageService.deleteOfflineTest(id);
     setTests(updated);
+    void SupabaseService.syncOfflineTests(updated);
   };
 
   const resetForm = () => {
+    setFormError(null);
     setTestName('');
     setInstituteName('');
     setObtainedMarks('');
@@ -225,12 +230,14 @@ export const OfflineTrackerScreen: React.FC = () => {
             <TouchableOpacity
               key={sub}
               activeOpacity={0.7}
-              onPress={() => setSelectedSubject(sub)}
+              onPress={() => {
+                setSelectedSubject(sub);
+              }}
               style={[
                 styles.filterPill,
                 {
                   backgroundColor: selectedSubject === sub ? colors.primary : colors.card,
-                  borderColor: selectedSubject === sub ? colors.primary : colors.borderSubtle,
+                  borderColor: selectedSubject === sub ? colors.primary : colors.border,
                 },
               ]}
             >
@@ -279,7 +286,7 @@ export const OfflineTrackerScreen: React.FC = () => {
                 </View>
 
                 {/* Score Pill */}
-                <View style={[styles.scoreBadge, { backgroundColor: mode === 'dark' ? '#1E293B' : '#FFF7ED', borderColor: colors.primary }]}>
+                <View style={[styles.scoreBadge, { backgroundColor: colors.surface, borderColor: colors.primary }]}>
                   <Text style={[styles.scoreBig, { color: colors.primary }]}>{test.calculatedPercentage}%</Text>
                   <Text style={[styles.scoreSub, { color: colors.textSecondary }]}>
                     {test.obtainedMarks} / {test.maxMarks}
@@ -344,21 +351,45 @@ export const OfflineTrackerScreen: React.FC = () => {
       {/* Add Test Modal */}
       <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
+          <View style={[styles.modalContent, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <Text style={[styles.modalTitle, { color: colors.text }]}>Log Offline Test Record</Text>
+
+            {formError && (
+              <View
+                style={[
+                  styles.errorBanner,
+                  { backgroundColor: colors.errorBg, borderColor: colors.error },
+                ]}
+              >
+                <AlertTriangle size={15} color={colors.error} />
+                <Text style={[styles.errorBannerText, { color: mode === 'dark' ? '#FCA5A5' : colors.error }]}>
+                  {formError}
+                </Text>
+              </View>
+            )}
+
             <ScrollView showsVerticalScrollIndicator={false} style={{ maxHeight: 420 }}>
               <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Test Name *</Text>
               <TextInput
-                style={[styles.input, { color: colors.text, borderColor: colors.borderSubtle }]}
+                style={[
+                  styles.input,
+                  { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.border },
+                ]}
                 placeholder="e.g. Major Test 1 - Mechanics"
                 placeholderTextColor={colors.textSecondary}
                 value={testName}
-                onChangeText={setTestName}
+                onChangeText={(txt) => {
+                  if (formError) setFormError(null);
+                  setTestName(txt);
+                }}
               />
 
               <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Coaching / Institute Name</Text>
               <TextInput
-                style={[styles.input, { color: colors.text, borderColor: colors.borderSubtle }]}
+                style={[
+                  styles.input,
+                  { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.border },
+                ]}
                 placeholder="e.g. Allen, Aakash, FIITJEE, School"
                 placeholderTextColor={colors.textSecondary}
                 value={instituteName}
@@ -369,21 +400,33 @@ export const OfflineTrackerScreen: React.FC = () => {
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Max Marks *</Text>
                   <TextInput
-                    style={[styles.input, { color: colors.text, borderColor: colors.borderSubtle }]}
+                    style={[
+                      styles.input,
+                      { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.border },
+                    ]}
                     keyboardType="numeric"
                     value={maxMarks}
-                    onChangeText={setMaxMarks}
+                    onChangeText={(txt) => {
+                      if (formError) setFormError(null);
+                      setMaxMarks(txt);
+                    }}
                   />
                 </View>
                 <View style={{ flex: 1, marginLeft: 10 }}>
                   <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Obtained Marks *</Text>
                   <TextInput
-                    style={[styles.input, { color: colors.text, borderColor: colors.borderSubtle }]}
+                    style={[
+                      styles.input,
+                      { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.border },
+                    ]}
                     keyboardType="numeric"
                     placeholder="e.g. 78"
                     placeholderTextColor={colors.textSecondary}
                     value={obtainedMarks}
-                    onChangeText={setObtainedMarks}
+                    onChangeText={(txt) => {
+                      if (formError) setFormError(null);
+                      setObtainedMarks(txt);
+                    }}
                   />
                 </View>
               </View>
@@ -392,7 +435,10 @@ export const OfflineTrackerScreen: React.FC = () => {
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Correct Qs</Text>
                   <TextInput
-                    style={[styles.input, { color: colors.text, borderColor: colors.borderSubtle }]}
+                    style={[
+                      styles.input,
+                      { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.border },
+                    ]}
                     keyboardType="numeric"
                     placeholder="e.g. 20"
                     placeholderTextColor={colors.textSecondary}
@@ -403,7 +449,10 @@ export const OfflineTrackerScreen: React.FC = () => {
                 <View style={{ flex: 1, marginLeft: 10 }}>
                   <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Incorrect Qs</Text>
                   <TextInput
-                    style={[styles.input, { color: colors.text, borderColor: colors.borderSubtle }]}
+                    style={[
+                      styles.input,
+                      { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.border },
+                    ]}
                     keyboardType="numeric"
                     placeholder="e.g. 2"
                     placeholderTextColor={colors.textSecondary}
@@ -415,7 +464,10 @@ export const OfflineTrackerScreen: React.FC = () => {
 
               <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Rank (Optional)</Text>
               <TextInput
-                style={[styles.input, { color: colors.text, borderColor: colors.borderSubtle }]}
+                style={[
+                  styles.input,
+                  { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.border },
+                ]}
                 keyboardType="numeric"
                 placeholder="e.g. 42"
                 placeholderTextColor={colors.textSecondary}
@@ -425,7 +477,10 @@ export const OfflineTrackerScreen: React.FC = () => {
 
               <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Syllabus Covered</Text>
               <TextInput
-                style={[styles.input, { color: colors.text, borderColor: colors.borderSubtle }]}
+                style={[
+                  styles.input,
+                  { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.border },
+                ]}
                 placeholder="e.g. Kinematics, Work Power, Electrostatics"
                 placeholderTextColor={colors.textSecondary}
                 value={syllabus}
@@ -434,7 +489,15 @@ export const OfflineTrackerScreen: React.FC = () => {
 
               <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Notes & Mistakes Analysis</Text>
               <TextInput
-                style={[styles.input, { color: colors.text, borderColor: colors.borderSubtle, height: 60 }]}
+                style={[
+                  styles.input,
+                  {
+                    color: colors.text,
+                    backgroundColor: colors.inputBg,
+                    borderColor: colors.border,
+                    height: 60,
+                  },
+                ]}
                 multiline
                 placeholder="Where did you lose marks? Silly mistakes, formulas forgotten?"
                 placeholderTextColor={colors.textSecondary}
@@ -446,8 +509,11 @@ export const OfflineTrackerScreen: React.FC = () => {
             <View style={styles.modalButtons}>
               <Button
                 title="Cancel"
-                variant="ghost"
-                onPress={() => setModalVisible(false)}
+                variant="outline"
+                onPress={() => {
+                  setFormError(null);
+                  setModalVisible(false);
+                }}
                 style={{ flex: 1 }}
               />
               <Button
@@ -690,13 +756,29 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'center',
     padding: 20,
   },
   modalContent: {
     borderRadius: 20,
+    borderWidth: 1,
     padding: 20,
+  },
+  errorBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    marginBottom: 8,
+  },
+  errorBannerText: {
+    fontSize: 12.5,
+    fontWeight: '700',
+    flex: 1,
   },
   modalTitle: {
     fontSize: 18,

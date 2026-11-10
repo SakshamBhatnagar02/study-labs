@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -7,20 +7,65 @@ import { Header } from './src/components/common/Header';
 import { BottomNav, NavTab } from './src/components/navigation/BottomNav';
 import { DashboardScreen } from './src/screens/DashboardScreen';
 import { StudyMaterialScreen } from './src/screens/StudyMaterialScreen';
-import { TestEngineScreen } from './src/screens/TestEngineScreen';
+import { AskAITutorPayload, TestEngineScreen } from './src/screens/TestEngineScreen';
 import { OfflineTrackerScreen } from './src/screens/OfflineTrackerScreen';
 import { AnalyticsScreen } from './src/screens/AnalyticsScreen';
 import { SyllabusCalendarScreen } from './src/screens/SyllabusCalendarScreen';
 import { GraphPlaygroundScreen } from './src/screens/GraphPlaygroundScreen';
 import { AcademicToolsScreen } from './src/screens/AcademicToolsScreen';
 import { AIAssistantScreen } from './src/screens/AIAssistantScreen';
+import { LeaderboardScreen } from './src/screens/LeaderboardScreen';
+import { DailyGoalScreen } from './src/screens/DailyGoalScreen';
+import { NotebooksScreen } from './src/screens/NotebooksScreen';
+import { ProfileScreen } from './src/screens/ProfileScreen';
+import { DEFAULT_USER, StorageService } from './src/services/storage';
+import { SoundManager } from './src/services/soundManager';
+import { aggregateDailyActivity, computeStreakAndWeek } from './src/utils/activityStats';
+import { SubjectId, TestSessionLaunch, UserProfile } from './src/types';
 import { ChevronLeft } from 'lucide-react-native';
 
 function MainApp() {
   const { colors, mode } = useTheme();
   const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
+  const [aiPrefillPrompt, setAiPrefillPrompt] = useState<AskAITutorPayload | null>(null);
+  const [testLaunchSession, setTestLaunchSession] = useState<TestSessionLaunch | null>(null);
+  const [customTestBuilderNonce, setCustomTestBuilderNonce] = useState(0);
+  const [curriculumView, setCurriculumView] = useState<'chapters' | 'formulas'>('chapters');
+  const [curriculumSubject, setCurriculumSubject] = useState<SubjectId>('physics');
 
-  const isSubScreen = ['analytics', 'syllabus', 'playground'].includes(activeTab);
+  const [userProfile, setUserProfile] = useState<UserProfile>(DEFAULT_USER);
+  const [liveStreakDays, setLiveStreakDays] = useState<number>(DEFAULT_USER.studyStreakDays);
+
+  useEffect(() => {
+    const hydrateGlobals = async () => {
+      const [settings, profile, goalCfg, logs] = await Promise.all([
+        StorageService.getSettings(),
+        StorageService.getUserProfile(),
+        StorageService.getDailyGoalConfig(),
+        StorageService.getAttemptLogs(),
+      ]);
+      SoundManager.setCachedSettings(settings);
+      setUserProfile(profile);
+      const streak = computeStreakAndWeek(
+        aggregateDailyActivity(logs),
+        goalCfg.targetQuestions,
+        new Date(),
+        profile.studyStreakDays
+      );
+      setLiveStreakDays(streak.currentStreakDays);
+    };
+    hydrateGlobals();
+  }, [activeTab]);
+
+  const isSubScreen = [
+    'analytics',
+    'syllabus',
+    'playground',
+    'leaderboard',
+    'dailyGoal',
+    'notebooks',
+    'profile',
+  ].includes(activeTab);
 
   const getSubScreenTitle = () => {
     switch (activeTab) {
@@ -30,19 +75,85 @@ function MainApp() {
         return 'Syllabus & Planner';
       case 'playground':
         return 'STEM Graph Playground';
+      case 'leaderboard':
+        return '7-Day Weekly Leaderboard';
+      case 'dailyGoal':
+        return 'Daily Goal & Heatmap';
+      case 'notebooks':
+        return 'Notebooks & My Notes';
+      case 'profile':
+        return 'My Profile & Alerts';
       default:
         return '';
     }
   };
 
+  const launchTestSession = (session: TestSessionLaunch) => {
+    setTestLaunchSession(session);
+    setActiveTab('test');
+  };
+
   const renderActiveScreen = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <DashboardScreen onNavigate={setActiveTab} />;
+        return (
+          <DashboardScreen
+            onNavigate={setActiveTab}
+            onOpenCustomTest={() => {
+              setCustomTestBuilderNonce((n) => n + 1);
+              setActiveTab('test');
+            }}
+            onOpenFormulas={(subj) => {
+              if (subj) setCurriculumSubject(subj);
+              setCurriculumView('formulas');
+              setActiveTab('study');
+            }}
+            onOpenCurriculumSubject={(subj) => {
+              setCurriculumSubject(subj);
+              setCurriculumView('chapters');
+              setActiveTab('study');
+            }}
+            onAskConcept={(concept) => {
+              setAiPrefillPrompt({
+                prompt: `Explain clearly with formulas and an example: ${concept}`,
+                difficulty: 'Medium',
+                subject: 'physics',
+                nonce: Date.now(),
+              });
+              setActiveTab('ai');
+            }}
+          />
+        );
       case 'study':
-        return <StudyMaterialScreen />;
+        return (
+          <StudyMaterialScreen
+            initialView={curriculumView}
+            initialSubject={curriculumSubject}
+            onLaunchSession={launchTestSession}
+            onOpenNotebooks={() => setActiveTab('notebooks')}
+            onAskAITopic={(topicTitle, subjectId) => {
+              setAiPrefillPrompt({
+                prompt: `Give concise revision notes, key formulas, and common pitfalls for: ${topicTitle}`,
+                difficulty: 'Medium',
+                subject: subjectId,
+                nonce: Date.now(),
+              });
+              setActiveTab('ai');
+            }}
+          />
+        );
       case 'test':
-        return <TestEngineScreen />;
+        return (
+          <TestEngineScreen
+            initialSession={testLaunchSession}
+            openBuilderNonce={customTestBuilderNonce}
+            onBuilderOpened={() => setCustomTestBuilderNonce(0)}
+            onAskAI={(payload) => {
+              setAiPrefillPrompt(payload);
+              setActiveTab('ai');
+            }}
+          />
+        );
       case 'tracker':
         return <OfflineTrackerScreen />;
       case 'analytics':
@@ -54,7 +165,25 @@ function MainApp() {
       case 'tools':
         return <AcademicToolsScreen />;
       case 'ai':
-        return <AIAssistantScreen />;
+        return <AIAssistantScreen prefillPrompt={aiPrefillPrompt} />;
+      case 'leaderboard':
+        return <LeaderboardScreen onStartPractice={() => setActiveTab('test')} />;
+      case 'dailyGoal':
+        return (
+          <DailyGoalScreen
+            onStartPractice={() => setActiveTab('test')}
+            onOpenLeaderboard={() => setActiveTab('leaderboard')}
+          />
+        );
+      case 'notebooks':
+        return <NotebooksScreen onLaunchSession={launchTestSession} />;
+      case 'profile':
+        return (
+          <ProfileScreen
+            onNavigate={setActiveTab}
+            onProfileUpdated={(updated) => setUserProfile(updated)}
+          />
+        );
       default:
         return <DashboardScreen onNavigate={setActiveTab} />;
     }
@@ -63,22 +192,32 @@ function MainApp() {
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.card }]} edges={['top', 'left', 'right']}>
       <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
-      
+
       {/* Top Application Header */}
-      <Header userIoId="STUDY-7734-IO" streakDays={14} />
+      <Header
+        userIoId={userProfile.ioId}
+        streakDays={liveStreakDays}
+        onProfilePress={() => setActiveTab('profile')}
+        onStreakPress={() => setActiveTab('dailyGoal')}
+        onLeaderboardPress={() => setActiveTab('leaderboard')}
+      />
 
       {/* Sub-screen Navigation Bar */}
       {isSubScreen && (
-        <View style={[styles.subHeader, { backgroundColor: colors.surface, borderBottomColor: colors.borderSubtle }]}>
-          <TouchableOpacity 
-            onPress={() => setActiveTab('dashboard')} 
+        <View style={[styles.subHeader, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+          <TouchableOpacity
+            onPress={() => {
+              setActiveTab('dashboard');
+            }}
             style={styles.backButton}
             activeOpacity={0.7}
           >
             <ChevronLeft size={20} color={colors.primary} />
             <Text style={[styles.backText, { color: colors.primary }]}>Back to Home</Text>
           </TouchableOpacity>
-          <Text style={[styles.subHeaderTitle, { color: colors.textPrimary }]}>{getSubScreenTitle()}</Text>
+          <Text style={[styles.subHeaderTitle, { color: colors.textPrimary }]}>
+            {getSubScreenTitle()}
+          </Text>
         </View>
       )}
 

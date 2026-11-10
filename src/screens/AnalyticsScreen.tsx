@@ -4,7 +4,8 @@ import { useTheme } from '../theme';
 import { Card } from '../components/common/Card';
 import { Badge } from '../components/common/Badge';
 import { storageService } from '../services/storage';
-import { OfflineTestRecord, TestAttempt } from '../types';
+import { OfflineTestRecord, QuestionAttemptStat, TestAttempt } from '../types';
+import { computeDifficultyBreakdown, computeHistorySummary, formatDurationShort } from '../utils/activityStats';
 import { 
   TrendingUp, 
   Award, 
@@ -24,6 +25,7 @@ export const AnalyticsScreen: React.FC = () => {
   const { colors, mode } = useTheme();
   const [offlineTests, setOfflineTests] = useState<OfflineTestRecord[]>([]);
   const [inAppAttempts, setInAppAttempts] = useState<TestAttempt[]>([]);
+  const [attemptLogs, setAttemptLogs] = useState<QuestionAttemptStat[]>([]);
   const [timeRange, setTimeRange] = useState<'weekly' | 'monthly' | 'all'>('monthly');
 
   useEffect(() => {
@@ -31,29 +33,56 @@ export const AnalyticsScreen: React.FC = () => {
   }, []);
 
   const loadData = async () => {
-    const offline = await storageService.getOfflineTests();
-    const attempts = await storageService.getTestAttempts();
+    const [offline, attempts, logs] = await Promise.all([
+      storageService.getOfflineTests(),
+      storageService.getTestAttempts(),
+      storageService.getAttemptLogs(),
+    ]);
     setOfflineTests(offline);
     setInAppAttempts(attempts);
+    setAttemptLogs(logs);
   };
 
-  // Aggregated analytics
+  // Aggregated analytics across coaching records, test sessions, and question-level logs
   const totalTestsTaken = offlineTests.length + inAppAttempts.length;
-  
-  // Calculate average percentage from both sources
+
   const offlineTotalPct = offlineTests.reduce((sum, t) => sum + t.calculatedPercentage, 0);
   const inAppTotalPct = inAppAttempts.reduce((sum, t) => sum + t.percentage, 0);
-  const avgPercentage = totalTestsTaken > 0 
-    ? Math.round((offlineTotalPct + inAppTotalPct) / totalTestsTaken) 
-    : 78; // baseline demo value
+  const avgTestPercentage =
+    totalTestsTaken > 0 ? Math.round((offlineTotalPct + inAppTotalPct) / totalTestsTaken) : 78;
 
-  // Subject performance breakdown
-  const subjectStats = [
-    { name: 'Physics', accuracy: 74, totalQuestions: 140, strength: 'Moderate', color: '#3B82F6' },
-    { name: 'Chemistry', accuracy: 86, totalQuestions: 165, strength: 'Strong', color: '#10B981' },
-    { name: 'Mathematics', accuracy: 68, totalQuestions: 120, strength: 'Needs Focus', color: '#F97316' },
-    { name: 'Biology', accuracy: 91, totalQuestions: 85, strength: 'Exceptional', color: '#8B5CF6' },
+  const historyRange: 'week' | 'month' | 'quarter' =
+    timeRange === 'weekly' ? 'week' : timeRange === 'monthly' ? 'month' : 'quarter';
+
+  const historySummary = computeHistorySummary(attemptLogs, historyRange, 'all');
+
+  const scopedLogs = attemptLogs.filter((log) => {
+    if (timeRange === 'all') return true;
+    const days = timeRange === 'weekly' ? 7 : 30;
+    const cutoff = Date.now() - days * 86400000;
+    const ts = new Date(log.attemptedAt).getTime();
+    return !isNaN(ts) && ts >= cutoff;
+  });
+
+  const difficultyRows = computeDifficultyBreakdown(scopedLogs);
+
+  const subjectMeta = [
+    { id: 'physics' as const, name: 'Physics', color: '#3B82F6' },
+    { id: 'chemistry' as const, name: 'Chemistry', color: '#10B981' },
+    { id: 'math' as const, name: 'Mathematics', color: '#F97316' },
+    { id: 'biology' as const, name: 'Biology', color: '#8B5CF6' },
   ];
+
+  const subjectStats = subjectMeta.map((sub) => {
+    const summary = computeHistorySummary(attemptLogs, historyRange, sub.id);
+    const acc = Math.round(summary.accuracyPercent);
+    return {
+      ...sub,
+      accuracy: acc,
+      totalQuestions: summary.qsSolved,
+      avgTime: formatDurationShort(summary.avgTimeSeconds),
+    };
+  });
 
   const strongTopics = [
     { subject: 'Chemistry', topic: 'Chemical Bonding & Molecular Structure', accuracy: '94%' },
@@ -74,18 +103,20 @@ export const AnalyticsScreen: React.FC = () => {
         <View>
           <Text style={[styles.title, { color: colors.textPrimary }]}>Performance Analytics</Text>
           <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-            Academic mastery, accuracy trends & subject strengths
+            Academic mastery, difficulty curves & accuracy trends
           </Text>
         </View>
-        <Badge label="AI Powered" variant="primary" />
+        <Badge label="Live Metrics" variant="primary" />
       </View>
 
       {/* Time Range Selector */}
-      <View style={[styles.filterBar, { backgroundColor: colors.surface }]}>
+      <View style={[styles.filterBar, { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.borderSubtle }]}>
         {(['weekly', 'monthly', 'all'] as const).map((r) => (
           <TouchableOpacity
             key={r}
-            onPress={() => setTimeRange(r)}
+            onPress={() => {
+              setTimeRange(r);
+            }}
             style={[
               styles.filterBtn,
               timeRange === r && { backgroundColor: colors.primary }
@@ -107,32 +138,38 @@ export const AnalyticsScreen: React.FC = () => {
           <View style={[styles.kpiIcon, { backgroundColor: '#FFEDD5' }]}>
             <TrendingUp size={22} color={colors.primary} />
           </View>
-          <Text style={[styles.kpiValue, { color: colors.textPrimary }]}>{avgPercentage}%</Text>
-          <Text style={[styles.kpiLabel, { color: colors.textSecondary }]}>Overall Accuracy</Text>
+          <Text style={[styles.kpiValue, { color: colors.textPrimary }]}>
+            {historySummary.qsSolved > 0 ? Math.round(historySummary.accuracyPercent) : avgTestPercentage}%
+          </Text>
+          <Text style={[styles.kpiLabel, { color: colors.textSecondary }]}>Practice Accuracy</Text>
         </Card>
 
         <Card style={[styles.kpiCard, { backgroundColor: colors.card }]}>
           <View style={[styles.kpiIcon, { backgroundColor: '#DCFCE7' }]}>
             <Award size={22} color="#16A34A" />
           </View>
-          <Text style={[styles.kpiValue, { color: colors.textPrimary }]}>{totalTestsTaken}</Text>
-          <Text style={[styles.kpiLabel, { color: colors.textSecondary }]}>Tests Analyzed</Text>
+          <Text style={[styles.kpiValue, { color: colors.textPrimary }]}>{avgTestPercentage}%</Text>
+          <Text style={[styles.kpiLabel, { color: colors.textSecondary }]}>
+            Test Avg ({totalTestsTaken})
+          </Text>
         </Card>
 
         <Card style={[styles.kpiCard, { backgroundColor: colors.card }]}>
           <View style={[styles.kpiIcon, { backgroundColor: '#E0E7FF' }]}>
-            <Clock size={22} color="#4F46E5" />
+            <Target size={22} color="#4F46E5" />
           </View>
-          <Text style={[styles.kpiValue, { color: colors.textPrimary }]}>42.5h</Text>
-          <Text style={[styles.kpiLabel, { color: colors.textSecondary }]}>Study Time</Text>
+          <Text style={[styles.kpiValue, { color: colors.textPrimary }]}>{historySummary.qsSolved}</Text>
+          <Text style={[styles.kpiLabel, { color: colors.textSecondary }]}>Qs Solved</Text>
         </Card>
 
         <Card style={[styles.kpiCard, { backgroundColor: colors.card }]}>
           <View style={[styles.kpiIcon, { backgroundColor: '#FEF3C7' }]}>
-            <Target size={22} color="#D97706" />
+            <Clock size={22} color="#D97706" />
           </View>
-          <Text style={[styles.kpiValue, { color: colors.textPrimary }]}>64%</Text>
-          <Text style={[styles.kpiLabel, { color: colors.textSecondary }]}>Syllabus Covered</Text>
+          <Text style={[styles.kpiValue, { color: colors.textPrimary }]}>
+            {formatDurationShort(historySummary.avgTimeSeconds)}
+          </Text>
+          <Text style={[styles.kpiLabel, { color: colors.textSecondary }]}>Avg Time / Q</Text>
         </Card>
       </View>
 
@@ -166,7 +203,9 @@ export const AnalyticsScreen: React.FC = () => {
               <Text style={[styles.subjectName, { color: colors.textPrimary }]}>{sub.name}</Text>
               <View style={styles.subMeta}>
                 <Text style={[styles.subjectScore, { color: sub.color }]}>{sub.accuracy}%</Text>
-                <Text style={[styles.subjectQCount, { color: colors.textSecondary }]}>({sub.totalQuestions} Qs)</Text>
+                <Text style={[styles.subjectQCount, { color: colors.textSecondary }]}>
+                  ({sub.totalQuestions} Qs · {sub.avgTime}/Q)
+                </Text>
               </View>
             </View>
             <View style={[styles.progressBarBg, { backgroundColor: colors.borderSubtle }]}>
@@ -182,6 +221,53 @@ export const AnalyticsScreen: React.FC = () => {
             </View>
           </View>
         ))}
+      </Card>
+
+      {/* Difficulty Mastery Section */}
+      <Card style={styles.sectionCard}>
+        <View style={styles.sectionHeader}>
+          <BrainCircuit size={20} color={colors.primary} />
+          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
+            Accuracy by Difficulty
+          </Text>
+        </View>
+
+        {difficultyRows.map((row) => {
+          const barColor =
+            row.difficulty === 'Easy'
+              ? '#16A34A'
+              : row.difficulty === 'Medium'
+                ? '#F97316'
+                : '#EF4444';
+          return (
+            <View key={row.difficulty} style={styles.subjectRow}>
+              <View style={styles.subjectHeader}>
+                <Text style={[styles.subjectName, { color: colors.textPrimary }]}>
+                  {row.difficulty} Questions
+                </Text>
+                <View style={styles.subMeta}>
+                  <Text style={[styles.subjectScore, { color: barColor }]}>
+                    {row.accuracyPercent}%
+                  </Text>
+                  <Text style={[styles.subjectQCount, { color: colors.textSecondary }]}>
+                    ({row.correct}/{row.attempted} · {formatDurationShort(row.avgTimeSeconds)})
+                  </Text>
+                </View>
+              </View>
+              <View style={[styles.progressBarBg, { backgroundColor: colors.borderSubtle }]}>
+                <View
+                  style={[
+                    styles.progressBarFill,
+                    {
+                      width: `${row.accuracyPercent}%`,
+                      backgroundColor: barColor,
+                    },
+                  ]}
+                />
+              </View>
+            </View>
+          );
+        })}
       </Card>
 
       {/* Strong & Weak Areas */}

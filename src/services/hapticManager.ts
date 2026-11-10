@@ -63,3 +63,4 @@ class HapticManagerService {
 }
 
 export const HapticManager = new HapticManagerService();
+

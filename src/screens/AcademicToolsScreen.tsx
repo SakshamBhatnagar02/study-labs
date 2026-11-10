@@ -17,13 +17,6 @@ import { PeriodicElement } from '../types';
 import { evaluateMathExpression } from '../utils/mathEvaluator';
 import { AppIcon, IconName } from '../components/common/AppIcon';
 import { 
-  Calculator as CalcIcon, 
-  FlaskConical, 
-  Layers, 
-  Scale, 
-  Bookmark, 
-  ChevronRight,
-  Sparkles,
   Droplets
 } from 'lucide-react-native';
 
@@ -127,50 +120,69 @@ export const AcademicToolsScreen: React.FC = () => {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Tool Navigation Chips */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.navRow}>
-        {[
-          { key: 'calc', label: 'Scientific Calc', iconName: 'calculator' as IconName },
-          { key: 'periodic', label: 'Periodic Table', iconName: 'flask' as IconName },
-          { key: 'converter', label: 'Unit Converter', iconName: 'scale' as IconName },
-          { key: 'constants', label: 'Constants', iconName: 'atom' as IconName },
-          { key: 'reactivity', label: 'Reactivity Series', iconName: 'flame' as IconName },
-        ].map((item) => {
-          const isSelected = activeSection === item.key;
-          return (
-            <TouchableOpacity
-              key={item.key}
-              activeOpacity={0.7}
-              onPress={() => setActiveSection(item.key as any)}
-              style={[
-                styles.navChip,
-                {
-                  backgroundColor: isSelected ? colors.primary : colors.card,
-                  borderColor: isSelected ? colors.primary : colors.borderSubtle,
-                },
-              ]}
-            >
-              <AppIcon 
-                name={item.iconName} 
-                size="xs" 
-                color={isSelected ? '#FFFFFF' : colors.primary} 
-              />
-              <Text
+      <View
+        style={[
+          styles.navWrapper,
+          { backgroundColor: colors.card, borderBottomColor: colors.border },
+        ]}
+      >
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.navScroll}
+          contentContainerStyle={styles.navRowContent}
+        >
+          {[
+            { key: 'calc', label: 'Scientific Calc', iconName: 'calculator' as IconName },
+            { key: 'periodic', label: 'Periodic Table', iconName: 'flask' as IconName },
+            { key: 'converter', label: 'Unit Converter', iconName: 'scale' as IconName },
+            { key: 'constants', label: 'Constants', iconName: 'atom' as IconName },
+            { key: 'reactivity', label: 'Reactivity Series', iconName: 'flame' as IconName },
+          ].map((item) => {
+            const isSelected = activeSection === item.key;
+            return (
+              <TouchableOpacity
+                key={item.key}
+                activeOpacity={0.7}
+                onPress={() => {
+                  setActiveSection(item.key as any);
+                }}
                 style={[
-                  styles.navChipText,
-                  { 
-                    color: isSelected ? '#FFFFFF' : colors.text,
-                    fontWeight: isSelected ? '700' : '500',
+                  styles.navChip,
+                  {
+                    backgroundColor: isSelected ? colors.primary : colors.surface,
+                    borderColor: isSelected ? colors.primary : colors.border,
                   },
                 ]}
               >
-                {item.label}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
+                <AppIcon
+                  name={item.iconName}
+                  size="xs"
+                  color={isSelected ? '#FFFFFF' : colors.primary}
+                />
+                <Text
+                  style={[
+                    styles.navChipText,
+                    {
+                      color: isSelected ? '#FFFFFF' : colors.text,
+                      fontWeight: isSelected ? '700' : '600',
+                    },
+                  ]}
+                  numberOfLines={1}
+                >
+                  {item.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
 
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.mainScroll}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
         {/* SECTION 1: SCIENTIFIC CALCULATOR */}
         {activeSection === 'calc' && (
           <View style={styles.calcContainer}>
@@ -201,8 +213,8 @@ export const AcademicToolsScreen: React.FC = () => {
                       btnBg = mode === 'dark' ? '#431407' : '#FFEDD5';
                       btnTextColor = colors.primary;
                     } else if (isSpecial) {
-                      btnBg = mode === 'dark' ? '#1E293B' : '#F1F5F9';
-                      btnTextColor = colors.textSecondary;
+                      btnBg = colors.surface;
+                      btnTextColor = mode === 'dark' ? colors.text : colors.textSecondary;
                     }
 
                     return (
@@ -214,7 +226,7 @@ export const AcademicToolsScreen: React.FC = () => {
                           styles.keyBtn,
                           {
                             backgroundColor: btnBg,
-                            borderColor: colors.borderSubtle,
+                            borderColor: isEquals || isOp ? colors.primary : colors.border,
                           },
                         ]}
                       >
@@ -255,7 +267,9 @@ export const AcademicToolsScreen: React.FC = () => {
                   <TouchableOpacity
                     key={el.number}
                     activeOpacity={0.8}
-                    onPress={() => setSelectedElement(el)}
+                    onPress={() => {
+                      setSelectedElement(el);
+                    }}
                     style={[
                       styles.elementCard,
                       { backgroundColor: colors.card, borderColor: catColor },
@@ -283,7 +297,7 @@ export const AcademicToolsScreen: React.FC = () => {
             <Text style={[styles.sectionTitle, { color: colors.text }]}>Scientific Unit Converter</Text>
             
             {/* Category tabs */}
-            <View style={[styles.convTabs, { backgroundColor: colors.card }]}>
+            <View style={[styles.convTabs, { backgroundColor: colors.card, borderColor: colors.border }]}>
               {(['length', 'mass', 'temp'] as const).map((cat) => (
                 <TouchableOpacity
                   key={cat}
@@ -313,7 +327,10 @@ export const AcademicToolsScreen: React.FC = () => {
             <Card style={styles.converterCard}>
               <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Input Value</Text>
               <TextInput
-                style={[styles.convInput, { color: colors.text, borderColor: colors.primary }]}
+                style={[
+                  styles.convInput,
+                  { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.primary },
+                ]}
                 keyboardType="numeric"
                 value={converterVal}
                 onChangeText={setConverterVal}
@@ -331,10 +348,13 @@ export const AcademicToolsScreen: React.FC = () => {
                     ).map((u) => (
                       <TouchableOpacity
                         key={u}
-                        onPress={() => setFromUnit(u)}
+                        onPress={() => { setFromUnit(u); }}
                         style={[
                           styles.unitPill,
-                          fromUnit === u && { backgroundColor: colors.primary },
+                          {
+                            backgroundColor: fromUnit === u ? colors.primary : colors.surface,
+                            borderColor: fromUnit === u ? colors.primary : colors.border,
+                          },
                         ]}
                       >
                         <Text style={{ fontSize: 11, fontWeight: '700', color: fromUnit === u ? '#FFFFFF' : colors.text }}>
@@ -356,10 +376,13 @@ export const AcademicToolsScreen: React.FC = () => {
                     ).map((u) => (
                       <TouchableOpacity
                         key={u}
-                        onPress={() => setToUnit(u)}
+                        onPress={() => { setToUnit(u); }}
                         style={[
                           styles.unitPill,
-                          toUnit === u && { backgroundColor: colors.primary },
+                          {
+                            backgroundColor: toUnit === u ? colors.primary : colors.surface,
+                            borderColor: toUnit === u ? colors.primary : colors.border,
+                          },
                         ]}
                       >
                         <Text style={{ fontSize: 11, fontWeight: '700', color: toUnit === u ? '#FFFFFF' : colors.text }}>
@@ -372,7 +395,15 @@ export const AcademicToolsScreen: React.FC = () => {
               </View>
 
               {/* Conversion Result Box */}
-              <View style={[styles.resultBox, { backgroundColor: mode === 'dark' ? '#1E293B' : '#FFEDD5' }]}>
+              <View
+                style={[
+                  styles.resultBox,
+                  {
+                    backgroundColor: mode === 'dark' ? colors.surface : '#FFEDD5',
+                    borderColor: colors.primary,
+                  },
+                ]}
+              >
                 <Text style={[styles.resultLabel, { color: colors.textSecondary }]}>Converted Result</Text>
                 <Text style={[styles.resultValue, { color: colors.primary }]}>
                   {calculateConversion()} {toUnit}
@@ -437,7 +468,7 @@ export const AcademicToolsScreen: React.FC = () => {
       {/* Element Detail Modal */}
       <Modal visible={selectedElement !== null} animationType="fade" transparent>
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
+          <View style={[styles.modalContent, { backgroundColor: colors.card, borderColor: colors.border }]}>
             {selectedElement && (
               <>
                 <View style={styles.modalHeader}>
@@ -450,7 +481,7 @@ export const AcademicToolsScreen: React.FC = () => {
                   Atomic Mass: {selectedElement.mass} u
                 </Text>
 
-                <View style={[styles.modalInfoBox, { backgroundColor: mode === 'dark' ? '#1E293B' : '#F1F5F9' }]}>
+                <View style={[styles.modalInfoBox, { backgroundColor: colors.surface, borderColor: colors.border }]}>
                   <Text style={[styles.infoRow, { color: colors.text }]}>
                     <Text style={{ fontWeight: '700' }}>Group:</Text> {selectedElement.group} · <Text style={{ fontWeight: '700' }}>Period:</Text> {selectedElement.period}
                   </Text>
@@ -478,28 +509,42 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  navRow: {
+  navWrapper: {
+    flexGrow: 0,
+    flexShrink: 0,
+    borderBottomWidth: 1,
+  },
+  navScroll: {
+    flexGrow: 0,
+    flexShrink: 0,
+  },
+  navRowContent: {
     paddingHorizontal: 16,
     paddingVertical: 10,
-    maxHeight: 52,
+    alignItems: 'center',
   },
   navChip: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 6,
-    paddingHorizontal: 12,
+    minHeight: 38,
+    paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
-    borderWidth: 1,
+    borderWidth: 1.5,
     marginRight: 8,
   },
   navChipText: {
-    fontSize: 12,
+    fontSize: 12.5,
     fontWeight: '700',
+  },
+  mainScroll: {
+    flex: 1,
   },
   content: {
     padding: 16,
-    paddingTop: 6,
+    paddingTop: 12,
     paddingBottom: 40,
   },
   calcContainer: {
@@ -590,6 +635,7 @@ const styles = StyleSheet.create({
   convTabs: {
     flexDirection: 'row',
     borderRadius: 12,
+    borderWidth: 1,
     padding: 4,
     marginBottom: 12,
   },
@@ -632,11 +678,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 5,
     borderRadius: 8,
-    backgroundColor: '#F1F5F9',
+    borderWidth: 1,
   },
   resultBox: {
     padding: 16,
     borderRadius: 14,
+    borderWidth: 1.5,
     alignItems: 'center',
     marginTop: 6,
   },
@@ -714,6 +761,7 @@ const styles = StyleSheet.create({
   modalContent: {
     width: '100%',
     borderRadius: 20,
+    borderWidth: 1,
     padding: 20,
     alignItems: 'center',
   },
@@ -739,6 +787,7 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: 14,
     borderRadius: 12,
+    borderWidth: 1,
     marginBottom: 16,
   },
   infoRow: {

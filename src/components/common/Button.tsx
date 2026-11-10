@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
 import { useTheme } from '../../theme';
+import { SoundManager } from '../../services/soundManager';
 
 interface ButtonProps {
   title: string;
@@ -9,6 +10,8 @@ interface ButtonProps {
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
   disabled?: boolean;
+  silent?: boolean;
+  clickSfx?: boolean;
   icon?: React.ReactNode;
   style?: ViewStyle;
   textStyle?: TextStyle;
@@ -21,6 +24,8 @@ export const Button: React.FC<ButtonProps> = ({
   size = 'md',
   loading = false,
   disabled = false,
+  silent = false,
+  clickSfx = false,
   icon,
   style,
   textStyle,
@@ -64,7 +69,12 @@ export const Button: React.FC<ButtonProps> = ({
   return (
     <TouchableOpacity
       activeOpacity={0.75}
-      onPress={onPress}
+      onPress={() => {
+        if (clickSfx && !silent) {
+          SoundManager.playClick();
+        }
+        onPress();
+      }}
       disabled={disabled || loading}
       style={[
         styles.button,
