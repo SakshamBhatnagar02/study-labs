@@ -177,6 +177,9 @@ export const DailyGoalModal: React.FC<DailyGoalModalProps> = ({
                   setConfig({ ...config, reminderEnabled: val });
                 }}
                 trackColor={{ false: '#64748B', true: colors.primary }}
+                thumbColor={config.reminderEnabled ? '#FFFFFF' : '#E2E8F0'}
+                ios_backgroundColor="#475569"
+                {...({ activeThumbColor: '#FFFFFF' } as object)}
               />
             </View>
 
@@ -243,6 +246,9 @@ export const DailyGoalModal: React.FC<DailyGoalModalProps> = ({
                   setConfig({ ...config, scoreAlertsEnabled: val });
                 }}
                 trackColor={{ false: '#64748B', true: colors.primary }}
+                thumbColor={config.scoreAlertsEnabled ? '#FFFFFF' : '#E2E8F0'}
+                ios_backgroundColor="#475569"
+                {...({ activeThumbColor: '#FFFFFF' } as object)}
               />
             </View>
 
@@ -264,6 +270,9 @@ export const DailyGoalModal: React.FC<DailyGoalModalProps> = ({
                   setConfig({ ...config, pushNotifications: val });
                 }}
                 trackColor={{ false: '#64748B', true: colors.primary }}
+                thumbColor={config.pushNotifications ? '#FFFFFF' : '#E2E8F0'}
+                ios_backgroundColor="#475569"
+                {...({ activeThumbColor: '#FFFFFF' } as object)}
               />
             </View>
 
@@ -285,6 +294,9 @@ export const DailyGoalModal: React.FC<DailyGoalModalProps> = ({
                   setConfig({ ...config, emailNotifications: val });
                 }}
                 trackColor={{ false: '#64748B', true: colors.primary }}
+                thumbColor={config.emailNotifications ? '#FFFFFF' : '#E2E8F0'}
+                ios_backgroundColor="#475569"
+                {...({ activeThumbColor: '#FFFFFF' } as object)}
               />
             </View>
           </ScrollView>
@@ -298,11 +310,11 @@ export const DailyGoalModal: React.FC<DailyGoalModalProps> = ({
               style={{ flex: 1 }}
             />
             <Button
-              title="Save Goal & Reminder"
+              title="Save Goal"
               variant="primary"
               size="md"
               onPress={handleSave}
-              style={{ flex: 1.5 }}
+              style={{ flex: 1.35 }}
             />
           </View>
         </View>
@@ -322,6 +334,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 26,
     borderTopWidth: 1,
     maxHeight: '88%',
+    width: '100%',
+    maxWidth: 540,
+    alignSelf: 'center',
   },
   header: {
     flexDirection: 'row',

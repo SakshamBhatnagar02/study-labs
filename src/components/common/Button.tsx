@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
+import { Pressable, Text, StyleSheet, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
 import { useTheme } from '../../theme';
 import { SoundManager } from '../../services/soundManager';
 
@@ -67,8 +67,9 @@ export const Button: React.FC<ButtonProps> = ({
   const fontSize = size === 'sm' ? 13 : size === 'lg' ? 16 : 14;
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.75}
+    <Pressable
+      focusable={false}
+      android_ripple={{ color: 'rgba(255,255,255,0.16)', borderless: false }}
       onPress={() => {
         if (clickSfx && !silent) {
           SoundManager.playClick();
@@ -76,7 +77,7 @@ export const Button: React.FC<ButtonProps> = ({
         onPress();
       }}
       disabled={disabled || loading}
-      style={[
+      style={({ pressed }) => [
         styles.button,
         {
           backgroundColor: getBackgroundColor(),
@@ -84,6 +85,7 @@ export const Button: React.FC<ButtonProps> = ({
           borderWidth: variant === 'outline' ? 1.5 : 0,
           paddingVertical,
           paddingHorizontal,
+          opacity: pressed ? 0.78 : 1,
         },
         style,
       ]}
@@ -108,13 +110,14 @@ export const Button: React.FC<ButtonProps> = ({
           </Text>
         </>
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
   button: {
     borderRadius: 12,
+    overflow: 'hidden',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

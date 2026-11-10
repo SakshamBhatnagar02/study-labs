@@ -12,9 +12,11 @@ import { useTheme } from '../theme';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
 import { Badge } from '../components/common/Badge';
-import { OfflineTestRecord } from '../types';
+import { ApiErrorCard, EmptyResourceCard } from '../components/common/StateFeedbackCard';
+import { AppErrorInfo, OfflineTestRecord } from '../types';
 import { StorageService } from '../services/storage';
 import { SupabaseService } from '../services/supabase';
+import { computeRankPercentile } from '../utils/customTestBuilder';
 import { 
   Plus, 
   Trash2, 
@@ -28,7 +30,8 @@ import {
   BarChart3,
   BookOpen,
   Sparkles,
-  AlertTriangle
+  AlertTriangle,
+  Edit3
 } from 'lucide-react-native';
 
 export const OfflineTrackerScreen: React.FC = () => {
@@ -36,6 +39,7 @@ export const OfflineTrackerScreen: React.FC = () => {
   const [tests, setTests] = useState<OfflineTestRecord[]>([]);
   const [selectedSubject, setSelectedSubject] = useState<string>('All');
   const [modalVisible, setModalVisible] = useState(false);
+  const [editingRecordId, setEditingRecordId] = useState<string | null>(null);
 
   // Form State
   const [testName, setTestName] = useState('');
@@ -49,10 +53,11 @@ export const OfflineTrackerScreen: React.FC = () => {
   const [incorrectCount, setIncorrectCount] = useState('');
   const [unattemptedCount, setUnattemptedCount] = useState('');
   const [rank, setRank] = useState('');
-  const [totalCandidates, setTotalCandidates] = useState('');
+  const [totalCandidates, setTotalCandidates] = useState('1000');
   const [syllabus, setSyllabus] = useState('');
   const [notes, setNotes] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
+  const [syncError, setSyncError] = useState<AppErrorInfo | null>(null);
 
   useEffect(() => {
     loadTests();
@@ -61,6 +66,54 @@ export const OfflineTrackerScreen: React.FC = () => {
   const loadTests = async () => {
     const list = await StorageService.getOfflineTests();
     setTests(list);
+  };
+
+  const syncWithCloud = async (records: OfflineTestRecord[]) => {
+    const res = await SupabaseService.syncOfflineTests(records);
+    if (!res.success && res.errorInfo) {
+      setSyncError(res.errorInfo);
+    } else {
+      setSyncError(null);
+    }
+  };
+
+  const openCreateModal = () => {
+    resetForm();
+    setEditingRecordId(null);
+    setModalVisible(true);
+  };
+
+  const openEditModal = (rec: OfflineTestRecord) => {
+    setFormError(null);
+    setEditingRecordId(rec.id);
+    setTestName(rec.testName);
+    setInstituteName(rec.instituteName);
+    setTestDate(rec.date);
+    setTestType(rec.testType);
+    setSubject(rec.subject);
+    setMaxMarks(String(rec.maxMarks));
+    setObtainedMarks(String(rec.obtainedMarks));
+    setCorrectCount(String(rec.correctCount));
+    setIncorrectCount(String(rec.incorrectCount));
+    setUnattemptedCount(String(rec.unattemptedCount));
+    setRank(rec.rank ? String(rec.rank) : '');
+    setTotalCandidates(rec.totalCandidates ? String(rec.totalCandidates) : '1000');
+    setSyllabus(rec.syllabusCovered || '');
+    setNotes(rec.notes || '');
+    setModalVisible(true);
+  };
+
+  const handleAutoCalcFromCounts = (pos = 4, neg = 1) => {
+    const corr = parseInt(correctCount, 10) || 0;
+    const incorr = parseInt(incorrectCount, 10) || 0;
+    const unatt = parseInt(unattemptedCount, 10) || 0;
+    const totalQs = corr + incorr + unatt;
+    const calcObt = corr * pos - incorr * neg;
+    setObtainedMarks(String(calcObt));
+    if (totalQs > 0) {
+      setMaxMarks(String(totalQs * pos));
+    }
+    if (formError) setFormError(null);
   };
 
   const handleAddTest = async () => {
@@ -76,15 +129,15 @@ export const OfflineTrackerScreen: React.FC = () => {
       setFormError('Maximum marks must be a positive number.');
       return;
     }
-    if (isNaN(obt) || obt < 0 || obt > max) {
-      setFormError(`Obtained marks must be between 0 and ${max}.`);
+    if (isNaN(obt) || obt < -max || obt > max) {
+      setFormError(`Obtained marks must be between -${max} and ${max}.`);
       return;
     }
 
-    const calculatedPercentage = parseFloat(((obt / max) * 100).toFixed(1));
+    const calculatedPercentage = parseFloat(((Math.max(0, obt) / max) * 100).toFixed(1));
 
     const newRecord: OfflineTestRecord = {
-      id: 'off_' + Date.now(),
+      id: editingRecordId || 'off_' + Date.now(),
       testName: testName.trim(),
       instituteName: instituteName.trim() || 'Coaching Institute',
       date: testDate || new Date().toISOString().split('T')[0],
@@ -92,11 +145,11 @@ export const OfflineTrackerScreen: React.FC = () => {
       subject,
       maxMarks: max,
       obtainedMarks: obt,
-      correctCount: parseInt(correctCount) || 0,
-      incorrectCount: parseInt(incorrectCount) || 0,
-      unattemptedCount: parseInt(unattemptedCount) || 0,
-      rank: rank ? parseInt(rank) : undefined,
-      totalCandidates: totalCandidates ? parseInt(totalCandidates) : undefined,
+      correctCount: parseInt(correctCount, 10) || 0,
+      incorrectCount: parseInt(incorrectCount, 10) || 0,
+      unattemptedCount: parseInt(unattemptedCount, 10) || 0,
+      rank: rank ? parseInt(rank, 10) : undefined,
+      totalCandidates: totalCandidates ? parseInt(totalCandidates, 10) : undefined,
       syllabusCovered: syllabus.trim(),
       notes: notes.trim(),
       calculatedPercentage,
@@ -104,7 +157,7 @@ export const OfflineTrackerScreen: React.FC = () => {
 
     const updated = await StorageService.saveOfflineTest(newRecord);
     setTests(updated);
-    void SupabaseService.syncOfflineTests(updated);
+    void syncWithCloud(updated);
     setModalVisible(false);
     resetForm();
   };
@@ -112,19 +165,24 @@ export const OfflineTrackerScreen: React.FC = () => {
   const handleDelete = async (id: string) => {
     const updated = await StorageService.deleteOfflineTest(id);
     setTests(updated);
-    void SupabaseService.syncOfflineTests(updated);
+    void syncWithCloud(updated);
   };
 
   const resetForm = () => {
     setFormError(null);
+    setEditingRecordId(null);
     setTestName('');
     setInstituteName('');
+    setTestDate(new Date().toISOString().split('T')[0]);
+    setTestType('Part Test');
+    setSubject('Physics');
+    setMaxMarks('100');
     setObtainedMarks('');
     setCorrectCount('');
     setIncorrectCount('');
     setUnattemptedCount('');
     setRank('');
-    setTotalCandidates('');
+    setTotalCandidates('1000');
     setSyllabus('');
     setNotes('');
   };
@@ -148,7 +206,7 @@ export const OfflineTrackerScreen: React.FC = () => {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Top Action Header */}
       <View style={styles.topBar}>
-        <View>
+        <View style={{ flex: 1, minWidth: 0 }}>
           <Text style={[styles.screenTitle, { color: colors.text }]}>Coaching Tracker</Text>
           <Text style={[styles.screenSubtitle, { color: colors.textSecondary }]}>
             Log & analyze offline institute test results
@@ -157,7 +215,7 @@ export const OfflineTrackerScreen: React.FC = () => {
         <Button
           title="Log Test"
           size="sm"
-          onPress={() => setModalVisible(true)}
+          onPress={openCreateModal}
           icon={<Plus size={16} color="#FFFFFF" />}
         />
       </View>
@@ -253,18 +311,42 @@ export const OfflineTrackerScreen: React.FC = () => {
           ))}
         </ScrollView>
 
+        {syncError && (
+          <View style={{ marginBottom: 12 }}>
+            <ApiErrorCard
+              compact
+              error={syncError}
+              onRetry={() => void syncWithCloud(tests)}
+              onUseOffline={() => setSyncError(null)}
+              onDismiss={() => setSyncError(null)}
+            />
+          </View>
+        )}
+
         {/* Test Records List */}
         <Text style={[styles.sectionHeading, { color: colors.text }]}>
           Test History ({filteredTests.length})
         </Text>
 
         {filteredTests.length === 0 ? (
-          <Card style={styles.emptyCard}>
-            <Text style={[styles.emptyTitle, { color: colors.textSecondary }]}>No tests logged yet</Text>
-            <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
-              Tap "Log Test" to add your physical coaching or school exam marks.
-            </Text>
-          </Card>
+          <EmptyResourceCard
+            title={
+              selectedSubject === 'All'
+                ? 'No Coaching Tests Logged Yet'
+                : `No ${selectedSubject} Tests Found`
+            }
+            message={
+              selectedSubject === 'All'
+                ? 'Tap "Log Test" to add your physical coaching or school exam marks and track percentile growth.'
+                : `No offline test records match the "${selectedSubject}" filter.`
+            }
+            actionLabel="Log Test"
+            onAction={openCreateModal}
+            secondaryLabel={selectedSubject !== 'All' ? 'Show All Subjects' : undefined}
+            onSecondaryAction={
+              selectedSubject !== 'All' ? () => setSelectedSubject('All') : undefined
+            }
+          />
         ) : (
           filteredTests.map((test) => (
             <Card key={test.id} style={styles.testCard}>
@@ -310,7 +392,12 @@ export const OfflineTrackerScreen: React.FC = () => {
                 </View>
                 {test.rank && (
                   <View style={styles.rankPill}>
-                    <Text style={[styles.rankText, { color: colors.primary }]}>Rank: #{test.rank}</Text>
+                    <Text style={[styles.rankText, { color: colors.primary }]}>
+                      Rank #{test.rank}
+                      {test.totalCandidates
+                        ? `/${test.totalCandidates} (${computeRankPercentile(test.rank, test.totalCandidates)}%ile)`
+                        : ''}
+                    </Text>
                   </View>
                 )}
               </View>
@@ -336,8 +423,12 @@ export const OfflineTrackerScreen: React.FC = () => {
                 </View>
               ) : null}
 
-              {/* Delete Action */}
+              {/* Edit & Delete Actions */}
               <View style={styles.cardFooter}>
+                <TouchableOpacity onPress={() => openEditModal(test)} style={styles.editEntryBtn}>
+                  <Edit3 size={14} color={colors.primary} />
+                  <Text style={[styles.deleteText, { color: colors.primary }]}>Edit</Text>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleDelete(test.id)} style={styles.deleteBtn}>
                   <Trash2 size={14} color={colors.error} />
                   <Text style={[styles.deleteText, { color: colors.error }]}>Delete Entry</Text>
@@ -348,11 +439,13 @@ export const OfflineTrackerScreen: React.FC = () => {
         )}
       </ScrollView>
 
-      {/* Add Test Modal */}
+      {/* Add / Edit Test Modal */}
       <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <Text style={[styles.modalTitle, { color: colors.text }]}>Log Offline Test Record</Text>
+            <Text style={[styles.modalTitle, { color: colors.text }]}>
+              {editingRecordId ? 'Edit Offline Test Record' : 'Log Offline Test Record'}
+            </Text>
 
             {formError && (
               <View
@@ -368,7 +461,7 @@ export const OfflineTrackerScreen: React.FC = () => {
               </View>
             )}
 
-            <ScrollView showsVerticalScrollIndicator={false} style={{ maxHeight: 420 }}>
+            <ScrollView showsVerticalScrollIndicator={false} style={{ maxHeight: 440 }}>
               <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Test Name *</Text>
               <TextInput
                 style={[
@@ -395,6 +488,52 @@ export const OfflineTrackerScreen: React.FC = () => {
                 value={instituteName}
                 onChangeText={setInstituteName}
               />
+
+              <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Subject & Category</Text>
+              <View style={styles.chipRow}>
+                {['Physics', 'Chemistry', 'Mathematics', 'Full PCM'].map((sub) => {
+                  const active = subject === sub;
+                  return (
+                    <TouchableOpacity
+                      key={sub}
+                      onPress={() => setSubject(sub)}
+                      style={[
+                        styles.miniChip,
+                        {
+                          backgroundColor: active ? colors.primary : colors.surface,
+                          borderColor: active ? colors.primary : colors.border,
+                        },
+                      ]}
+                    >
+                      <Text style={{ fontSize: 11, fontWeight: '700', color: active ? '#FFFFFF' : colors.text }}>
+                        {sub}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+              <View style={[styles.chipRow, { marginTop: 6 }]}>
+                {(['Part Test', 'Full Syllabus Mock', 'Topic Drill', 'School Exam'] as const).map((tt) => {
+                  const active = testType === tt;
+                  return (
+                    <TouchableOpacity
+                      key={tt}
+                      onPress={() => setTestType(tt)}
+                      style={[
+                        styles.miniChip,
+                        {
+                          backgroundColor: active ? colors.secondary : colors.surface,
+                          borderColor: active ? colors.secondary : colors.border,
+                        },
+                      ]}
+                    >
+                      <Text style={{ fontSize: 11, fontWeight: '700', color: active ? '#FFFFFF' : colors.text }}>
+                        {tt}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
 
               <View style={styles.inputRow}>
                 <View style={{ flex: 1 }}>
@@ -446,7 +585,7 @@ export const OfflineTrackerScreen: React.FC = () => {
                     onChangeText={setCorrectCount}
                   />
                 </View>
-                <View style={{ flex: 1, marginLeft: 10 }}>
+                <View style={{ flex: 1, marginLeft: 8 }}>
                   <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Incorrect Qs</Text>
                   <TextInput
                     style={[
@@ -460,20 +599,77 @@ export const OfflineTrackerScreen: React.FC = () => {
                     onChangeText={setIncorrectCount}
                   />
                 </View>
+                <View style={{ flex: 1, marginLeft: 8 }}>
+                  <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Skipped</Text>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.border },
+                    ]}
+                    keyboardType="numeric"
+                    placeholder="3"
+                    placeholderTextColor={colors.textSecondary}
+                    value={unattemptedCount}
+                    onChangeText={setUnattemptedCount}
+                  />
+                </View>
               </View>
 
-              <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Rank (Optional)</Text>
-              <TextInput
-                style={[
-                  styles.input,
-                  { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.border },
-                ]}
-                keyboardType="numeric"
-                placeholder="e.g. 42"
-                placeholderTextColor={colors.textSecondary}
-                value={rank}
-                onChangeText={setRank}
-              />
+              <View style={styles.autoCalcRow}>
+                <TouchableOpacity
+                  onPress={() => handleAutoCalcFromCounts(4, 1)}
+                  style={[styles.autoCalcBtn, { backgroundColor: colors.surface, borderColor: colors.primary }]}
+                >
+                  <Text style={{ fontSize: 11, fontWeight: '700', color: colors.primary }}>
+                    Auto-Calc Score (+4 / -1)
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleAutoCalcFromCounts(1, 0)}
+                  style={[styles.autoCalcBtn, { backgroundColor: colors.surface, borderColor: colors.border }]}
+                >
+                  <Text style={{ fontSize: 11, fontWeight: '700', color: colors.text }}>
+                    Auto-Calc (+1 / 0)
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.inputRow}>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Rank (Optional)</Text>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.border },
+                    ]}
+                    keyboardType="numeric"
+                    placeholder="e.g. 42"
+                    placeholderTextColor={colors.textSecondary}
+                    value={rank}
+                    onChangeText={setRank}
+                  />
+                </View>
+                <View style={{ flex: 1, marginLeft: 10 }}>
+                  <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Total Candidates</Text>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.border },
+                    ]}
+                    keyboardType="numeric"
+                    placeholder="e.g. 1000"
+                    placeholderTextColor={colors.textSecondary}
+                    value={totalCandidates}
+                    onChangeText={setTotalCandidates}
+                  />
+                </View>
+              </View>
+
+              {Boolean(rank) && Boolean(totalCandidates) && parseInt(rank, 10) > 0 && parseInt(totalCandidates, 10) > 0 && (
+                <Text style={{ fontSize: 11.5, fontWeight: '700', color: colors.primary, marginTop: 6 }}>
+                  Projected Cohort Percentile: {computeRankPercentile(parseInt(rank, 10), parseInt(totalCandidates, 10))}%ile
+                </Text>
+              )}
 
               <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Syllabus Covered</Text>
               <TextInput
@@ -681,6 +877,7 @@ const styles = StyleSheet.create({
   },
   subMetaRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'center',
     gap: 4,
   },
@@ -708,8 +905,10 @@ const styles = StyleSheet.create({
   },
   accuracyRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'center',
-    gap: 14,
+    columnGap: 10,
+    rowGap: 6,
     marginTop: 12,
     paddingTop: 10,
     borderTopWidth: 1,
@@ -742,7 +941,16 @@ const styles = StyleSheet.create({
   },
   cardFooter: {
     marginTop: 10,
-    alignItems: 'flex-end',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    gap: 14,
+  },
+  editEntryBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    padding: 4,
   },
   deleteBtn: {
     flexDirection: 'row',
@@ -761,9 +969,35 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalContent: {
+    width: '100%',
+    maxWidth: 540,
+    alignSelf: 'center',
     borderRadius: 20,
     borderWidth: 1,
     padding: 20,
+  },
+  chipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+  },
+  miniChip: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 9,
+    borderWidth: 1,
+  },
+  autoCalcRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 8,
+    flexWrap: 'wrap',
+  },
+  autoCalcBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 9,
+    borderWidth: 1,
   },
   errorBanner: {
     flexDirection: 'row',

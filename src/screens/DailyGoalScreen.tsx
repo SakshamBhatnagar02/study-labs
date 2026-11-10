@@ -132,7 +132,7 @@ export const DailyGoalScreen: React.FC<DailyGoalScreenProps> = ({
       >
         {/* Top Action Strip */}
         <View style={styles.topActionRow}>
-          <View>
+          <View style={{ flex: 1, minWidth: 0 }}>
             <Text style={[styles.pageTitle, { color: colors.text }]}>Daily Goal & Streak</Text>
             <Text style={[styles.pageSub, { color: colors.textSecondary }]}>
               {streakInfo.currentStreakDays}-Day Activity Streak · Study Labs Tracker
@@ -340,6 +340,9 @@ export const DailyGoalScreen: React.FC<DailyGoalScreenProps> = ({
                   setShowDates(v);
                 }}
                 trackColor={{ false: '#64748B', true: colors.primary }}
+                thumbColor={showDates ? '#FFFFFF' : '#E2E8F0'}
+                ios_backgroundColor="#475569"
+                {...({ activeThumbColor: '#FFFFFF' } as object)}
               />
             </View>
           </View>
@@ -385,7 +388,12 @@ export const DailyGoalScreen: React.FC<DailyGoalScreenProps> = ({
                           style={[
                             styles.cellDayNum,
                             {
-                              color: cell.intensity >= 3 ? '#FFFFFF' : colors.textSecondary,
+                              color:
+                                cell.intensity >= 3
+                                  ? '#FFFFFF'
+                                  : cell.intensity === 2
+                                  ? '#431407'
+                                  : colors.textSecondary,
                             },
                           ]}
                         >

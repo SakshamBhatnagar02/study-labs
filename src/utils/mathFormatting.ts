@@ -297,6 +297,7 @@ export function buildKatexDocumentHtml(params: {
   lineHeight: number;
   centerAlign?: boolean;
   compact?: boolean;
+  panCanvas?: boolean;
 }): string {
   const {
     bodyHtml,
@@ -309,13 +310,14 @@ export function buildKatexDocumentHtml(params: {
     lineHeight,
     centerAlign = false,
     compact = false,
+    panCanvas = false,
   } = params;
 
   return `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/mhchem.min.js" crossorigin="anonymous"></script>
@@ -331,13 +333,14 @@ export function buildKatexDocumentHtml(params: {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       font-size: ${fontSize}px;
       line-height: ${lineHeight}px;
-      overflow-x: hidden;
+      overflow-x: ${panCanvas ? 'auto' : 'hidden'};
       -webkit-text-size-adjust: 100%;
     }
     #root {
       display: flow-root;
-      width: 100%;
-      padding: ${compact ? '2px 0 4px 0' : '4px 0 10px 0'};
+      width: ${panCanvas ? 'max-content' : '100%'};
+      min-width: 100%;
+      padding: ${compact ? '2px 0 4px 0' : panCanvas ? '10px 14px 18px 14px' : '4px 0 10px 0'};
       text-align: ${centerAlign ? 'center' : 'left'};
       word-wrap: break-word;
       overflow-wrap: break-word;
@@ -378,35 +381,48 @@ export function buildKatexDocumentHtml(params: {
       background: ${surfaceBg};
       border: 1px solid ${borderColor};
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x pan-y;
       font-family: Menlo, Consolas, monospace;
       font-size: 0.88em;
     }
     .table-wrap {
       width: 100%;
+      max-width: 100%;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x pan-y;
       margin: 8px 0;
       border-radius: 8px;
       border: 1px solid ${borderColor};
     }
     table {
-      width: 100%;
+      width: max-content;
+      min-width: 100%;
       border-collapse: collapse;
       font-size: ${Math.max(11, fontSize - 2)}px;
-      line-height: 1.4;
+      line-height: 1.45;
     }
     th, td {
-      padding: 6px 8px;
+      padding: 7px 10px;
       text-align: left;
       border-bottom: 1px solid ${borderColor};
+      vertical-align: top;
+      min-width: 92px;
+      max-width: 260px;
+      overflow-wrap: break-word;
     }
     th {
       background: ${surfaceBg};
       color: ${accentColor};
       font-weight: 700;
+      white-space: nowrap;
     }
     .math-display {
       width: 100%;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x pan-y;
       margin: ${compact ? '4px 0' : '8px 0'};
       padding: ${compact ? '4px 6px' : '6px 8px'};
       border-radius: 8px;
@@ -424,6 +440,9 @@ export function buildKatexDocumentHtml(params: {
       margin: 2px 0 !important;
       overflow-x: auto;
       overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x pan-y;
+      padding: 2px 4px;
     }
     .of-math {
       font-family: "Times New Roman", Georgia, serif;

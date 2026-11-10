@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -24,14 +25,26 @@ import {
   formatLocalDateKey,
 } from '../utils/activityStats';
 import {
+  COUNTRY_META_MAP,
+  formatLiveClock,
+  formatLiveDateBanner,
+  getAllHolidaysForCountry,
+  resolveActiveCountry,
+  toIsoDateKey,
+} from '../utils/calendarHolidays';
+import { CalendarHoliday, HolidayCountryCode } from '../types';
+import {
   ArrowRight,
   Bell,
   BookMarked,
   BrainCircuit,
+  Calendar,
   ChevronRight,
+  Clock,
   FileEdit,
   Flag,
   Layers,
+  MapPin,
   PlusCircle,
   Search,
   Sparkles,
@@ -64,27 +77,45 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const [logs, setLogs] = useState<QuestionAttemptStat[]>([]);
   const [offlineAvgPct, setOfflineAvgPct] = useState<number>(79.8);
   const [conceptQuery, setConceptQuery] = useState('');
+  const [now, setNow] = useState<Date>(() => new Date());
+  const [selectedHolidayCountry, setSelectedHolidayCountry] = useState<HolidayCountryCode>('AUTO');
+  const [cachedRemoteHolidays, setCachedRemoteHolidays] = useState<CalendarHoliday[]>([]);
 
   const loadDashboard = useCallback(async () => {
-    const [prof, cfg, attemptLogs, offlineTests] = await Promise.all([
+    const [prof, cfg, attemptLogs, offlineTests, plannerState] = await Promise.all([
       StorageService.getUserProfile(),
       StorageService.getDailyGoalConfig(),
       StorageService.getAttemptLogs(),
       StorageService.getOfflineTests(),
+      StorageService.getPlannerState(),
     ]);
     setProfile(prof);
     setGoalConfig(cfg);
     setLogs(attemptLogs);
+    setSelectedHolidayCountry(plannerState.selectedCountry);
     if (offlineTests.length > 0) {
       const avg =
         offlineTests.reduce((sum, t) => sum + t.calculatedPercentage, 0) / offlineTests.length;
       setOfflineAvgPct(parseFloat(avg.toFixed(1)));
     }
+    const resolved = resolveActiveCountry(plannerState.selectedCountry);
+    const cached = await StorageService.getCachedRemoteHolidays(
+      new Date().getFullYear(),
+      resolved.country
+    );
+    setCachedRemoteHolidays(cached);
   }, []);
 
   useEffect(() => {
     loadDashboard();
   }, [loadDashboard]);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setNow(new Date());
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
 
   const dailyMap = aggregateDailyActivity(logs);
   const streakInfo = computeStreakAndWeek(
@@ -125,6 +156,16 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     Math.round((streakInfo.todaySolved / Math.max(1, goalConfig.targetQuestions)) * 100)
   );
 
+  const regionResolution = resolveActiveCountry(selectedHolidayCountry);
+  const countryMeta = COUNTRY_META_MAP[regionResolution.country];
+  const todayIso = toIsoDateKey(now);
+  const allCountryHolidays = getAllHolidaysForCountry(
+    regionResolution.country,
+    cachedRemoteHolidays
+  );
+  const todayHoliday = allCountryHolidays.find((h) => h.date === todayIso);
+  const upcomingHoliday = allCountryHolidays.find((h) => h.date > todayIso);
+
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: colors.background }]}
@@ -133,60 +174,117 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     >
       {/* Greeting & Quick Hub Strip */}
       <View style={styles.greetingBar}>
-        <TouchableOpacity
-          activeOpacity={0.75}
+        <Pressable
+          focusable={false}
           onPress={() => onNavigate('profile')}
-          style={styles.greetingLeft}
+          style={({ pressed }) => [styles.greetingLeft, pressed && { opacity: 0.78 }]}
         >
           <View style={[styles.greetingAvatar, { backgroundColor: colors.primary }]}>
             <Text style={styles.greetingAvatarText}>{firstName.charAt(0)}</Text>
           </View>
-          <View>
-            <Text style={[styles.greetingTitle, { color: colors.text }]}>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text style={[styles.greetingTitle, { color: colors.text }]} numberOfLines={1}>
               Hey, {firstName}
             </Text>
-            <Text style={[styles.greetingSub, { color: colors.textSecondary }]}>
+            <Text style={[styles.greetingSub, { color: colors.textSecondary }]} numberOfLines={1}>
               {profile.classGrade} · Rank #{leaderboard.currentUserEntry.rank} (7d)
             </Text>
           </View>
-        </TouchableOpacity>
+        </Pressable>
 
         <View style={styles.greetingActions}>
-          <TouchableOpacity
-            activeOpacity={0.75}
+          <Pressable
+            focusable={false}
             onPress={() => onNavigate('notebooks')}
-            style={[
+            style={({ pressed }) => [
               styles.quickCircleBtn,
-              { backgroundColor: colors.card, borderColor: colors.border },
+              {
+                backgroundColor: colors.card,
+                borderColor: colors.border,
+                opacity: pressed ? 0.72 : 1,
+              },
             ]}
             accessibilityLabel="Open Notebooks and Notes"
           >
             <BookMarked size={16} color={colors.primary} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.75}
+          </Pressable>
+          <Pressable
+            focusable={false}
             onPress={() => onNavigate('leaderboard')}
-            style={[
+            style={({ pressed }) => [
               styles.quickCircleBtn,
-              { backgroundColor: colors.card, borderColor: colors.border },
+              {
+                backgroundColor: colors.card,
+                borderColor: colors.border,
+                opacity: pressed ? 0.72 : 1,
+              },
             ]}
             accessibilityLabel="Open 7-Day Leaderboard"
           >
             <Trophy size={16} color={colors.warning} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.75}
+          </Pressable>
+          <Pressable
+            focusable={false}
             onPress={() => onNavigate('profile')}
-            style={[
+            style={({ pressed }) => [
               styles.quickCircleBtn,
-              { backgroundColor: colors.card, borderColor: colors.border },
+              {
+                backgroundColor: colors.card,
+                borderColor: colors.border,
+                opacity: pressed ? 0.72 : 1,
+              },
             ]}
             accessibilityLabel="Open My Profile"
           >
             <User size={16} color={colors.text} />
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
+
+      {/* Live Regional Date, Clock & Holiday Calendar Strip */}
+      <Pressable
+        focusable={false}
+        onPress={() => onNavigate('syllabus')}
+        style={({ pressed }) => [
+          styles.liveClockStrip,
+          {
+            backgroundColor: colors.card,
+            borderColor: todayHoliday ? colors.primary : colors.border,
+            opacity: pressed ? 0.82 : 1,
+          },
+        ]}
+      >
+        <View style={styles.liveClockTopRow}>
+          <View style={styles.liveClockLeft}>
+            <Calendar size={14} color={colors.primary} />
+            <Text style={[styles.liveDateText, { color: colors.text }]}>
+              {formatLiveDateBanner(now)}
+            </Text>
+          </View>
+          <View style={styles.liveClockRight}>
+            <Clock size={13} color={colors.cyan} />
+            <Text style={[styles.liveTimeText, { color: colors.primary }]}>
+              {formatLiveClock(now)}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.liveHolidayBottomRow}>
+          <View style={styles.liveRegionPill}>
+            <MapPin size={12} color={colors.textSecondary} />
+            <Text style={[styles.liveRegionText, { color: colors.textSecondary }]} numberOfLines={1}>
+              {countryMeta.shortName}
+              {regionResolution.isAuto ? ' (Device)' : ''} ·{' '}
+              {todayHoliday
+                ? `Holiday Today: ${todayHoliday.name}`
+                : upcomingHoliday
+                ? `Next Holiday: ${upcomingHoliday.name} (${upcomingHoliday.date.slice(5)})`
+                : 'Open Full Holiday Calendar'}
+            </Text>
+          </View>
+          <Text style={[styles.calendarCtaText, { color: colors.primary }]}>Calendar →</Text>
+        </View>
+      </Pressable>
 
       {/* Active Daily Score & Practice Reminder Card */}
       {reminder.shouldShow && (
@@ -239,69 +337,75 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       )}
 
       {/* Daily Goal Milestone Progress Card */}
-      <TouchableOpacity
-        activeOpacity={0.85}
+      <Pressable
+        focusable={false}
         onPress={() => onNavigate('dailyGoal')}
+        style={({ pressed }) => [
+          styles.dailyGoalCard,
+          {
+            backgroundColor: colors.card,
+            borderColor: colors.border,
+            opacity: pressed ? 0.84 : 1,
+          },
+        ]}
       >
-        <Card style={styles.dailyGoalCard}>
-          <View style={styles.dailyGoalTop}>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.dailyGoalLabel, { color: colors.textSecondary }]}>
-                YOUR DAILY GOAL
+        <View style={styles.dailyGoalTop}>
+          <View style={{ flex: 1 }}>
+            <Text style={[styles.dailyGoalLabel, { color: colors.textSecondary }]}>
+              YOUR DAILY GOAL
+            </Text>
+            <Text style={[styles.dailyGoalCount, { color: colors.text }]}>
+              {streakInfo.todaySolved} / {goalConfig.targetQuestions} Qs{' '}
+              <Text style={{ color: colors.primary, fontSize: 13 }}>
+                ({goalPct}%)
               </Text>
-              <Text style={[styles.dailyGoalCount, { color: colors.text }]}>
-                {streakInfo.todaySolved} / {goalConfig.targetQuestions} Qs{' '}
-                <Text style={{ color: colors.primary, fontSize: 13 }}>
-                  ({goalPct}%)
-                </Text>
-              </Text>
-            </View>
-
-            <View style={styles.pointsTodayPill}>
-              <Zap size={13} color={colors.warning} />
-              <Text style={[styles.pointsTodayText, { color: colors.warning }]}>
-                {streakInfo.todayXp} XP Today
-              </Text>
-              <ChevronRight size={15} color={colors.textSecondary} />
-            </View>
+            </Text>
           </View>
 
-          <View style={styles.milestoneTrackWrap}>
-            <View style={[styles.milestoneBg, { backgroundColor: colors.borderSubtle }]}>
-              <View
-                style={[
-                  styles.milestoneFill,
-                  {
-                    width: `${goalPct}%`,
-                    backgroundColor: goalPct >= 100 ? colors.success : colors.primary,
-                  },
-                ]}
-              />
-            </View>
-            <View style={styles.milestoneDotsRow}>
-              {[0, 25, 50, 75, 100].map((pct) => {
-                const hit = goalPct >= pct;
-                return (
-                  <View
-                    key={pct}
-                    style={[
-                      styles.milestoneNode,
-                      {
-                        backgroundColor: hit ? colors.primary : colors.card,
-                        borderColor: hit ? colors.primary : colors.border,
-                      },
-                    ]}
-                  >
-                    {pct === 100 && (
-                      <Flag size={9} color={hit ? '#FFFFFF' : colors.textSecondary} />
-                    )}
-                  </View>
-                );
-              })}
-            </View>
+          <View style={styles.pointsTodayPill}>
+            <Zap size={13} color={colors.warning} />
+            <Text style={[styles.pointsTodayText, { color: colors.warning }]}>
+              {streakInfo.todayXp} XP Today
+            </Text>
+            <ChevronRight size={15} color={colors.textSecondary} />
           </View>
-        </Card>
-      </TouchableOpacity>
+        </View>
+
+        <View style={styles.milestoneTrackWrap}>
+          <View style={[styles.milestoneBg, { backgroundColor: colors.borderSubtle }]}>
+            <View
+              style={[
+                styles.milestoneFill,
+                {
+                  width: `${goalPct}%`,
+                  backgroundColor: goalPct >= 100 ? colors.success : colors.primary,
+                },
+              ]}
+            />
+          </View>
+          <View style={styles.milestoneDotsRow}>
+            {[0, 25, 50, 75, 100].map((pct) => {
+              const hit = goalPct >= pct;
+              return (
+                <View
+                  key={pct}
+                  style={[
+                    styles.milestoneNode,
+                    {
+                      backgroundColor: hit ? colors.primary : colors.card,
+                      borderColor: hit ? colors.primary : colors.border,
+                    },
+                  ]}
+                >
+                  {pct === 100 && (
+                    <Flag size={9} color={hit ? '#FFFFFF' : colors.textSecondary} />
+                  )}
+                </View>
+              );
+            })}
+          </View>
+        </View>
+      </Pressable>
 
       {/* Hero Welcome Banner */}
       <Card style={[styles.heroCard, { backgroundColor: colors.primary }]}>
@@ -317,25 +421,31 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             {streakInfo.currentStreakDays}-day streak! {leaderboard.currentUserEntry.weeklyQuestions} Qs solved in the last 7 days ({leaderboard.currentUserEntry.accuracyPercent}% accuracy).
           </Text>
           <View style={styles.heroActions}>
-            <TouchableOpacity
-              activeOpacity={0.85}
-              style={[styles.heroBtn, { backgroundColor: '#FFFFFF' }]}
+            <Pressable
+              focusable={false}
+              style={({ pressed }) => [
+                styles.heroBtn,
+                { backgroundColor: '#FFFFFF', opacity: pressed ? 0.82 : 1 },
+              ]}
               onPress={() => onNavigate('test')}
             >
               <Text style={[styles.heroBtnText, { color: colors.primary }]}>Start Daily Drill</Text>
               <ArrowRight size={15} color={colors.primary} />
-            </TouchableOpacity>
+            </Pressable>
 
-            <TouchableOpacity
-              activeOpacity={0.85}
-              style={styles.heroBtnSecondary}
+            <Pressable
+              focusable={false}
+              style={({ pressed }) => [
+                styles.heroBtnSecondary,
+                pressed && { opacity: 0.78 },
+              ]}
               onPress={() => onNavigate('leaderboard')}
             >
               <Trophy size={14} color="#FFFFFF" />
               <Text style={styles.heroBtnSecondaryText}>
                 Rank #{leaderboard.currentUserEntry.rank}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
       </Card>
@@ -353,26 +463,30 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             placeholderTextColor={colors.textSecondary}
             style={[styles.searchInput, { color: colors.text }]}
           />
-          <TouchableOpacity
+          <Pressable
+            focusable={false}
             onPress={handleConceptSearch}
-            style={[styles.searchGoBtn, { backgroundColor: colors.primary }]}
+            style={({ pressed }) => [
+              styles.searchGoBtn,
+              { backgroundColor: colors.primary, opacity: pressed ? 0.78 : 1 },
+            ]}
           >
             <Sparkles size={14} color="#FFFFFF" />
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </Card>
 
       {/* Study Labs Tests Dual Quick Launchers */}
       <View style={styles.dualLaunchRow}>
-        <TouchableOpacity
-          activeOpacity={0.8}
+        <Pressable
+          focusable={false}
           onPress={() => {
             if (onOpenCustomTest) onOpenCustomTest();
             else onNavigate('test');
           }}
-          style={[
+          style={({ pressed }) => [
             styles.launchCard,
-            { backgroundColor: colors.card, borderColor: colors.border },
+            { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
           ]}
         >
           <View
@@ -387,14 +501,14 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           <Text style={[styles.launchSub, { color: colors.textSecondary }]}>
             Filter by subject & difficulty
           </Text>
-        </TouchableOpacity>
+        </Pressable>
 
-        <TouchableOpacity
-          activeOpacity={0.8}
+        <Pressable
+          focusable={false}
           onPress={() => onNavigate('test')}
-          style={[
+          style={({ pressed }) => [
             styles.launchCard,
-            { backgroundColor: colors.card, borderColor: colors.border },
+            { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
           ]}
         >
           <View
@@ -409,7 +523,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           <Text style={[styles.launchSub, { color: colors.textSecondary }]}>
             Timed & hint-guided drills
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
 
       {/* Chapter-wise Practice Exam Presets */}
@@ -427,22 +541,22 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         contentContainerStyle={styles.examRow}
       >
         {EXAM_BANK_PRESETS.map((exam) => (
-          <TouchableOpacity
+          <Pressable
             key={exam.id}
-            activeOpacity={0.8}
+            focusable={false}
             onPress={() => {
               if (onOpenCurriculumSubject) onOpenCurriculumSubject(exam.defaultSubject);
               else onNavigate('study');
             }}
-            style={[
+            style={({ pressed }) => [
               styles.examCard,
-              { backgroundColor: colors.card, borderColor: colors.border },
+              { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
             ]}
           >
             <View style={[styles.examAccentBar, { backgroundColor: exam.accent }]} />
             <Text style={[styles.examName, { color: colors.text }]}>{exam.name}</Text>
             <Text style={[styles.examSub, { color: colors.textSecondary }]}>{exam.subtitle}</Text>
-          </TouchableOpacity>
+          </Pressable>
         ))}
       </ScrollView>
 
@@ -464,16 +578,16 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         contentContainerStyle={styles.formulaStrip}
       >
         {FORMULA_CARDS.slice(0, 6).map((f) => (
-          <TouchableOpacity
+          <Pressable
             key={f.id}
-            activeOpacity={0.8}
+            focusable={false}
             onPress={() => {
               if (onOpenFormulas) onOpenFormulas(f.subjectId);
               else onNavigate('study');
             }}
-            style={[
+            style={({ pressed }) => [
               styles.formulaDeckCard,
-              { backgroundColor: colors.card, borderColor: colors.border },
+              { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
             ]}
           >
             <View style={styles.formulaDeckTop}>
@@ -488,7 +602,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             <Text style={[styles.formulaDeckHint, { color: colors.textSecondary }]} numberOfLines={1}>
               {f.title}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         ))}
       </ScrollView>
 
@@ -619,41 +733,53 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         Academic Toolkit & Workspaces
       </Text>
       <View style={styles.toolsRow}>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={[styles.toolChip, { backgroundColor: colors.card, borderColor: colors.border }]}
+        <Pressable
+          focusable={false}
+          style={({ pressed }) => [
+            styles.toolChip,
+            { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.78 : 1 },
+          ]}
           onPress={() => onNavigate('analytics')}
         >
           <AppIcon name="chart" color={colors.primary} size="md" />
           <Text style={[styles.toolTitle, { color: colors.text }]}>Analytics</Text>
-        </TouchableOpacity>
+        </Pressable>
 
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={[styles.toolChip, { backgroundColor: colors.card, borderColor: colors.border }]}
+        <Pressable
+          focusable={false}
+          style={({ pressed }) => [
+            styles.toolChip,
+            { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.78 : 1 },
+          ]}
           onPress={() => onNavigate('syllabus')}
         >
           <AppIcon name="calendar" color={colors.info} size="md" />
           <Text style={[styles.toolTitle, { color: colors.text }]}>Syllabus</Text>
-        </TouchableOpacity>
+        </Pressable>
 
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={[styles.toolChip, { backgroundColor: colors.card, borderColor: colors.border }]}
+        <Pressable
+          focusable={false}
+          style={({ pressed }) => [
+            styles.toolChip,
+            { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.78 : 1 },
+          ]}
           onPress={() => onNavigate('playground')}
         >
           <AppIcon name="activity" color={colors.cyan || '#22D3EE'} size="md" />
           <Text style={[styles.toolTitle, { color: colors.text }]}>Playground</Text>
-        </TouchableOpacity>
+        </Pressable>
 
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={[styles.toolChip, { backgroundColor: colors.card, borderColor: colors.border }]}
+        <Pressable
+          focusable={false}
+          style={({ pressed }) => [
+            styles.toolChip,
+            { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.78 : 1 },
+          ]}
           onPress={() => onNavigate('tools')}
         >
           <AppIcon name="flask" color={colors.success} size="md" />
           <Text style={[styles.toolTitle, { color: colors.text }]}>Tools</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </ScrollView>
   );
@@ -668,7 +794,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 12,
   },
-  greetingLeft: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  greetingLeft: {
+    flex: 1,
+    minWidth: 0,
+    paddingRight: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    borderRadius: 14,
+    overflow: 'hidden',
+  },
   greetingAvatar: {
     width: 38,
     height: 38,
@@ -685,9 +820,38 @@ const styles = StyleSheet.create({
     height: 34,
     borderRadius: 11,
     borderWidth: 1,
+    overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  liveClockStrip: {
+    borderRadius: 14,
+    borderWidth: 1,
+    overflow: 'hidden',
+    paddingHorizontal: 13,
+    paddingVertical: 10,
+    marginBottom: 12,
+    gap: 5,
+  },
+  liveClockTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  liveClockLeft: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  liveClockRight: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+  liveDateText: { fontSize: 12.5, fontWeight: '700' },
+  liveTimeText: { fontSize: 12.5, fontWeight: '800', fontVariant: ['tabular-nums'] },
+  liveHolidayBottomRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  liveRegionPill: { flexDirection: 'row', alignItems: 'center', gap: 5, flex: 1, minWidth: 0 },
+  liveRegionText: { fontSize: 11, fontWeight: '600', flex: 1 },
+  calendarCtaText: { fontSize: 11, fontWeight: '800' },
   reminderCard: { padding: 13, borderWidth: 1, marginBottom: 12, gap: 10 },
   reminderTop: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   reminderIconBadge: {
@@ -700,7 +864,13 @@ const styles = StyleSheet.create({
   reminderHeadline: { fontSize: 13, fontWeight: '800' },
   reminderSub: { fontSize: 11.5, marginTop: 2, lineHeight: 16 },
   reminderFooter: { flexDirection: 'row', gap: 8 },
-  dailyGoalCard: { padding: 14, marginBottom: 14 },
+  dailyGoalCard: {
+    padding: 14,
+    marginBottom: 14,
+    borderRadius: 16,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
   dailyGoalTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -743,6 +913,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 9,
     borderRadius: 12,
+    overflow: 'hidden',
   },
   heroBtnText: { fontWeight: '800', fontSize: 13 },
   heroBtnSecondary: {
@@ -752,6 +923,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 9,
     borderRadius: 12,
+    overflow: 'hidden',
     backgroundColor: 'rgba(0,0,0,0.22)',
   },
   heroBtnSecondaryText: { color: '#FFFFFF', fontWeight: '700', fontSize: 12.5 },
@@ -762,6 +934,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 10,
+    overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -771,12 +944,14 @@ const styles = StyleSheet.create({
     padding: 13,
     borderRadius: 16,
     borderWidth: 1,
+    overflow: 'hidden',
     gap: 6,
   },
   launchIcon: {
     width: 36,
     height: 36,
     borderRadius: 11,
+    overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -788,6 +963,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 14,
     borderWidth: 1,
+    overflow: 'hidden',
     gap: 4,
   },
   examAccentBar: { width: 28, height: 4, borderRadius: 2, marginBottom: 4 },
@@ -799,6 +975,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 14,
     borderWidth: 1,
+    overflow: 'hidden',
     gap: 5,
   },
   formulaDeckTop: { flexDirection: 'row', alignItems: 'center', gap: 5 },
@@ -840,7 +1017,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   seeAllText: { fontSize: 12.5, fontWeight: '700' },
-  trackerSpotlightCard: { padding: 16, borderWidth: 1, borderStyle: 'dashed' },
+  trackerSpotlightCard: { padding: 16, borderWidth: 1 },
   spotlightRow: { flexDirection: 'row', gap: 12, alignItems: 'center' },
   spotlightIcon: {
     width: 44,
@@ -862,6 +1039,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 14,
     borderWidth: 1,
+    overflow: 'hidden',
     alignItems: 'center',
     gap: 6,
   },

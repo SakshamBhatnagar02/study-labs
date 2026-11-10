@@ -1,28 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { useTheme } from '../theme';
 import { Card } from '../components/common/Card';
 import { Badge } from '../components/common/Badge';
 import { storageService } from '../services/storage';
 import { OfflineTestRecord, QuestionAttemptStat, TestAttempt } from '../types';
 import { computeDifficultyBreakdown, computeHistorySummary, formatDurationShort } from '../utils/activityStats';
-import { 
-  TrendingUp, 
-  Award, 
-  Target, 
-  BrainCircuit, 
-  Calendar, 
-  Clock, 
-  BarChart3, 
-  CheckCircle2, 
+import {
+  TrendingUp,
+  Award,
+  Target,
+  BrainCircuit,
+  Clock,
+  BarChart3,
+  CheckCircle2,
   AlertCircle,
-  HelpCircle
+  HelpCircle,
 } from 'lucide-react-native';
-
-const { width } = Dimensions.get('window');
 
 export const AnalyticsScreen: React.FC = () => {
   const { colors, mode } = useTheme();
+  const { width: winWidth } = useWindowDimensions();
   const [offlineTests, setOfflineTests] = useState<OfflineTestRecord[]>([]);
   const [inAppAttempts, setInAppAttempts] = useState<TestAttempt[]>([]);
   const [attemptLogs, setAttemptLogs] = useState<QuestionAttemptStat[]>([]);
@@ -43,9 +41,7 @@ export const AnalyticsScreen: React.FC = () => {
     setAttemptLogs(logs);
   };
 
-  // Aggregated analytics across coaching records, test sessions, and question-level logs
   const totalTestsTaken = offlineTests.length + inAppAttempts.length;
-
   const offlineTotalPct = offlineTests.reduce((sum, t) => sum + t.calculatedPercentage, 0);
   const inAppTotalPct = inAppAttempts.reduce((sum, t) => sum + t.percentage, 0);
   const avgTestPercentage =
@@ -96,11 +92,17 @@ export const AnalyticsScreen: React.FC = () => {
     { subject: 'Chemistry', topic: 'Ionic Equilibrium & Buffer Solutions', accuracy: '61%' },
   ];
 
+  const useFourColKpi = winWidth >= 760;
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}
+    >
       {/* Top Banner */}
       <View style={styles.header}>
-        <View>
+        <View style={styles.headerTextCol}>
           <Text style={[styles.title, { color: colors.textPrimary }]}>Performance Analytics</Text>
           <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
             Academic mastery, difficulty curves & accuracy trends
@@ -110,33 +112,42 @@ export const AnalyticsScreen: React.FC = () => {
       </View>
 
       {/* Time Range Selector */}
-      <View style={[styles.filterBar, { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.borderSubtle }]}>
+      <View
+        style={[
+          styles.filterBar,
+          { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.borderSubtle },
+        ]}
+      >
         {(['weekly', 'monthly', 'all'] as const).map((r) => (
           <TouchableOpacity
             key={r}
             onPress={() => {
               setTimeRange(r);
             }}
-            style={[
-              styles.filterBtn,
-              timeRange === r && { backgroundColor: colors.primary }
-            ]}
+            style={[styles.filterBtn, timeRange === r && { backgroundColor: colors.primary }]}
           >
-            <Text style={[
-              styles.filterBtnText,
-              { color: timeRange === r ? '#FFFFFF' : colors.textSecondary }
-            ]}>
+            <Text
+              style={[
+                styles.filterBtnText,
+                { color: timeRange === r ? '#FFFFFF' : colors.textSecondary },
+              ]}
+            >
               {r === 'weekly' ? 'Past 7 Days' : r === 'monthly' ? 'Past 30 Days' : 'All-Time'}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      {/* Primary KPI Summary Cards */}
+      {/* Primary KPI Summary Cards (responsive grid, dark-friendly icon wells) */}
       <View style={styles.kpiGrid}>
-        <Card style={[styles.kpiCard, { backgroundColor: colors.card }]}>
-          <View style={[styles.kpiIcon, { backgroundColor: '#FFEDD5' }]}>
-            <TrendingUp size={22} color={colors.primary} />
+        <Card style={[styles.kpiCard, useFourColKpi && styles.kpiCardWide]}>
+          <View
+            style={[
+              styles.kpiIcon,
+              { backgroundColor: mode === 'dark' ? 'rgba(249, 115, 22, 0.16)' : '#FFEDD5' },
+            ]}
+          >
+            <TrendingUp size={21} color={colors.primary} />
           </View>
           <Text style={[styles.kpiValue, { color: colors.textPrimary }]}>
             {historySummary.qsSolved > 0 ? Math.round(historySummary.accuracyPercent) : avgTestPercentage}%
@@ -144,9 +155,14 @@ export const AnalyticsScreen: React.FC = () => {
           <Text style={[styles.kpiLabel, { color: colors.textSecondary }]}>Practice Accuracy</Text>
         </Card>
 
-        <Card style={[styles.kpiCard, { backgroundColor: colors.card }]}>
-          <View style={[styles.kpiIcon, { backgroundColor: '#DCFCE7' }]}>
-            <Award size={22} color="#16A34A" />
+        <Card style={[styles.kpiCard, useFourColKpi && styles.kpiCardWide]}>
+          <View
+            style={[
+              styles.kpiIcon,
+              { backgroundColor: mode === 'dark' ? 'rgba(34, 197, 94, 0.16)' : '#DCFCE7' },
+            ]}
+          >
+            <Award size={21} color={colors.success} />
           </View>
           <Text style={[styles.kpiValue, { color: colors.textPrimary }]}>{avgTestPercentage}%</Text>
           <Text style={[styles.kpiLabel, { color: colors.textSecondary }]}>
@@ -154,17 +170,27 @@ export const AnalyticsScreen: React.FC = () => {
           </Text>
         </Card>
 
-        <Card style={[styles.kpiCard, { backgroundColor: colors.card }]}>
-          <View style={[styles.kpiIcon, { backgroundColor: '#E0E7FF' }]}>
-            <Target size={22} color="#4F46E5" />
+        <Card style={[styles.kpiCard, useFourColKpi && styles.kpiCardWide]}>
+          <View
+            style={[
+              styles.kpiIcon,
+              { backgroundColor: mode === 'dark' ? 'rgba(99, 102, 241, 0.18)' : '#E0E7FF' },
+            ]}
+          >
+            <Target size={21} color={mode === 'dark' ? '#818CF8' : '#4F46E5'} />
           </View>
           <Text style={[styles.kpiValue, { color: colors.textPrimary }]}>{historySummary.qsSolved}</Text>
           <Text style={[styles.kpiLabel, { color: colors.textSecondary }]}>Qs Solved</Text>
         </Card>
 
-        <Card style={[styles.kpiCard, { backgroundColor: colors.card }]}>
-          <View style={[styles.kpiIcon, { backgroundColor: '#FEF3C7' }]}>
-            <Clock size={22} color="#D97706" />
+        <Card style={[styles.kpiCard, useFourColKpi && styles.kpiCardWide]}>
+          <View
+            style={[
+              styles.kpiIcon,
+              { backgroundColor: mode === 'dark' ? 'rgba(245, 158, 11, 0.18)' : '#FEF3C7' },
+            ]}
+          >
+            <Clock size={21} color={colors.warning} />
           </View>
           <Text style={[styles.kpiValue, { color: colors.textPrimary }]}>
             {formatDurationShort(historySummary.avgTimeSeconds)}
@@ -173,15 +199,23 @@ export const AnalyticsScreen: React.FC = () => {
         </Card>
       </View>
 
-      {/* Educational Clarification Banner (Important Requirement) */}
-      <Card style={[styles.noticeCard, { backgroundColor: mode === 'dark' ? '#1E293B' : '#F0F9FF', borderColor: '#38BDF8' }]}>
+      {/* Educational Clarification Banner */}
+      <Card
+        style={[
+          styles.noticeCard,
+          {
+            backgroundColor: mode === 'dark' ? '#132238' : '#F0F9FF',
+            borderColor: mode === 'dark' ? '#0284C7' : '#38BDF8',
+          },
+        ]}
+      >
         <View style={styles.noticeRow}>
-          <HelpCircle size={20} color="#0284C7" />
+          <HelpCircle size={20} color={mode === 'dark' ? '#38BDF8' : '#0284C7'} />
           <View style={styles.noticeTextContainer}>
             <Text style={[styles.noticeTitle, { color: mode === 'dark' ? '#38BDF8' : '#0369A1' }]}>
               Metric Definitions & Academic Honesty
             </Text>
-            <Text style={[styles.noticeText, { color: mode === 'dark' ? '#94A3B8' : '#0C4A6E' }]}>
+            <Text style={[styles.noticeText, { color: mode === 'dark' ? '#CBD5E1' : '#0C4A6E' }]}>
               • <Text style={{ fontWeight: '700' }}>Percentage:</Text> Your raw score divided by total marks × 100.{'\n'}
               • <Text style={{ fontWeight: '700' }}>Percentile:</Text> Percentage of test-takers who scored equal to or below your score.{'\n'}
               • Study Labs strictly keeps raw percentage distinct from coaching rank or national percentile.
@@ -194,9 +228,11 @@ export const AnalyticsScreen: React.FC = () => {
       <Card style={styles.sectionCard}>
         <View style={styles.sectionHeader}>
           <BarChart3 size={20} color={colors.primary} />
-          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Subject Accuracy Breakdown</Text>
+          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
+            Subject Accuracy Breakdown
+          </Text>
         </View>
-        
+
         {subjectStats.map((sub) => (
           <View key={sub.name} style={styles.subjectRow}>
             <View style={styles.subjectHeader}>
@@ -209,14 +245,14 @@ export const AnalyticsScreen: React.FC = () => {
               </View>
             </View>
             <View style={[styles.progressBarBg, { backgroundColor: colors.borderSubtle }]}>
-              <View 
+              <View
                 style={[
-                  styles.progressBarFill, 
-                  { 
-                    width: `${sub.accuracy}%`, 
-                    backgroundColor: sub.color 
-                  }
-                ]} 
+                  styles.progressBarFill,
+                  {
+                    width: `${sub.accuracy}%`,
+                    backgroundColor: sub.color,
+                  },
+                ]}
               />
             </View>
           </View>
@@ -237,8 +273,8 @@ export const AnalyticsScreen: React.FC = () => {
             row.difficulty === 'Easy'
               ? '#16A34A'
               : row.difficulty === 'Medium'
-                ? '#F97316'
-                : '#EF4444';
+              ? '#F97316'
+              : '#EF4444';
           return (
             <View key={row.difficulty} style={styles.subjectRow}>
               <View style={styles.subjectHeader}>
@@ -272,14 +308,22 @@ export const AnalyticsScreen: React.FC = () => {
 
       {/* Strong & Weak Areas */}
       <View style={styles.strengthsRow}>
-        {/* Strong Topics */}
         <Card style={styles.analysisCard}>
           <View style={styles.analysisTitleRow}>
             <CheckCircle2 size={18} color="#16A34A" />
             <Text style={[styles.analysisTitle, { color: '#16A34A' }]}>High Mastery Areas</Text>
           </View>
           {strongTopics.map((item, idx) => (
-            <View key={idx} style={[styles.topicItem, { borderBottomColor: colors.borderSubtle }]}>
+            <View
+              key={idx}
+              style={[
+                styles.topicItem,
+                {
+                  borderBottomColor:
+                    idx === strongTopics.length - 1 ? 'transparent' : colors.borderSubtle,
+                },
+              ]}
+            >
               <Text style={[styles.topicSubject, { color: colors.primary }]}>{item.subject}</Text>
               <Text style={[styles.topicName, { color: colors.textPrimary }]}>{item.topic}</Text>
               <Text style={[styles.topicAcc, { color: '#16A34A' }]}>{item.accuracy} Accuracy</Text>
@@ -287,17 +331,25 @@ export const AnalyticsScreen: React.FC = () => {
           ))}
         </Card>
 
-        {/* Needs Attention */}
         <Card style={styles.analysisCard}>
           <View style={styles.analysisTitleRow}>
             <AlertCircle size={18} color="#EA580C" />
             <Text style={[styles.analysisTitle, { color: '#EA580C' }]}>Priority Revision Needed</Text>
           </View>
           {weakTopics.map((item, idx) => (
-            <View key={idx} style={[styles.topicItem, { borderBottomColor: colors.borderSubtle }]}>
+            <View
+              key={idx}
+              style={[
+                styles.topicItem,
+                {
+                  borderBottomColor:
+                    idx === weakTopics.length - 1 ? 'transparent' : colors.borderSubtle,
+                },
+              ]}
+            >
               <Text style={[styles.topicSubject, { color: colors.secondary }]}>{item.subject}</Text>
               <Text style={[styles.topicName, { color: colors.textPrimary }]}>{item.topic}</Text>
-              <Text style={[styles.topicAcc, { color: '#DC2626' }]}>{item.accuracy} Accuracy</Text>
+              <Text style={[styles.topicAcc, { color: '#EF4444' }]}>{item.accuracy} Accuracy</Text>
             </View>
           ))}
         </Card>
@@ -307,27 +359,22 @@ export const AnalyticsScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  content: {
-    padding: 16,
-    paddingBottom: 32,
-  },
+  container: { flex: 1 },
+  content: { padding: 16, paddingBottom: 32 },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 16,
+    gap: 10,
   },
-  title: {
-    fontSize: 22,
-    fontWeight: '800',
+  headerTextCol: {
+    flex: 1,
+    paddingRight: 8,
+    minWidth: 0,
   },
-  subtitle: {
-    fontSize: 13,
-    marginTop: 2,
-  },
+  title: { fontSize: 21, fontWeight: '800' },
+  subtitle: { fontSize: 12.5, marginTop: 2 },
   filterBar: {
     flexDirection: 'row',
     borderRadius: 12,
@@ -340,10 +387,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
   },
-  filterBtnText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
+  filterBtnText: { fontSize: 12.5, fontWeight: '700' },
   kpiGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -351,9 +395,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   kpiCard: {
-    width: (width - 44) / 2,
+    flexBasis: '47%',
+    flexGrow: 1,
     padding: 16,
     alignItems: 'center',
+  },
+  kpiCardWide: {
+    flexBasis: '22%',
   },
   kpiIcon: {
     width: 44,
@@ -363,118 +411,36 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 8,
   },
-  kpiValue: {
-    fontSize: 24,
-    fontWeight: '800',
-  },
-  kpiLabel: {
-    fontSize: 12,
-    fontWeight: '500',
-    marginTop: 2,
-  },
-  noticeCard: {
-    marginBottom: 16,
-    borderWidth: 1,
-    padding: 12,
-  },
-  noticeRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 10,
-  },
-  noticeTextContainer: {
-    flex: 1,
-  },
-  noticeTitle: {
-    fontSize: 13,
-    fontWeight: '700',
-    marginBottom: 4,
-  },
-  noticeText: {
-    fontSize: 11.5,
-    lineHeight: 18,
-  },
-  sectionCard: {
-    padding: 16,
-    marginBottom: 16,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  subjectRow: {
-    marginBottom: 14,
-  },
+  kpiValue: { fontSize: 23, fontWeight: '800' },
+  kpiLabel: { fontSize: 12, fontWeight: '600', marginTop: 2, textAlign: 'center' },
+  noticeCard: { marginBottom: 16, borderWidth: 1, padding: 12 },
+  noticeRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
+  noticeTextContainer: { flex: 1 },
+  noticeTitle: { fontSize: 13, fontWeight: '700', marginBottom: 4 },
+  noticeText: { fontSize: 11.5, lineHeight: 18 },
+  sectionCard: { padding: 16, marginBottom: 16 },
+  sectionHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 },
+  sectionTitle: { fontSize: 16, fontWeight: '700' },
+  subjectRow: { marginBottom: 14 },
   subjectHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 6,
+    gap: 8,
   },
-  subjectName: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  subMeta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  subjectScore: {
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  subjectQCount: {
-    fontSize: 12,
-  },
-  progressBarBg: {
-    height: 8,
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  progressBarFill: {
-    height: '100%',
-    borderRadius: 4,
-  },
-  strengthsRow: {
-    gap: 14,
-  },
-  analysisCard: {
-    padding: 16,
-  },
-  analysisTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginBottom: 12,
-  },
-  analysisTitle: {
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  topicItem: {
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-  },
-  topicSubject: {
-    fontSize: 11,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-  },
-  topicName: {
-    fontSize: 13.5,
-    fontWeight: '600',
-    marginVertical: 2,
-  },
-  topicAcc: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
+  subjectName: { fontSize: 14, fontWeight: '600' },
+  subMeta: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  subjectScore: { fontSize: 14, fontWeight: '700' },
+  subjectQCount: { fontSize: 12 },
+  progressBarBg: { height: 8, borderRadius: 4, overflow: 'hidden' },
+  progressBarFill: { height: '100%', borderRadius: 4 },
+  strengthsRow: { gap: 14 },
+  analysisCard: { padding: 16 },
+  analysisTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 },
+  analysisTitle: { fontSize: 15, fontWeight: '700' },
+  topicItem: { paddingVertical: 10, borderBottomWidth: 1 },
+  topicSubject: { fontSize: 11, fontWeight: '700', textTransform: 'uppercase' },
+  topicName: { fontSize: 13.5, fontWeight: '600', marginVertical: 2 },
+  topicAcc: { fontSize: 12, fontWeight: '600' },
 });
-

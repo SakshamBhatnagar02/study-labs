@@ -110,6 +110,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 value={settings.masterSound}
                 onValueChange={(val) => updateSetting('masterSound', val)}
                 trackColor={{ false: '#64748B', true: colors.primary }}
+                thumbColor={settings.masterSound ? '#FFFFFF' : '#E2E8F0'}
+                ios_backgroundColor="#475569"
+                {...({ activeThumbColor: '#FFFFFF' } as object)}
               />
             </View>
 
@@ -127,6 +130,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   value={settings.clickSound !== false}
                   onValueChange={(val) => updateSetting('clickSound', val)}
                   trackColor={{ false: '#64748B', true: colors.primary }}
+                  thumbColor={settings.clickSound !== false ? '#FFFFFF' : '#E2E8F0'}
+                  ios_backgroundColor="#475569"
+                  {...({ activeThumbColor: '#FFFFFF' } as object)}
                 />
               </View>
 
@@ -142,6 +148,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   value={settings.correctSound}
                   onValueChange={(val) => updateSetting('correctSound', val)}
                   trackColor={{ false: '#64748B', true: colors.primary }}
+                  thumbColor={settings.correctSound ? '#FFFFFF' : '#E2E8F0'}
+                  ios_backgroundColor="#475569"
+                  {...({ activeThumbColor: '#FFFFFF' } as object)}
                 />
               </View>
 
@@ -157,6 +166,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   value={settings.incorrectSound}
                   onValueChange={(val) => updateSetting('incorrectSound', val)}
                   trackColor={{ false: '#64748B', true: colors.primary }}
+                  thumbColor={settings.incorrectSound ? '#FFFFFF' : '#E2E8F0'}
+                  ios_backgroundColor="#475569"
+                  {...({ activeThumbColor: '#FFFFFF' } as object)}
                 />
               </View>
 
@@ -172,6 +184,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   value={settings.completionSound}
                   onValueChange={(val) => updateSetting('completionSound', val)}
                   trackColor={{ false: '#64748B', true: colors.primary }}
+                  thumbColor={settings.completionSound ? '#FFFFFF' : '#E2E8F0'}
+                  ios_backgroundColor="#475569"
+                  {...({ activeThumbColor: '#FFFFFF' } as object)}
                 />
               </View>
             </View>
@@ -194,6 +209,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 value={settings.hapticFeedback}
                 onValueChange={(val) => updateSetting('hapticFeedback', val)}
                 trackColor={{ false: '#64748B', true: colors.primary }}
+                thumbColor={settings.hapticFeedback ? '#FFFFFF' : '#E2E8F0'}
+                ios_backgroundColor="#475569"
+                {...({ activeThumbColor: '#FFFFFF' } as object)}
               />
             </View>
 
@@ -215,6 +233,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 value={settings.celebrationParticles}
                 onValueChange={(val) => updateSetting('celebrationParticles', val)}
                 trackColor={{ false: '#64748B', true: colors.primary }}
+                thumbColor={settings.celebrationParticles ? '#FFFFFF' : '#E2E8F0'}
+                ios_backgroundColor="#475569"
+                {...({ activeThumbColor: '#FFFFFF' } as object)}
               />
             </View>
 
@@ -267,6 +288,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 value={settings.reducedMotion}
                 onValueChange={(val) => updateSetting('reducedMotion', val)}
                 trackColor={{ false: '#64748B', true: colors.primary }}
+                thumbColor={settings.reducedMotion ? '#FFFFFF' : '#E2E8F0'}
+                ios_backgroundColor="#475569"
+                {...({ activeThumbColor: '#FFFFFF' } as object)}
               />
             </View>
 
@@ -336,6 +360,9 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     maxHeight: '85%',
     paddingBottom: 24,
+    width: '100%',
+    maxWidth: 540,
+    alignSelf: 'center',
   },
   header: {
     flexDirection: 'row',

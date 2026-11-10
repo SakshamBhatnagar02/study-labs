@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import { View, StyleSheet, StyleProp, ViewStyle, Platform } from 'react-native';
 import { useTheme } from '../../theme';
 
 interface CardProps {
@@ -16,10 +16,11 @@ export const Card: React.FC<CardProps> = ({
   noPadding = false,
 }) => {
   const { colors, mode } = useTheme();
+  const useLightElevation = variant === 'elevated' && mode === 'light';
 
   const getBorderColor = () => {
     if (variant === 'outlined') return colors.border;
-    return mode === 'dark' ? colors.border : 'transparent';
+    return mode === 'dark' ? colors.border : colors.borderSubtle;
   };
 
   return (
@@ -29,11 +30,10 @@ export const Card: React.FC<CardProps> = ({
         {
           backgroundColor: colors.card,
           borderColor: getBorderColor(),
-          borderWidth: variant === 'outlined' || mode === 'dark' ? 1 : 0,
+          borderWidth: variant === 'outlined' || mode === 'dark' ? 1 : StyleSheet.hairlineWidth,
           padding: noPadding ? 0 : 16,
-          shadowColor: colors.shadow,
         },
-        variant === 'elevated' && styles.shadow,
+        useLightElevation && styles.lightShadow,
         style,
       ]}
     >
@@ -47,10 +47,16 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     overflow: 'hidden',
   },
-  shadow: {
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 3,
-  },
+  lightShadow: Platform.select({
+    android: {
+      // Avoid Android hardware elevation halo breaking rounded corners during sibling press transitions
+      elevation: 0,
+    },
+    default: {
+      shadowColor: '#EA580C',
+      shadowOffset: { width: 0, height: 3 },
+      shadowOpacity: 0.08,
+      shadowRadius: 10,
+    },
+  }),
 });

@@ -449,6 +449,9 @@ export const StudyMaterialScreen: React.FC<StudyMaterialScreenProps> = ({
                               value={hideAttempted}
                               onValueChange={setHideAttempted}
                               trackColor={{ false: '#64748B', true: colors.primary }}
+                              thumbColor={hideAttempted ? '#FFFFFF' : '#E2E8F0'}
+                              ios_backgroundColor="#475569"
+                              {...({ activeThumbColor: '#FFFFFF' } as object)}
                             />
                           </View>
 

@@ -1,15 +1,22 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
+  ActiveTestWorkspaceState,
   AppSettings,
+  CalendarHoliday,
+  ChatMessage,
+  ChatSession,
   CustomNotebook,
   CustomTestConfig,
   DailyGoalConfig,
   FormulaStatus,
+  GeneratedStemImage,
   OfflineTestRecord,
+  PlannerCalendarState,
   Question,
   QuestionAttemptStat,
   QuestionViewSettings,
   TestAttempt,
+  UserPlanTier,
   UserProfile,
 } from '../types';
 import { buildSeedAttemptLogs, XP_ATTEMPTED, XP_CORRECT } from '../utils/activityStats';
@@ -21,6 +28,10 @@ const KEYS = {
   BOOKMARKS: '@study_labs_bookmarks',
   SYLLABUS_PROGRESS: '@study_labs_syllabus_progress',
   CHAT_MESSAGES: '@study_labs_chat_messages',
+  CHAT_SESSIONS: '@study_labs_chat_sessions_v2',
+  ACTIVE_CHAT_ID: '@study_labs_active_chat_id',
+  GENERATED_IMAGES: '@study_labs_generated_images',
+  USER_PLAN: '@study_labs_user_plan',
   SETTINGS: '@study_labs_settings',
   QUESTION_VIEW_SETTINGS: '@study_labs_question_view_settings',
   ATTEMPT_LOGS: '@study_labs_attempt_logs',
@@ -30,6 +41,82 @@ const KEYS = {
   FORMULA_STATUSES: '@study_labs_formula_statuses',
   CUSTOM_TESTS: '@study_labs_custom_tests',
   CUSTOM_QUESTIONS: '@study_labs_custom_questions',
+  PLANNER_STATE: '@study_labs_planner_state',
+  ACTIVE_TEST_SESSION: '@study_labs_active_test_session',
+  CACHED_HOLIDAYS: '@study_labs_cached_holidays',
+};
+
+const MAX_STORED_ATTACHMENT_BASE64 = 300_000;
+
+function sanitizeChatMessageForStorage(msg: ChatMessage): ChatMessage {
+  if (!msg.attachments || msg.attachments.length === 0) return msg;
+  return {
+    ...msg,
+    attachments: msg.attachments.map((att) => {
+      if (att.base64 && att.base64.length > MAX_STORED_ATTACHMENT_BASE64) {
+        return {
+          ...att,
+          base64: undefined,
+          summaryHint: att.summaryHint || 'Original binary payload trimmed in saved history',
+        };
+      }
+      return att;
+    }),
+  };
+}
+
+function sanitizeChatSessionForStorage(session: ChatSession): ChatSession {
+  return {
+    ...session,
+    messages: (session.messages || []).slice(-80).map(sanitizeChatMessageForStorage),
+  };
+}
+
+export const DEFAULT_PLANNER_STATE: PlannerCalendarState = {
+  selectedCountry: 'AUTO',
+  exams: [
+    { id: 'ex_jee_2027', name: 'JEE Main Session 1', targetDate: '2027-01-24', category: 'National Entrance' },
+    { id: 'ex_cbse_2027', name: 'CBSE Class 12 Boards', targetDate: '2027-02-18', category: 'Board Exam' },
+    { id: 'ex_neet_2027', name: 'NEET UG 2027', targetDate: '2027-05-02', category: 'Medical Entrance' },
+  ],
+  goals: [
+    {
+      id: 'g1',
+      title: 'Complete 25 Numerical Questions on Rotational Dynamics',
+      subject: 'Physics',
+      dateKey: new Date().toISOString().split('T')[0],
+      dueToday: true,
+      isCompleted: true,
+      durationMinutes: 60,
+    },
+    {
+      id: 'g2',
+      title: 'Revise Aldehydes, Ketones & Carboxylic Acids Mindmap',
+      subject: 'Chemistry',
+      dateKey: new Date().toISOString().split('T')[0],
+      dueToday: true,
+      isCompleted: false,
+      durationMinutes: 45,
+    },
+    {
+      id: 'g3',
+      title: 'Solve 2024 PYQs for Definite Integrals',
+      subject: 'Mathematics',
+      dateKey: new Date().toISOString().split('T')[0],
+      dueToday: true,
+      isCompleted: false,
+      durationMinutes: 75,
+    },
+    {
+      id: 'g4',
+      title: 'Weekly Full-length Coaching Mock Test Review',
+      subject: 'Full Syllabus',
+      dateKey: new Date(Date.now() + 3 * 86400000).toISOString().split('T')[0],
+      dueToday: false,
+      isCompleted: false,
+      durationMinutes: 90,
+    },
+  ],
 };
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -495,9 +582,220 @@ export const StorageService = {
     const map = new Map<string, Question>();
     for (const q of existing) map.set(q.id, q);
     for (const q of newQuestions) map.set(q.id, q);
-    const merged = Array.from(map.values()).slice(-150);
+    const merged = Array.from(map.values()).slice(-250);
     await AsyncStorage.setItem(KEYS.CUSTOM_QUESTIONS, JSON.stringify(merged));
     return merged;
+  },
+
+  async deleteCustomQuestion(questionId: string): Promise<Question[]> {
+    const existing = await this.getCustomQuestions();
+    const filtered = existing.filter((q) => q.id !== questionId);
+    await AsyncStorage.setItem(KEYS.CUSTOM_QUESTIONS, JSON.stringify(filtered));
+    return filtered;
+  },
+
+  async getPlannerState(): Promise<PlannerCalendarState> {
+    try {
+      const data = await AsyncStorage.getItem(KEYS.PLANNER_STATE);
+      if (data) {
+        const parsed = JSON.parse(data) as Partial<PlannerCalendarState>;
+        return {
+          selectedCountry: parsed.selectedCountry || DEFAULT_PLANNER_STATE.selectedCountry,
+          exams: Array.isArray(parsed.exams) && parsed.exams.length > 0 ? parsed.exams : DEFAULT_PLANNER_STATE.exams,
+          goals: Array.isArray(parsed.goals) ? parsed.goals : DEFAULT_PLANNER_STATE.goals,
+        };
+      }
+      await AsyncStorage.setItem(KEYS.PLANNER_STATE, JSON.stringify(DEFAULT_PLANNER_STATE));
+      return DEFAULT_PLANNER_STATE;
+    } catch {
+      return DEFAULT_PLANNER_STATE;
+    }
+  },
+
+  async savePlannerState(state: PlannerCalendarState): Promise<PlannerCalendarState> {
+    await AsyncStorage.setItem(KEYS.PLANNER_STATE, JSON.stringify(state));
+    return state;
+  },
+
+  async getActiveTestSession(): Promise<ActiveTestWorkspaceState | null> {
+    try {
+      const data = await AsyncStorage.getItem(KEYS.ACTIVE_TEST_SESSION);
+      return data ? (JSON.parse(data) as ActiveTestWorkspaceState) : null;
+    } catch {
+      return null;
+    }
+  },
+
+  async saveActiveTestSession(session: ActiveTestWorkspaceState): Promise<void> {
+    try {
+      await AsyncStorage.setItem(KEYS.ACTIVE_TEST_SESSION, JSON.stringify(session));
+    } catch {
+      // Non-fatal
+    }
+  },
+
+  async clearActiveTestSession(): Promise<void> {
+    try {
+      await AsyncStorage.removeItem(KEYS.ACTIVE_TEST_SESSION);
+    } catch {
+      // Non-fatal
+    }
+  },
+
+  async getCachedRemoteHolidays(year: number, country: string): Promise<CalendarHoliday[]> {
+    try {
+      const raw = await AsyncStorage.getItem(`${KEYS.CACHED_HOLIDAYS}_${year}_${country}`);
+      return raw ? (JSON.parse(raw) as CalendarHoliday[]) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  async saveCachedRemoteHolidays(
+    year: number,
+    country: string,
+    holidays: CalendarHoliday[]
+  ): Promise<void> {
+    try {
+      await AsyncStorage.setItem(
+        `${KEYS.CACHED_HOLIDAYS}_${year}_${country}`,
+        JSON.stringify(holidays)
+      );
+    } catch {
+      // Non-fatal
+    }
+  },
+
+  async getChatSessions(): Promise<ChatSession[]> {
+    try {
+      const raw = await AsyncStorage.getItem(KEYS.CHAT_SESSIONS);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+      // Migrate legacy single-thread chat history if present
+      const legacyRaw = await AsyncStorage.getItem(KEYS.CHAT_MESSAGES);
+      if (legacyRaw) {
+        const legacyMsgs = JSON.parse(legacyRaw);
+        if (Array.isArray(legacyMsgs) && legacyMsgs.length > 0) {
+          const firstUser = legacyMsgs.find((m: any) => m?.sender === 'user');
+          const migrated: ChatSession = sanitizeChatSessionForStorage({
+            id: 'chat_migrated_1',
+            title: firstUser?.text ? String(firstUser.text).slice(0, 40) : 'Previous Study Chat',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            messages: legacyMsgs,
+          });
+          await AsyncStorage.setItem(KEYS.CHAT_SESSIONS, JSON.stringify([migrated]));
+          return [migrated];
+        }
+      }
+      return [];
+    } catch {
+      return [];
+    }
+  },
+
+  async saveChatSessions(sessions: ChatSession[]): Promise<ChatSession[]> {
+    const clean = sessions.slice(0, 40).map(sanitizeChatSessionForStorage);
+    try {
+      await AsyncStorage.setItem(KEYS.CHAT_SESSIONS, JSON.stringify(clean));
+    } catch {
+      // If quota tight, store last 20 sessions
+      try {
+        await AsyncStorage.setItem(KEYS.CHAT_SESSIONS, JSON.stringify(clean.slice(0, 20)));
+      } catch {
+        // Non-fatal
+      }
+    }
+    return clean;
+  },
+
+  async upsertChatSession(session: ChatSession): Promise<ChatSession[]> {
+    const list = await this.getChatSessions();
+    const cleaned = sanitizeChatSessionForStorage(session);
+    const updated = [cleaned, ...list.filter((s) => s.id !== session.id)];
+    return this.saveChatSessions(updated);
+  },
+
+  async deleteChatSession(sessionId: string): Promise<ChatSession[]> {
+    const list = await this.getChatSessions();
+    const filtered = list.filter((s) => s.id !== sessionId);
+    await AsyncStorage.setItem(KEYS.CHAT_SESSIONS, JSON.stringify(filtered));
+    return filtered;
+  },
+
+  async getActiveChatSessionId(): Promise<string | null> {
+    try {
+      return await AsyncStorage.getItem(KEYS.ACTIVE_CHAT_ID);
+    } catch {
+      return null;
+    }
+  },
+
+  async saveActiveChatSessionId(sessionId: string): Promise<void> {
+    try {
+      await AsyncStorage.setItem(KEYS.ACTIVE_CHAT_ID, sessionId);
+    } catch {
+      // Non-fatal
+    }
+  },
+
+  async getGeneratedImages(): Promise<GeneratedStemImage[]> {
+    try {
+      const raw = await AsyncStorage.getItem(KEYS.GENERATED_IMAGES);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  },
+
+  async saveGeneratedImage(image: GeneratedStemImage): Promise<GeneratedStemImage[]> {
+    const list = await this.getGeneratedImages();
+    const updated = [image, ...list.filter((img) => img.id !== image.id)];
+    await AsyncStorage.setItem(KEYS.GENERATED_IMAGES, JSON.stringify(updated));
+    return updated;
+  },
+
+  async updateGeneratedImage(image: GeneratedStemImage): Promise<GeneratedStemImage[]> {
+    const list = await this.getGeneratedImages();
+    const exists = list.some((img) => img.id === image.id);
+    const updated = exists
+      ? list.map((img) => (img.id === image.id ? image : img))
+      : [image, ...list];
+    await AsyncStorage.setItem(KEYS.GENERATED_IMAGES, JSON.stringify(updated));
+    return updated;
+  },
+
+  async deleteGeneratedImage(imageId: string): Promise<GeneratedStemImage[]> {
+    const list = await this.getGeneratedImages();
+    const updated = list.filter((img) => img.id !== imageId);
+    await AsyncStorage.setItem(KEYS.GENERATED_IMAGES, JSON.stringify(updated));
+    return updated;
+  },
+
+  async getUserPlanTier(): Promise<UserPlanTier> {
+    try {
+      const raw = await AsyncStorage.getItem(KEYS.USER_PLAN);
+      if (raw === 'free' || raw === 'pro' || raw === 'ultra') return raw;
+      await AsyncStorage.setItem(KEYS.USER_PLAN, 'free');
+      return 'free';
+    } catch {
+      return 'free';
+    }
+  },
+
+  async saveUserPlanTier(tier: UserPlanTier): Promise<UserPlanTier> {
+    try {
+      await AsyncStorage.setItem(KEYS.USER_PLAN, tier);
+    } catch {
+      // Non-fatal
+    }
+    return tier;
   },
 };
 

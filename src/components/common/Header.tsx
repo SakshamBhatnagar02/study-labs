@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
 import { useTheme } from '../../theme';
 import { Sun, Moon, Flame, Sliders, Trophy } from 'lucide-react-native';
 import { SettingsModal } from '../settings/SettingsModal';
@@ -26,12 +26,12 @@ export const Header: React.FC<HeaderProps> = ({
     <>
       <View style={[styles.container, { backgroundColor: colors.card, borderBottomColor: colors.border }]}>
         {/* Brand & Cyber Logo Identity */}
-        <TouchableOpacity
-          activeOpacity={0.75}
+        <Pressable
+          focusable={false}
           onPress={() => {
             onProfilePress?.();
           }}
-          style={styles.brandRow}
+          style={({ pressed }) => [styles.brandRow, pressed && { opacity: 0.78 }]}
           accessibilityLabel="Open My Profile"
         >
           <View style={[styles.logoWrapper, { borderColor: colors.primary }]}>
@@ -50,65 +50,84 @@ export const Header: React.FC<HeaderProps> = ({
               study.io · {userIoId}
             </Text>
           </View>
-        </TouchableOpacity>
+        </Pressable>
 
         {/* Action Badges */}
         <View style={styles.actionsRow}>
           {/* 7-Day Streak Counter -> Opens Daily Goal & Heatmap */}
-          <TouchableOpacity
-            activeOpacity={0.75}
+          <Pressable
+            focusable={false}
             onPress={() => {
               onStreakPress?.();
             }}
-            style={[
+            style={({ pressed }) => [
               styles.streakBadge,
               {
                 backgroundColor: mode === 'dark' ? '#431407' : '#FFEDD5',
                 borderColor: colors.primary,
+                opacity: pressed ? 0.75 : 1,
               },
             ]}
             accessibilityLabel="Daily Goal and 7-day Streak"
           >
             <Flame color={colors.primary} size={14} />
             <Text style={[styles.streakText, { color: colors.primary }]}>{streakDays}d</Text>
-          </TouchableOpacity>
+          </Pressable>
 
           {/* 7-Day Leaderboard Trophy */}
           {onLeaderboardPress && (
-            <TouchableOpacity
+            <Pressable
+              focusable={false}
               onPress={() => {
                 onLeaderboardPress();
               }}
-              activeOpacity={0.7}
-              style={[
+              style={({ pressed }) => [
                 styles.iconButton,
-                { backgroundColor: colors.surface, borderColor: colors.border },
+                {
+                  backgroundColor: colors.surface,
+                  borderColor: colors.border,
+                  opacity: pressed ? 0.72 : 1,
+                },
               ]}
               accessibilityLabel="7-Day Weekly Leaderboard"
             >
               <Trophy color={colors.warning} size={15} />
-            </TouchableOpacity>
+            </Pressable>
           )}
 
           {/* Sound & Effects Settings */}
-          <TouchableOpacity
+          <Pressable
+            focusable={false}
             onPress={() => {
               setSettingsOpen(true);
             }}
-            activeOpacity={0.7}
-            style={[styles.iconButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
+            style={({ pressed }) => [
+              styles.iconButton,
+              {
+                backgroundColor: colors.surface,
+                borderColor: colors.border,
+                opacity: pressed ? 0.72 : 1,
+              },
+            ]}
             accessibilityLabel="Sound and effects settings"
           >
             <Sliders color={colors.primary} size={15} />
-          </TouchableOpacity>
+          </Pressable>
 
           {/* Theme Toggle */}
-          <TouchableOpacity
+          <Pressable
+            focusable={false}
             onPress={() => {
               toggleTheme();
             }}
-            activeOpacity={0.7}
-            style={[styles.iconButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
+            style={({ pressed }) => [
+              styles.iconButton,
+              {
+                backgroundColor: colors.surface,
+                borderColor: colors.border,
+                opacity: pressed ? 0.72 : 1,
+              },
+            ]}
             accessibilityLabel="Toggle light and dark mode"
           >
             {mode === 'dark' ? (
@@ -116,7 +135,7 @@ export const Header: React.FC<HeaderProps> = ({
             ) : (
               <Moon color={colors.textSecondary} size={15} />
             )}
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
 
@@ -146,6 +165,8 @@ const styles = StyleSheet.create({
     gap: 9,
     flex: 1,
     minWidth: 0,
+    borderRadius: 12,
+    overflow: 'hidden',
   },
   logoWrapper: {
     width: 36,
@@ -192,6 +213,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 10,
     borderWidth: 1,
+    overflow: 'hidden',
   },
   streakText: {
     fontSize: 11.5,
@@ -200,9 +222,10 @@ const styles = StyleSheet.create({
   iconButton: {
     width: 32,
     height: 32,
-    borderRadius: 9,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
+    overflow: 'hidden',
   },
 });

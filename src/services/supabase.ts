@@ -1,5 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import type { OfflineTestRecord, Question } from '../types';
+import type { AppErrorInfo, OfflineTestRecord, Question } from '../types';
+import { buildApiErrorInfo } from '../utils/errorHandling';
 
 const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY =
@@ -14,6 +15,7 @@ const isConfigured =
   !SUPABASE_ANON_KEY.includes('example');
 
 let client: SupabaseClient | null = null;
+let initError: AppErrorInfo | undefined;
 
 if (isConfigured) {
   try {
@@ -24,16 +26,30 @@ if (isConfigured) {
       },
     });
   } catch (err) {
+    initError = buildApiErrorInfo('supabase', err, { canRetry: false, canUseOffline: true });
     console.warn('[Study Labs] Supabase initialization failed, falling back to offline mode.', err);
   }
+}
+
+export interface SupabaseQuestionsResult {
+  questions: Question[];
+  source: 'cloud' | 'offline';
+  errorInfo?: AppErrorInfo;
 }
 
 export const SupabaseService = {
   isConfigured,
   client,
 
-  async fetchQuestions(): Promise<Question[]> {
-    if (!client) return [];
+  async fetchQuestionsWithStatus(): Promise<SupabaseQuestionsResult> {
+    if (!client) {
+      return {
+        questions: [],
+        source: 'offline',
+        errorInfo: initError,
+      };
+    }
+
     try {
       const { data, error } = await client
         .from('questions')
@@ -42,9 +58,31 @@ export const SupabaseService = {
         )
         .limit(120);
 
-      if (error || !Array.isArray(data)) return [];
+      if (error) {
+        return {
+          questions: [],
+          source: 'offline',
+          errorInfo: buildApiErrorInfo('supabase', error, {
+            code: (error as any)?.code,
+            canRetry: true,
+            canUseOffline: true,
+          }),
+        };
+      }
 
-      return data
+      if (!Array.isArray(data)) {
+        return {
+          questions: [],
+          source: 'offline',
+          errorInfo: buildApiErrorInfo('supabase', new Error('Unexpected response format from Supabase questions table'), {
+            code: 'INVALID_PAYLOAD',
+            canRetry: true,
+            canUseOffline: true,
+          }),
+        };
+      }
+
+      const mapped = data
         .filter((row: any) => row?.id && row?.prompt && row?.subject_id)
         .map((row: any) => ({
           id: String(row.id),
@@ -65,9 +103,26 @@ export const SupabaseService = {
           year: typeof row.year === 'number' ? row.year : undefined,
           tags: Array.isArray(row.tags) ? row.tags : undefined,
         }));
-    } catch {
-      return [];
+
+      return {
+        questions: mapped,
+        source: 'cloud',
+      };
+    } catch (err) {
+      return {
+        questions: [],
+        source: 'offline',
+        errorInfo: buildApiErrorInfo('supabase', err, {
+          canRetry: true,
+          canUseOffline: true,
+        }),
+      };
     }
+  },
+
+  async fetchQuestions(): Promise<Question[]> {
+    const res = await this.fetchQuestionsWithStatus();
+    return res.questions;
   },
 
   async syncOfflineTests(localTests: OfflineTestRecord[]) {
@@ -97,8 +152,16 @@ export const SupabaseService = {
       if (error) throw error;
       return { success: true, mode: 'cloud_synced', data };
     } catch (err: any) {
-      return { success: false, mode: 'local_fallback', error: err.message };
+      return {
+        success: false,
+        mode: 'local_fallback',
+        error: err?.message || 'Cloud sync failed',
+        errorInfo: buildApiErrorInfo('supabase', err, {
+          code: err?.code,
+          canRetry: true,
+          canUseOffline: true,
+        }),
+      };
     }
   },
 };
-

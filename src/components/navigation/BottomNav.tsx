@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useTheme } from '../../theme';
 import { 
   LayoutDashboard, 
@@ -66,19 +66,24 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) 
         const iconColor = isActive ? colors.primary : colors.textSecondary;
 
         return (
-          <TouchableOpacity
+          <Pressable
             key={key}
-            activeOpacity={0.7}
+            focusable={false}
             onPress={() => {
               onTabChange(key);
             }}
-            style={styles.tabButton}
+            style={({ pressed }) => [
+              styles.tabButton,
+              pressed && { opacity: 0.72 },
+            ]}
           >
             <View
               style={[
                 styles.iconWrapper,
                 isActive && {
                   backgroundColor: mode === 'dark' ? '#431407' : '#FFEDD5',
+                  borderColor: 'rgba(249, 115, 22, 0.35)',
+                  borderWidth: 1,
                 },
               ]}
             >
@@ -95,7 +100,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) 
             >
               {label}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         );
       })}
     </View>
@@ -111,7 +116,7 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
     justifyContent: 'space-around',
     alignItems: 'center',
-    elevation: 8,
+    elevation: 0,
     shadowOffset: { width: 0, height: -3 },
     shadowOpacity: 0.06,
     shadowRadius: 8,
@@ -121,11 +126,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 4,
+    borderRadius: 16,
+    overflow: 'hidden',
   },
   iconWrapper: {
     paddingHorizontal: 12,
     paddingVertical: 4,
-    borderRadius: 14,
+    borderRadius: 999,
+    overflow: 'hidden',
     marginBottom: 2,
   },
   tabLabel: {

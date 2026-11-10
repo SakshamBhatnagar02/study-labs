@@ -1,89 +1,196 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  useWindowDimensions,
+} from 'react-native';
+import Svg, { Circle, Line, Polyline, Text as SvgText } from 'react-native-svg';
 import { useTheme } from '../theme';
 import { Card } from '../components/common/Card';
 import { Badge } from '../components/common/Badge';
-import { Button } from '../components/common/Button';
-import { 
-  Activity, 
-  Layers, 
-  RotateCcw, 
-  Sliders, 
-  Share2, 
-  Info,
-  Maximize2
-} from 'lucide-react-native';
+import { Info, RotateCcw } from 'lucide-react-native';
 
-const { width } = Dimensions.get('window');
-const GRAPH_WIDTH = Math.min(width - 48, 380);
 const GRAPH_HEIGHT = 220;
 
-type Mode = 'math' | 'physics' | 'chemistry';
+type PlaygroundMode = 'math' | 'physics' | 'chemistry';
 
 export const GraphPlaygroundScreen: React.FC = () => {
   const { colors, mode: themeMode } = useTheme();
-  const [activeMode, setActiveMode] = useState<Mode>('math');
-  
-  // Math parameters: y = A * sin(B * x) or y = m*x + c or y = a*x^2
+  const { width: winWidth } = useWindowDimensions();
+  const canvasWidth = Math.max(240, Math.min(winWidth - 68, 520));
+
+  const [activeMode, setActiveMode] = useState<PlaygroundMode>('math');
   const [mathFunc, setMathFunc] = useState<'sine' | 'quadratic' | 'exponential'>('sine');
   const [paramA, setParamA] = useState<number>(1.5);
   const [paramB, setParamB] = useState<number>(1.0);
-
-  // Physics presets: projectile, shm, kinematics
   const [physicsPreset, setPhysicsPreset] = useState<'projectile' | 'shm' | 'vt_graph'>('projectile');
+  const [chemPreset, setChemPreset] = useState<'benzene' | 'ester' | 'alcohol' | 'alkane'>('benzene');
 
-  // Chemistry functional groups
-  const [chemPreset, setChemPreset] = useState<'alkane' | 'benzene' | 'ester' | 'alcohol'>('benzene');
-
-  // Generate sample points for graph plotting
-  const generateGraphPoints = () => {
-    const points: { x: number; y: number }[] = [];
-    const steps = 40;
+  const polylinePoints = useMemo(() => {
+    const steps = 120;
+    const pts: string[] = [];
 
     for (let i = 0; i <= steps; i++) {
-      const normX = (i / steps) * 2 - 1; // -1 to +1
+      const normX = (i / steps) * 2 - 1; // -1..+1
       let normY = 0;
 
       if (activeMode === 'math') {
         if (mathFunc === 'sine') {
-          normY = paramA * Math.sin(paramB * normX * Math.PI * 2) * 0.4;
+          normY = paramA * Math.sin(paramB * normX * Math.PI * 2) * 0.36;
         } else if (mathFunc === 'quadratic') {
-          normY = paramA * (normX * normX) * 0.8 - 0.4;
+          normY = paramA * (normX * normX) * 0.55 - 0.35;
         } else {
-          // Exponential
-          normY = (Math.exp(paramA * normX) / Math.E) * 0.8 - 0.4;
+          normY = (Math.exp(paramA * normX) / Math.E) * 0.68 - 0.35;
         }
       } else if (activeMode === 'physics') {
         if (physicsPreset === 'projectile') {
-          // Inverted parabola
-          normY = 0.6 * (1 - normX * normX) - 0.2;
+          normY = 0.72 * paramA * (1 - normX * normX) * 0.65 - 0.3;
         } else if (physicsPreset === 'shm') {
-          // Damped harmonic oscillator
-          normY = 0.5 * Math.exp(-0.8 * (normX + 1)) * Math.cos(normX * 8);
+          normY =
+            0.55 *
+            paramA *
+            0.6 *
+            Math.exp(-0.7 * (normX + 1)) *
+            Math.cos(normX * 6 * paramB);
         } else {
-          // Velocity-Time accelerating then constant
-          normY = normX < 0 ? 0.4 * (normX + 1) - 0.3 : 0.1;
+          normY = normX < 0 ? 0.45 * paramA * (normX + 1) - 0.35 : 0.45 * paramA - 0.35;
         }
       }
 
-      // Clamp between -0.9 and 0.9 for canvas viewport
-      normY = Math.max(-0.9, Math.min(0.9, normY));
-
-      // Screen coordinates:
-      const screenX = (i / steps) * GRAPH_WIDTH;
-      const screenY = (GRAPH_HEIGHT / 2) - (normY * (GRAPH_HEIGHT / 2));
-      points.push({ x: screenX, y: screenY });
+      const clampedY = Math.max(-0.92, Math.min(0.92, normY));
+      const sx = (i / steps) * canvasWidth;
+      const sy = GRAPH_HEIGHT / 2 - clampedY * (GRAPH_HEIGHT / 2);
+      pts.push(`${sx.toFixed(1)},${sy.toFixed(1)}`);
     }
-    return points;
+    return pts.join(' ');
+  }, [activeMode, mathFunc, paramA, paramB, physicsPreset, canvasWidth]);
+
+  const axisColor = themeMode === 'dark' ? '#475569' : '#CBD5E1';
+  const gridColor = themeMode === 'dark' ? '#1E293B' : '#E2E8F0';
+  const strokeColor = colors.primary;
+  const atomStroke = themeMode === 'dark' ? '#E2E8F0' : '#1E293B';
+
+  const renderChemicalSvg = () => {
+    if (chemPreset === 'benzene') {
+      const cx = 120;
+      const cy = 76;
+      const r = 46;
+      const hexPts = Array.from({ length: 6 }, (_, i) => {
+        const ang = (Math.PI / 3) * i - Math.PI / 2;
+        return `${(cx + r * Math.cos(ang)).toFixed(1)},${(cy + r * Math.sin(ang)).toFixed(1)}`;
+      }).join(' ');
+      return (
+        <Svg width={240} height={152} viewBox="0 0 240 152">
+          <Polyline
+            points={`${hexPts} ${hexPts.split(' ')[0]}`}
+            fill="none"
+            stroke={colors.primary}
+            strokeWidth={3}
+          />
+          <Circle
+            cx={cx}
+            cy={cy}
+            r={28}
+            fill="none"
+            stroke={colors.cyan}
+            strokeWidth={2}
+            strokeDasharray="6 4"
+          />
+          <SvgText x={cx - 12} y={20} fill={atomStroke} fontSize={11} fontWeight="700">
+            sp²
+          </SvgText>
+          <SvgText x={cx - 18} y={cy + 4} fill={colors.primary} fontSize={12} fontWeight="800">
+            6π e⁻
+          </SvgText>
+        </Svg>
+      );
+    }
+
+    if (chemPreset === 'ester') {
+      return (
+        <Svg width={260} height={152} viewBox="0 0 260 152">
+          {/* CH3 - C(=O) - O - CH2 - CH3 */}
+          <Line x1={42} y1={90} x2={88} y2={90} stroke={atomStroke} strokeWidth={2.5} />
+          <Line x1={85} y1={90} x2={85} y2={42} stroke={colors.primary} strokeWidth={2.5} />
+          <Line x1={91} y1={90} x2={91} y2={42} stroke={colors.primary} strokeWidth={2.5} />
+          <Line x1={88} y1={90} x2={132} y2={114} stroke={atomStroke} strokeWidth={2.5} />
+          <Line x1={146} y1={114} x2={188} y2={90} stroke={atomStroke} strokeWidth={2.5} />
+          <Line x1={188} y1={90} x2={228} y2={112} stroke={atomStroke} strokeWidth={2.5} />
+          <SvgText x={14} y={94} fill={atomStroke} fontSize={12} fontWeight="700">
+            CH₃
+          </SvgText>
+          <SvgText x={82} y={34} fill={colors.primary} fontSize={13} fontWeight="800">
+            O
+          </SvgText>
+          <SvgText x={133} y={128} fill={colors.cyan} fontSize={13} fontWeight="800">
+            O
+          </SvgText>
+          <SvgText x={180} y={80} fill={atomStroke} fontSize={11} fontWeight="700">
+            CH₂
+          </SvgText>
+          <SvgText x={226} y={120} fill={atomStroke} fontSize={12} fontWeight="700">
+            CH₃
+          </SvgText>
+        </Svg>
+      );
+    }
+
+    if (chemPreset === 'alcohol') {
+      return (
+        <Svg width={250} height={152} viewBox="0 0 250 152">
+          <Line x1={48} y1={96} x2={102} y2={62} stroke={atomStroke} strokeWidth={2.8} />
+          <Line x1={102} y1={62} x2={156} y2={96} stroke={atomStroke} strokeWidth={2.8} />
+          <Line x1={156} y1={96} x2={204} y2={70} stroke={colors.primary} strokeWidth={2.8} />
+          <SvgText x={18} y={102} fill={atomStroke} fontSize={13} fontWeight="700">
+            H₃C
+          </SvgText>
+          <SvgText x={90} y={50} fill={atomStroke} fontSize={12} fontWeight="700">
+            CH₂
+          </SvgText>
+          <SvgText x={148} y={118} fill={colors.cyan} fontSize={13} fontWeight="800">
+            O
+          </SvgText>
+          <SvgText x={208} y={73} fill={colors.primary} fontSize={14} fontWeight="800">
+            H
+          </SvgText>
+        </Svg>
+      );
+    }
+
+    // Alkane: Isobutane 2-methylpropane
+    return (
+      <Svg width={250} height={152} viewBox="0 0 250 152">
+        <Line x1={125} y1={78} x2={125} y2={28} stroke={colors.primary} strokeWidth={2.8} />
+        <Line x1={125} y1={78} x2={68} y2={114} stroke={atomStroke} strokeWidth={2.8} />
+        <Line x1={125} y1={78} x2={182} y2={114} stroke={atomStroke} strokeWidth={2.8} />
+        <SvgText x={112} y={20} fill={colors.primary} fontSize={12.5} fontWeight="800">
+          CH₃
+        </SvgText>
+        <SvgText x={114} y={96} fill={colors.cyan} fontSize={12.5} fontWeight="800">
+          CH
+        </SvgText>
+        <SvgText x={36} y={124} fill={atomStroke} fontSize={12.5} fontWeight="700">
+          CH₃
+        </SvgText>
+        <SvgText x={186} y={124} fill={atomStroke} fontSize={12.5} fontWeight="700">
+          CH₃
+        </SvgText>
+      </Svg>
+    );
   };
 
-  const points = generateGraphPoints();
-
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {/* Header */}
+    <ScrollView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}
+    >
+      {/* Header (flex-safe so badge never clips off-screen) */}
       <View style={styles.header}>
-        <View>
+        <View style={styles.headerTextCol}>
           <Text style={[styles.title, { color: colors.textPrimary }]}>STEM Graph Playground</Text>
           <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
             Interactive 2D function plotting, kinematics & chemistry
@@ -92,120 +199,184 @@ export const GraphPlaygroundScreen: React.FC = () => {
         <Badge label="Interactive" variant="primary" />
       </View>
 
-      {/* Mode Switcher */}
-      <View style={[styles.tabBar, { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.borderSubtle }]}>
-        <TouchableOpacity
-          onPress={() => { setActiveMode('math'); }}
-          style={[styles.tabBtn, activeMode === 'math' && { backgroundColor: colors.primary }]}
-        >
-          <Text style={[styles.tabText, { color: activeMode === 'math' ? '#FFF' : colors.textSecondary }]}>
-            2D Math Graphs
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => { setActiveMode('physics'); }}
-          style={[styles.tabBtn, activeMode === 'physics' && { backgroundColor: colors.primary }]}
-        >
-          <Text style={[styles.tabText, { color: activeMode === 'physics' ? '#FFF' : colors.textSecondary }]}>
-            Physics Kinematics
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => { setActiveMode('chemistry'); }}
-          style={[styles.tabBtn, activeMode === 'chemistry' && { backgroundColor: colors.primary }]}
-        >
-          <Text style={[styles.tabText, { color: activeMode === 'chemistry' ? '#FFF' : colors.textSecondary }]}>
-            Organic Structures
-          </Text>
-        </TouchableOpacity>
+      {/* Clean Non-Colliding 3-Tab Mode Switcher */}
+      <View
+        style={[
+          styles.tabBar,
+          { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.borderSubtle },
+        ]}
+      >
+        {(
+          [
+            { id: 'math', label: 'Math Plots' },
+            { id: 'physics', label: 'Kinematics' },
+            { id: 'chemistry', label: 'Structures' },
+          ] as const
+        ).map((tab) => {
+          const active = activeMode === tab.id;
+          return (
+            <TouchableOpacity
+              key={tab.id}
+              onPress={() => setActiveMode(tab.id)}
+              style={[styles.tabBtn, active && { backgroundColor: colors.primary }]}
+            >
+              <Text
+                numberOfLines={1}
+                style={[styles.tabText, { color: active ? '#FFFFFF' : colors.textSecondary }]}
+              >
+                {tab.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
 
       {/* Canvas Viewport */}
       {activeMode !== 'chemistry' ? (
         <Card style={styles.canvasCard}>
           <View style={styles.canvasMeta}>
-            <Text style={[styles.equationLabel, { color: colors.primary }]}>
-              {activeMode === 'math' 
-                ? mathFunc === 'sine' ? `f(x) = ${paramA} · sin(${paramB} · 2πx)` 
-                  : mathFunc === 'quadratic' ? `f(x) = ${paramA} · x²` 
-                  : `f(x) = e^(${paramA} · x)`
-                : physicsPreset === 'projectile' ? 'Trajectory: y = x · tan(θ) - (g·x²)/(2v₀²·cos²θ)'
-                : physicsPreset === 'shm' ? 'Damped SHM: x(t) = A·e^(-γt)·cos(ωt)'
-                : 'Kinematics: Velocity vs Time (v-t)'
-              }
+            <Text style={[styles.equationLabel, { color: colors.primary }]} numberOfLines={2}>
+              {activeMode === 'math'
+                ? mathFunc === 'sine'
+                  ? `f(x) = ${paramA.toFixed(1)} · sin(${paramB.toFixed(1)} · 2πx)`
+                  : mathFunc === 'quadratic'
+                  ? `f(x) = ${paramA.toFixed(1)} · x²`
+                  : `f(x) = e^(${paramA.toFixed(1)} · x)`
+                : physicsPreset === 'projectile'
+                ? `y = x·tan(θ) - g·x² / (2v₀²cos²θ) · Scale ${paramA.toFixed(1)}`
+                : physicsPreset === 'shm'
+                ? `x(t) = ${paramA.toFixed(1)}·e^(-0.7t)·cos(${paramB.toFixed(1)}ωt)`
+                : `Kinematics v(t) · Gain ${paramA.toFixed(1)}`}
             </Text>
-            <View style={styles.canvasButtons}>
-              <TouchableOpacity 
-                onPress={() => { setParamA(1.0); setParamB(1.0); }}
-                style={[styles.iconBtn, { backgroundColor: colors.surface }]}
-              >
-                <RotateCcw size={14} color={colors.textSecondary} />
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              onPress={() => {
+                setParamA(1.0);
+                setParamB(1.0);
+              }}
+              style={[styles.iconBtn, { backgroundColor: colors.surface }]}
+              accessibilityLabel="Reset graph parameters"
+            >
+              <RotateCcw size={14} color={colors.textSecondary} />
+            </TouchableOpacity>
           </View>
 
-          {/* Graph Simulation Canvas */}
-          <View style={[styles.canvasFrame, { backgroundColor: themeMode === 'dark' ? '#0F172A' : '#FAFAFA', borderColor: colors.border }]}>
-            {/* Grid Lines */}
-            <View style={[styles.axisX, { top: GRAPH_HEIGHT / 2, backgroundColor: colors.border }]} />
-            <View style={[styles.axisY, { left: GRAPH_WIDTH / 2, backgroundColor: colors.border }]} />
-            
-            {/* Plotted Points & Segments */}
-            {points.map((pt, idx) => (
-              <View
-                key={idx}
-                style={[
-                  styles.pointDot,
-                  {
-                    left: pt.x - 2.5,
-                    top: pt.y - 2.5,
-                    backgroundColor: colors.primary,
-                  },
-                ]}
+          {/* Responsive Smooth SVG Graph */}
+          <View
+            style={[
+              styles.canvasFrame,
+              {
+                backgroundColor: themeMode === 'dark' ? '#0B1324' : '#FAFAFA',
+                borderColor: colors.border,
+              },
+            ]}
+          >
+            <Svg width={canvasWidth} height={GRAPH_HEIGHT}>
+              {/* Vertical & Horizontal Grid Subdivisions */}
+              {[0.25, 0.75].map((frac) => (
+                <Line
+                  key={`gx_${frac}`}
+                  x1={canvasWidth * frac}
+                  y1={0}
+                  x2={canvasWidth * frac}
+                  y2={GRAPH_HEIGHT}
+                  stroke={gridColor}
+                  strokeDasharray="4 4"
+                  strokeWidth={1}
+                />
+              ))}
+              {[0.25, 0.75].map((frac) => (
+                <Line
+                  key={`gy_${frac}`}
+                  x1={0}
+                  y1={GRAPH_HEIGHT * frac}
+                  x2={canvasWidth}
+                  y2={GRAPH_HEIGHT * frac}
+                  stroke={gridColor}
+                  strokeDasharray="4 4"
+                  strokeWidth={1}
+                />
+              ))}
+
+              {/* Main Axes */}
+              <Line
+                x1={0}
+                y1={GRAPH_HEIGHT / 2}
+                x2={canvasWidth}
+                y2={GRAPH_HEIGHT / 2}
+                stroke={axisColor}
+                strokeWidth={1.25}
               />
-            ))}
+              <Line
+                x1={canvasWidth / 2}
+                y1={0}
+                x2={canvasWidth / 2}
+                y2={GRAPH_HEIGHT}
+                stroke={axisColor}
+                strokeWidth={1.25}
+              />
+
+              {/* Axis Labels */}
+              <SvgText x={canvasWidth / 2 + 5} y={13} fill={axisColor} fontSize={10}>
+                +y
+              </SvgText>
+              <SvgText x={canvasWidth - 18} y={GRAPH_HEIGHT / 2 - 5} fill={axisColor} fontSize={10}>
+                +x
+              </SvgText>
+
+              {/* Smooth Curve */}
+              <Polyline
+                points={polylinePoints}
+                fill="none"
+                stroke={strokeColor}
+                strokeWidth={3}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </Svg>
           </View>
 
-          {/* Sliders / Variable Adjustments */}
-          {activeMode === 'math' && (
-            <View style={styles.controlsRow}>
-              <View style={styles.controlGroup}>
-                <Text style={[styles.controlLabel, { color: colors.textSecondary }]}>Amplitude / Factor (A): {paramA.toFixed(1)}</Text>
-                <View style={styles.btnRow}>
-                  <TouchableOpacity 
-                    onPress={() => setParamA((prev) => Math.max(0.5, prev - 0.25))}
-                    style={[styles.paramBtn, { backgroundColor: colors.surface }]}
-                  >
-                    <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>- 0.25</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity 
-                    onPress={() => setParamA((prev) => Math.min(2.5, prev + 0.25))}
-                    style={[styles.paramBtn, { backgroundColor: colors.surface }]}
-                  >
-                    <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>+ 0.25</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View style={styles.controlGroup}>
-                <Text style={[styles.controlLabel, { color: colors.textSecondary }]}>Frequency / Modifier (B): {paramB.toFixed(1)}</Text>
-                <View style={styles.btnRow}>
-                  <TouchableOpacity 
-                    onPress={() => setParamB((prev) => Math.max(0.5, prev - 0.25))}
-                    style={[styles.paramBtn, { backgroundColor: colors.surface }]}
-                  >
-                    <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>- 0.25</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity 
-                    onPress={() => setParamB((prev) => Math.min(2.5, prev + 0.25))}
-                    style={[styles.paramBtn, { backgroundColor: colors.surface }]}
-                  >
-                    <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>+ 0.25</Text>
-                  </TouchableOpacity>
-                </View>
+          {/* Aligned Single-Line Parameter Controls */}
+          <View style={styles.controlsRow}>
+            <View style={styles.controlGroup}>
+              <Text style={[styles.controlLabel, { color: colors.textSecondary }]} numberOfLines={1}>
+                Amplitude (A): {paramA.toFixed(1)}
+              </Text>
+              <View style={styles.btnRow}>
+                <TouchableOpacity
+                  onPress={() => setParamA((prev) => Math.max(0.5, prev - 0.25))}
+                  style={[styles.paramBtn, { backgroundColor: colors.surface }]}
+                >
+                  <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>- 0.25</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setParamA((prev) => Math.min(2.5, prev + 0.25))}
+                  style={[styles.paramBtn, { backgroundColor: colors.surface }]}
+                >
+                  <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>+ 0.25</Text>
+                </TouchableOpacity>
               </View>
             </View>
-          )}
+
+            <View style={styles.controlGroup}>
+              <Text style={[styles.controlLabel, { color: colors.textSecondary }]} numberOfLines={1}>
+                Frequency (B): {paramB.toFixed(1)}
+              </Text>
+              <View style={styles.btnRow}>
+                <TouchableOpacity
+                  onPress={() => setParamB((prev) => Math.max(0.5, prev - 0.25))}
+                  style={[styles.paramBtn, { backgroundColor: colors.surface }]}
+                >
+                  <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>- 0.25</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setParamB((prev) => Math.min(2.5, prev + 0.25))}
+                  style={[styles.paramBtn, { backgroundColor: colors.surface }]}
+                >
+                  <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>+ 0.25</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
 
           {/* Preset Buttons */}
           <View style={styles.presetRow}>
@@ -214,17 +385,23 @@ export const GraphPlaygroundScreen: React.FC = () => {
                 {(['sine', 'quadratic', 'exponential'] as const).map((func) => (
                   <TouchableOpacity
                     key={func}
-                    onPress={() => { setMathFunc(func); }}
+                    onPress={() => setMathFunc(func)}
                     style={[
                       styles.presetBtn,
                       {
                         backgroundColor: mathFunc === func ? colors.primary : colors.surface,
                         borderWidth: 1,
                         borderColor: mathFunc === func ? colors.primary : colors.borderSubtle,
-                      }
+                      },
                     ]}
                   >
-                    <Text style={{ color: mathFunc === func ? '#FFF' : colors.textPrimary, fontSize: 12, fontWeight: '600' }}>
+                    <Text
+                      style={{
+                        color: mathFunc === func ? '#FFF' : colors.textPrimary,
+                        fontSize: 12,
+                        fontWeight: '700',
+                      }}
+                    >
                       {func.toUpperCase()}
                     </Text>
                   </TouchableOpacity>
@@ -235,17 +412,23 @@ export const GraphPlaygroundScreen: React.FC = () => {
                 {(['projectile', 'shm', 'vt_graph'] as const).map((p) => (
                   <TouchableOpacity
                     key={p}
-                    onPress={() => { setPhysicsPreset(p); }}
+                    onPress={() => setPhysicsPreset(p)}
                     style={[
                       styles.presetBtn,
                       {
                         backgroundColor: physicsPreset === p ? colors.primary : colors.surface,
                         borderWidth: 1,
                         borderColor: physicsPreset === p ? colors.primary : colors.borderSubtle,
-                      }
+                      },
                     ]}
                   >
-                    <Text style={{ color: physicsPreset === p ? '#FFF' : colors.textPrimary, fontSize: 12, fontWeight: '600' }}>
+                    <Text
+                      style={{
+                        color: physicsPreset === p ? '#FFF' : colors.textPrimary,
+                        fontSize: 12,
+                        fontWeight: '700',
+                      }}
+                    >
                       {p === 'projectile' ? 'Projectile' : p === 'shm' ? 'Damped SHM' : 'v-t Graph'}
                     </Text>
                   </TouchableOpacity>
@@ -255,67 +438,63 @@ export const GraphPlaygroundScreen: React.FC = () => {
           </View>
         </Card>
       ) : (
-        /* Chemistry Structural Explorer */
+        /* Chemistry Structural Explorer with Live 2D SVG Skeletal Diagrams */
         <Card style={styles.canvasCard}>
-          <Text style={[styles.equationLabel, { color: colors.primary, marginBottom: 12 }]}>
-            IUPAC Structure & 2D Bonding Schema
+          <Text style={[styles.equationLabel, { color: colors.primary, marginBottom: 10 }]}>
+            IUPAC 2D Molecular Bonding Explorer
           </Text>
 
-          <View style={[styles.chemVisualBox, { backgroundColor: themeMode === 'dark' ? '#0F172A' : '#FAFAFA', borderColor: colors.border }]}>
-            {chemPreset === 'benzene' && (
-              <View style={styles.chemCenter}>
-                <Text style={[styles.chemFormula, { color: colors.primary }]}>C₆H₆</Text>
-                <Text style={[styles.chemIupac, { color: colors.textPrimary }]}>Benzene (Aromatic Ring)</Text>
-                <Text style={[styles.chemDetails, { color: colors.textSecondary }]}>
-                  Delocalized 6 π-electrons with planar sp² hybridization and resonance stabilization energy of 36 kcal/mol.
-                </Text>
-              </View>
-            )}
-            {chemPreset === 'ester' && (
-              <View style={styles.chemCenter}>
-                <Text style={[styles.chemFormula, { color: colors.primary }]}>CH₃-COO-CH₂CH₃</Text>
-                <Text style={[styles.chemIupac, { color: colors.textPrimary }]}>Ethyl Ethanoate (Ester)</Text>
-                <Text style={[styles.chemDetails, { color: colors.textSecondary }]}>
-                  Formed by Fischer esterification of ethanoic acid and ethanol in acidic medium. Distinctive fruity aroma.
-                </Text>
-              </View>
-            )}
-            {chemPreset === 'alcohol' && (
-              <View style={styles.chemCenter}>
-                <Text style={[styles.chemFormula, { color: colors.primary }]}>CH₃-CH₂-OH</Text>
-                <Text style={[styles.chemIupac, { color: colors.textPrimary }]}>Ethanol (Primary Alcohol)</Text>
-                <Text style={[styles.chemDetails, { color: colors.textSecondary }]}>
-                  Undergoes oxidation with acidified K₂Cr₂O₇ to form ethanal and subsequently ethanoic acid.
-                </Text>
-              </View>
-            )}
-            {chemPreset === 'alkane' && (
-              <View style={styles.chemCenter}>
-                <Text style={[styles.chemFormula, { color: colors.primary }]}>CH₃-CH(CH₃)-CH₃</Text>
-                <Text style={[styles.chemIupac, { color: colors.textPrimary }]}>2-Methylpropane (Isobutane)</Text>
-                <Text style={[styles.chemDetails, { color: colors.textSecondary }]}>
-                  Branched alkane showing tetrahedral geometry (109.5° bond angle) with 1 tertiary carbon atom.
-                </Text>
-              </View>
-            )}
+          <View
+            style={[
+              styles.chemVisualBox,
+              {
+                backgroundColor: themeMode === 'dark' ? '#0B1324' : '#FAFAFA',
+                borderColor: colors.border,
+              },
+            ]}
+          >
+            {renderChemicalSvg()}
+            <Text style={[styles.chemIupac, { color: colors.textPrimary }]}>
+              {chemPreset === 'benzene'
+                ? 'Benzene (C₆H₆)'
+                : chemPreset === 'ester'
+                ? 'Ethyl Ethanoate (CH₃COOCH₂CH₃)'
+                : chemPreset === 'alcohol'
+                ? 'Ethanol (CH₃CH₂OH)'
+                : '2-Methylpropane · Isobutane'}
+            </Text>
+            <Text style={[styles.chemDetails, { color: colors.textSecondary }]}>
+              {chemPreset === 'benzene'
+                ? 'Planar aromatic ring with 6 delocalized π-electrons (sp² hybridized) and 36 kcal/mol resonance energy.'
+                : chemPreset === 'ester'
+                ? 'Ester linkage formed by Fischer esterification of ethanoic acid + ethanol in acid medium.'
+                : chemPreset === 'alcohol'
+                ? 'Primary alcohol oxidized stepwise to ethanal and ethanoic acid with acidic K₂Cr₂O₇.'
+                : 'Branched alkane with sp³ tetrahedral carbon (109.5°) and one tertiary C-H center.'}
+            </Text>
           </View>
 
-          {/* Chemistry selector */}
           <View style={styles.presetRow}>
             {(['benzene', 'ester', 'alcohol', 'alkane'] as const).map((cp) => (
               <TouchableOpacity
                 key={cp}
-                onPress={() => { setChemPreset(cp); }}
+                onPress={() => setChemPreset(cp)}
                 style={[
                   styles.presetBtn,
                   {
                     backgroundColor: chemPreset === cp ? colors.primary : colors.surface,
                     borderWidth: 1,
                     borderColor: chemPreset === cp ? colors.primary : colors.borderSubtle,
-                  }
+                  },
                 ]}
               >
-                <Text style={{ color: chemPreset === cp ? '#FFF' : colors.textPrimary, fontSize: 12, fontWeight: '600' }}>
+                <Text
+                  style={{
+                    color: chemPreset === cp ? '#FFF' : colors.textPrimary,
+                    fontSize: 11.5,
+                    fontWeight: '700',
+                  }}
+                >
                   {cp.toUpperCase()}
                 </Text>
               </TouchableOpacity>
@@ -329,7 +508,7 @@ export const GraphPlaygroundScreen: React.FC = () => {
         <View style={styles.infoRow}>
           <Info size={18} color={colors.primary} />
           <Text style={[styles.infoText, { color: colors.textSecondary }]}>
-            Supports real-time function evaluation for competitive exams (JEE Main, Advanced, NEET, CBSE). Adjust parameters to observe changes dynamically.
+            Supports real-time SVG curve plotting and molecular schematics for JEE, NEET, and CBSE.
           </Text>
         </View>
       </Card>
@@ -338,66 +517,47 @@ export const GraphPlaygroundScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  content: {
-    padding: 16,
-    paddingBottom: 32,
-  },
+  container: { flex: 1 },
+  content: { padding: 16, paddingBottom: 32 },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 16,
+    gap: 10,
   },
-  title: {
-    fontSize: 22,
-    fontWeight: '800',
-  },
-  subtitle: {
-    fontSize: 13,
-    marginTop: 2,
-  },
+  headerTextCol: { flex: 1, paddingRight: 8, minWidth: 0 },
+  title: { fontSize: 21, fontWeight: '800' },
+  subtitle: { fontSize: 12.5, marginTop: 2 },
   tabBar: {
     flexDirection: 'row',
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 4,
     marginBottom: 16,
+    gap: 6,
   },
   tabBtn: {
     flex: 1,
-    paddingVertical: 8,
-    borderRadius: 8,
+    paddingVertical: 9,
+    paddingHorizontal: 6,
+    borderRadius: 9,
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  tabText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  canvasCard: {
-    padding: 16,
-    marginBottom: 16,
-  },
+  tabText: { fontSize: 12, fontWeight: '700' },
+  canvasCard: { padding: 16, marginBottom: 16 },
   canvasMeta: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 12,
-  },
-  equationLabel: {
-    fontSize: 13.5,
-    fontWeight: '700',
-    flex: 1,
-  },
-  canvasButtons: {
-    flexDirection: 'row',
     gap: 8,
   },
+  equationLabel: { fontSize: 13.5, fontWeight: '700', flex: 1 },
   iconBtn: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -405,58 +565,28 @@ const styles = StyleSheet.create({
     width: '100%',
     height: GRAPH_HEIGHT,
     borderRadius: 12,
-    position: 'relative',
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
-    marginBottom: 16,
-  },
-  axisX: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    height: 1,
-  },
-  axisY: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    width: 1,
-  },
-  pointDot: {
-    position: 'absolute',
-    width: 5,
-    height: 5,
-    borderRadius: 2.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 14,
   },
   controlsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: 12,
-    marginBottom: 16,
+    marginBottom: 14,
   },
-  controlGroup: {
-    flex: 1,
-  },
-  controlLabel: {
-    fontSize: 11,
-    fontWeight: '600',
-    marginBottom: 6,
-  },
-  btnRow: {
-    flexDirection: 'row',
-    gap: 8,
-  },
+  controlGroup: { flex: 1 },
+  controlLabel: { fontSize: 11.5, fontWeight: '700', marginBottom: 6 },
+  btnRow: { flexDirection: 'row', gap: 8 },
   paramBtn: {
     flex: 1,
-    paddingVertical: 6,
-    borderRadius: 6,
+    paddingVertical: 7,
+    borderRadius: 8,
     alignItems: 'center',
   },
-  presetRow: {
-    flexDirection: 'row',
-    gap: 8,
-  },
+  presetRow: { flexDirection: 'row', gap: 8 },
   presetBtn: {
     flex: 1,
     paddingVertical: 8,
@@ -464,46 +594,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   chemVisualBox: {
-    height: GRAPH_HEIGHT,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
-    marginBottom: 16,
+    padding: 16,
+    marginBottom: 14,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
   },
-  chemCenter: {
-    alignItems: 'center',
-  },
-  chemFormula: {
-    fontSize: 22,
-    fontWeight: '800',
-    letterSpacing: 1.5,
-    marginBottom: 6,
-  },
-  chemIupac: {
-    fontSize: 16,
-    fontWeight: '700',
-    marginBottom: 8,
-  },
-  chemDetails: {
-    fontSize: 12.5,
-    textAlign: 'center',
-    lineHeight: 18,
-  },
-  infoCard: {
-    padding: 12,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  infoText: {
-    fontSize: 12,
-    flex: 1,
-    lineHeight: 17,
-  },
+  chemIupac: { fontSize: 15.5, fontWeight: '800', marginTop: 4, marginBottom: 4, textAlign: 'center' },
+  chemDetails: { fontSize: 12, textAlign: 'center', lineHeight: 17 },
+  infoCard: { padding: 12 },
+  infoRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  infoText: { fontSize: 12, flex: 1, lineHeight: 17 },
 });
-

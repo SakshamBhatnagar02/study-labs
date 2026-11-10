@@ -114,6 +114,10 @@ export interface TestAttempt {
   score: number;
   maxScore: number;
   percentage: number;
+  marksPerCorrect?: number;
+  negativeMarks?: number;
+  estimatedPercentile?: number;
+  estimatedRank?: number;
   date: string;
   answers: Record<string, string | number>; // questionId -> answer
 }
@@ -157,9 +161,128 @@ export interface PeriodicElement {
   group: number;
   period: number;
   electronConfig: string;
+  electronegativity?: number;
+  oxidationStates?: string;
+  stateAtStp?: 'Solid' | 'Liquid' | 'Gas';
+  valenceElectrons?: string;
+}
+
+export interface PeriodicGroupInfo {
+  groupNumber: number;
+  id: string;
+  iupacGroup: string;
+  casGroup: string;
+  familyName: string;
+  block: string;
+  valenceShell: string;
+  commonOxidationStates: string;
+  bondingCharacter: string;
+  periodicTrends: string;
+  keyProperties: string[];
+  signatureCompounds: string[];
 }
 
 export type ReasoningPower = 'auto' | 'flash-lite' | 'flash' | 'pro';
+
+export type AIAttachmentKind = 'image' | 'pdf' | 'ppt' | 'text' | 'document';
+
+export type AttachmentFilterPreset = 'none' | 'high_contrast' | 'inverted' | 'warm';
+
+export interface AIUploadedAttachment {
+  id: string;
+  name: string;
+  mimeType: string;
+  kind: AIAttachmentKind;
+  sizeBytes?: number;
+  base64?: string;
+  extractedText?: string;
+  uri?: string;
+  summaryHint?: string;
+  edited?: boolean;
+  editedAt?: string;
+  rotationDeg?: number;
+  filterPreset?: AttachmentFilterPreset;
+}
+
+export interface WebSearchCitation {
+  title: string;
+  uri: string;
+}
+
+export interface MessageFeedback {
+  rating?: 'up' | 'down';
+  reason?: string;
+  comment?: string;
+  updatedAt: string;
+}
+
+export type AppErrorSource =
+  | 'gemini'
+  | 'gemini_image'
+  | 'supabase'
+  | 'calendar'
+  | 'attachment'
+  | 'quota';
+
+export interface AppErrorInfo {
+  id: string;
+  source: AppErrorSource;
+  code?: string | number;
+  title: string;
+  message: string;
+  suggestion: string;
+  rawError: string;
+  timestamp: string;
+  canRetry: boolean;
+  canUseOffline?: boolean;
+}
+
+export type StemVisualSubject = 'math' | 'physics' | 'chemistry';
+export type StemVisualBgTheme = 'dark' | 'light' | 'blueprint';
+
+export interface StemVisualAnnotation {
+  id: string;
+  text: string;
+  xPct: number;
+  yPct: number;
+  color?: string;
+}
+
+export type UserPlanTier = 'free' | 'pro' | 'ultra';
+
+export interface UserPlanQuota {
+  planId: UserPlanTier;
+  label: string;
+  maxStorageBytes: number;
+  maxImages: number;
+  priceLabel: string;
+  features: string[];
+}
+
+export interface GeneratedStemImage {
+  id: string;
+  title: string;
+  prompt: string;
+  subjectCategory: StemVisualSubject;
+  format: 'png' | 'svg';
+  dataUri: string;
+  svgMarkup?: string;
+  byteSize: number;
+  width: number;
+  height: number;
+  createdAt: string;
+  editedAt?: string;
+  source: 'gemini' | 'stem_engine';
+  modelLabel?: string;
+  caption?: string;
+  visualPresetKey?: string;
+  rotationDeg: number;
+  flipX?: boolean;
+  bgTheme: StemVisualBgTheme;
+  showGrid: boolean;
+  showLabels: boolean;
+  annotations: StemVisualAnnotation[];
+}
 
 export interface ChatMessage {
   id: string;
@@ -173,6 +296,59 @@ export interface ChatMessage {
   reasoningPower?: ReasoningPower;
   detectedDifficulty?: QuestionDifficulty;
   isFallback?: boolean;
+  promptQuery?: string;
+  feedback?: MessageFeedback;
+  citations?: WebSearchCitation[];
+  webSearchUsed?: boolean;
+  generatedImageId?: string;
+  errorInfo?: AppErrorInfo;
+  steps?: string[];
+  tips?: string[];
+  attachments?: AIUploadedAttachment[];
+}
+
+export interface ChatSession {
+  id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  webSearchEnabled?: boolean;
+  messages: ChatMessage[];
+}
+
+export type ResolvedCountryCode = 'IN' | 'US' | 'GB' | 'CA' | 'AU' | 'SG' | 'AE';
+export type HolidayCountryCode = 'AUTO' | ResolvedCountryCode;
+
+export interface CalendarHoliday {
+  id: string;
+  date: string; // YYYY-MM-DD
+  name: string;
+  country: ResolvedCountryCode;
+  category: 'public' | 'academic' | 'observance';
+  note?: string;
+}
+
+export interface PlannerExam {
+  id: string;
+  name: string;
+  targetDate: string; // YYYY-MM-DD
+  category: string;
+}
+
+export interface PlannerGoal {
+  id: string;
+  title: string;
+  subject: string;
+  dateKey: string; // YYYY-MM-DD
+  dueToday: boolean;
+  isCompleted: boolean;
+  durationMinutes: number;
+}
+
+export interface PlannerCalendarState {
+  selectedCountry: HolidayCountryCode;
+  exams: PlannerExam[];
+  goals: PlannerGoal[];
 }
 
 export type ParticleIntensity = 'low' | 'standard' | 'high';
@@ -288,6 +464,10 @@ export interface CustomTestConfig {
   questionIds: string[];
   mode: 'practice' | 'exam';
   durationMinutes: number;
+  marksPerCorrect?: number;
+  negativeMarks?: number;
+  targetRank?: number;
+  totalCandidates?: number;
   createdAt: string;
 }
 
@@ -296,7 +476,28 @@ export interface TestSessionLaunch {
   mode: 'practice' | 'exam';
   questionIds: string[];
   initialQuestionIndex?: number;
+  marksPerCorrect?: number;
+  negativeMarks?: number;
+  targetRank?: number;
+  totalCandidates?: number;
   nonce: number;
+}
+
+export interface ActiveTestWorkspaceState {
+  sessionTitle: string;
+  activeQuestionIds: string[];
+  currentIdx: number;
+  draftAnswers: Record<string, string | number>;
+  submittedAnswers: Record<string, string | number>;
+  numericalInputs: Record<string, string>;
+  isPracticeMode: boolean;
+  marksPerCorrect: number;
+  negativeMarks: number;
+  targetRank?: number;
+  totalCandidates?: number;
+  isSubmitted: boolean;
+  secondsElapsed: number;
+  questionSeconds: Record<string, number>;
 }
 
 

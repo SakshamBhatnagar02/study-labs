@@ -1,4 +1,22 @@
-import type { Question, QuestionDifficulty, ReasoningPower, SubjectId } from '../types';
+import type {
+  AIUploadedAttachment,
+  AppErrorInfo,
+  GeneratedStemImage,
+  Question,
+  QuestionDifficulty,
+  ReasoningPower,
+  StemVisualSubject,
+  SubjectId,
+  WebSearchCitation,
+} from '../types';
+import {
+  detectStemVisualCategory,
+  detectVisualPreset,
+  estimateUtf8Bytes,
+  generateStemDiagramSvg,
+  svgToDataUri,
+} from '../utils/aiImageLibrary';
+import { buildApiErrorInfo } from '../utils/errorHandling';
 
 export type GeminiModelId =
   | 'gemini-flash-lite-latest'
@@ -62,6 +80,9 @@ export interface AIResponse {
   reasoningMode: ReasoningPower;
   detectedDifficulty: QuestionDifficulty;
   selectionReason: string;
+  citations?: WebSearchCitation[];
+  webSearchUsed?: boolean;
+  errorInfo?: AppErrorInfo;
 }
 
 export interface AskTutorContext {
@@ -69,6 +90,9 @@ export interface AskTutorContext {
   grade?: string;
   difficulty?: QuestionDifficulty;
   reasoningMode?: ReasoningPower;
+  attachments?: AIUploadedAttachment[];
+  webSearchEnabled?: boolean;
+  history?: Array<{ role: 'user' | 'model'; text: string }>;
 }
 
 const MODEL_META_BY_ID: Record<GeminiModelId, { label: string; shortLabel: string }> = {
@@ -174,11 +198,143 @@ const hasApiKey =
   !GEMINI_API_KEY.includes('your-gemini-api-key') &&
   !GEMINI_API_KEY.includes('ExampleKey');
 
+const MAX_INLINE_BASE64_CHARS = 14_000_000;
+const GEMINI_REQUEST_TIMEOUT_MS = 14_000;
+
+async function fetchWithTimeout(
+  url: string,
+  init: RequestInit,
+  timeoutMs = GEMINI_REQUEST_TIMEOUT_MS
+): Promise<Response> {
+  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  const timer = controller
+    ? setTimeout(() => {
+        try {
+          controller.abort();
+        } catch {
+          // Ignore abort cleanup
+        }
+      }, timeoutMs)
+    : null;
+  try {
+    return await fetch(url, controller ? { ...init, signal: controller.signal } : init);
+  } catch (err: any) {
+    if (err?.name === 'AbortError') {
+      throw new Error(`Gemini request timed out after ${Math.round(timeoutMs / 1000)}s (TIMEOUT).`);
+    }
+    throw err;
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
+interface GeminiEndpointResult {
+  text: string | null;
+  citations: WebSearchCitation[];
+  webSearchApplied: boolean;
+}
+
+function extractGroundingCitations(data: any): WebSearchCitation[] {
+  const chunks = data?.candidates?.[0]?.groundingMetadata?.groundingChunks;
+  if (!Array.isArray(chunks)) return [];
+  const seen = new Set<string>();
+  const citations: WebSearchCitation[] = [];
+  for (const ch of chunks) {
+    const uri = ch?.web?.uri;
+    const title = ch?.web?.title || uri;
+    if (typeof uri === 'string' && uri.startsWith('http') && !seen.has(uri)) {
+      seen.add(uri);
+      citations.push({
+        title: String(title || 'Web Source').slice(0, 80),
+        uri,
+      });
+    }
+  }
+  return citations.slice(0, 8);
+}
+
 async function requestGeminiEndpoint(
   modelId: GeminiModelId,
-  promptText: string
-): Promise<string | null> {
-  const response = await fetch(
+  promptText: string,
+  attachments?: AIUploadedAttachment[],
+  options?: {
+    webSearchEnabled?: boolean;
+    history?: Array<{ role: 'user' | 'model'; text: string }>;
+  }
+): Promise<GeminiEndpointResult> {
+  const requestParts: Array<Record<string, any>> = [];
+  const extractedSections: string[] = [];
+
+  if (attachments && attachments.length > 0) {
+    for (const att of attachments) {
+      if ((att.kind === 'image' || att.kind === 'pdf') && att.base64) {
+        if (att.base64.length <= MAX_INLINE_BASE64_CHARS) {
+          requestParts.push({
+            inlineData: {
+              mimeType: att.mimeType,
+              data: att.base64,
+            },
+          });
+        } else {
+          extractedSections.push(
+            `[Attachment "${att.name}" (${att.mimeType}) exceeds inline payload size limit and was omitted from binary upload.]`
+          );
+        }
+      } else if (att.extractedText && att.extractedText.trim()) {
+        extractedSections.push(
+          `--- Extracted Content from ${att.name} (${att.kind.toUpperCase()}) ---\n${att.extractedText.slice(0, 16000)}`
+        );
+      } else {
+        extractedSections.push(
+          `[Attached File: ${att.name} (${att.mimeType})${att.summaryHint ? ` — ${att.summaryHint}` : ''}]`
+        );
+      }
+      if (att.summaryHint && (att.kind === 'image' || att.kind === 'pdf')) {
+        extractedSections.push(`[User Edit / Note on "${att.name}": ${att.summaryHint}]`);
+      }
+    }
+  }
+
+  const combinedText =
+    extractedSections.length > 0
+      ? `${promptText}\n\n${extractedSections.join('\n\n')}`
+      : promptText;
+
+  requestParts.push({ text: combinedText });
+
+  const contentsPayload: Array<{ role: string; parts: Array<Record<string, any>> }> = [];
+  if (options?.history && options.history.length > 0) {
+    for (const h of options.history.slice(-6)) {
+      if (h.text && h.text.trim()) {
+        contentsPayload.push({
+          role: h.role,
+          parts: [{ text: h.text.slice(0, 2000) }],
+        });
+      }
+    }
+  }
+  contentsPayload.push({
+    role: 'user',
+    parts: requestParts,
+  });
+
+  const buildBody = (withWebSearch: boolean) => {
+    const body: Record<string, any> = {
+      contents: contentsPayload,
+      generationConfig: {
+        temperature: modelId === 'gemini-pro-latest' ? 0.3 : 0.4,
+        maxOutputTokens: 3072,
+      },
+    };
+    if (withWebSearch) {
+      body.tools = [{ google_search: {} }];
+    }
+    return body;
+  };
+
+  const timeoutMs = modelId === 'gemini-pro-latest' ? 16_000 : GEMINI_REQUEST_TIMEOUT_MS;
+  let webSearchApplied = Boolean(options?.webSearchEnabled);
+  let response = await fetchWithTimeout(
     `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent`,
     {
       method: 'POST',
@@ -186,29 +342,39 @@ async function requestGeminiEndpoint(
         'Content-Type': 'application/json',
         'x-goog-api-key': GEMINI_API_KEY,
       },
-      body: JSON.stringify({
-        contents: [
-          {
-            role: 'user',
-            parts: [{ text: promptText }],
-          },
-        ],
-        generationConfig: {
-          temperature: modelId === 'gemini-pro-latest' ? 0.3 : 0.4,
-          maxOutputTokens: 2048,
-        },
-      }),
-    }
+      body: JSON.stringify(buildBody(webSearchApplied)),
+    },
+    timeoutMs
   );
+
+  // If Google Search grounding tool is rejected on a model tier (HTTP 400), retry cleanly without tools
+  if (!response.ok && webSearchApplied && response.status === 400) {
+    webSearchApplied = false;
+    response = await fetchWithTimeout(
+      `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': GEMINI_API_KEY,
+        },
+        body: JSON.stringify(buildBody(false)),
+      },
+      timeoutMs
+    );
+  }
 
   if (!response.ok) {
     const errBody = await response.text().catch(() => '');
-    throw new Error(`Gemini HTTP ${response.status}: ${errBody.slice(0, 180)}`);
+    throw new Error(`Gemini HTTP ${response.status}: ${errBody.slice(0, 220)}`);
   }
 
   const data = await response.json();
+  const citations = extractGroundingCitations(data);
   const parts = data?.candidates?.[0]?.content?.parts;
-  if (!Array.isArray(parts)) return null;
+  if (!Array.isArray(parts)) {
+    return { text: null, citations, webSearchApplied };
+  }
 
   const text = parts
     .map((p: any) => (typeof p?.text === 'string' ? p.text : ''))
@@ -216,7 +382,11 @@ async function requestGeminiEndpoint(
     .join('\n')
     .trim();
 
-  return text || null;
+  return {
+    text: text || null,
+    citations,
+    webSearchApplied,
+  };
 }
 
 export const GeminiAIService = {
@@ -226,7 +396,17 @@ export const GeminiAIService = {
 
   async askTutor(prompt: string, context?: AskTutorContext): Promise<AIResponse> {
     const mode: ReasoningPower = context?.reasoningMode || 'auto';
-    const resolved = resolveModelForPrompt(mode, prompt, context?.difficulty);
+    const attachments = context?.attachments || [];
+    const analysisHintPrompt =
+      prompt.trim() ||
+      (attachments.length > 0
+        ? `Analyze the attached file(s) (${attachments.map((a) => a.name).join(', ')}), generate a clear structured summary, key concepts/formulas, and solve any problems shown.`
+        : 'Explain this topic step by step.');
+    const resolved = resolveModelForPrompt(
+      mode,
+      attachments.length > 0 ? `${analysisHintPrompt} multi-step` : analysisHintPrompt,
+      context?.difficulty
+    );
 
     const depthInstruction =
       resolved.modelId === 'gemini-flash-lite-latest'
@@ -238,37 +418,58 @@ export const GeminiAIService = {
     const engineeredPrompt = [
       `You are the Study Labs AI Master Tutor for ${context?.grade || 'Class 11-12 STEM'} (${context?.subject || 'Science & Math'}).`,
       depthInstruction,
+      context?.webSearchEnabled
+        ? 'Live Web Search Grounding is enabled: verify up-to-date syllabus facts, dates, constants, and cite real references where helpful.'
+        : '',
+      attachments.length > 0
+        ? 'When analyzing uploaded files, images, PDFs, slides (PPT/PPTX), or text documents: first provide an **Executive Summary**, then **Key Formulas / Concepts Extracted**, and finally **Step-by-Step Solutions** for every question or exercise present.'
+        : '',
       'Formatting rules:',
       '- Use valid LaTeX delimiters strictly: $...$ for inline formulas/symbols and $$...$$ on its own line for block equations.',
       '- Use clean Markdown headings (###), bullet lists, and bold emphasis for readability.',
       '',
-      `User Question: ${prompt}`,
-    ].join('\n');
+      `User Question: ${analysisHintPrompt}`,
+    ]
+      .filter(Boolean)
+      .join('\n');
+
+    let lastError: unknown = hasApiKey
+      ? undefined
+      : new Error('Gemini API key is missing or not configured in environment.');
 
     if (hasApiKey) {
       try {
-        const output = await requestGeminiEndpoint(resolved.modelId, engineeredPrompt);
-        if (output) {
+        const result = await requestGeminiEndpoint(resolved.modelId, engineeredPrompt, attachments, {
+          webSearchEnabled: context?.webSearchEnabled,
+          history: context?.history,
+        });
+        if (result.text) {
           return {
-            text: output,
+            text: result.text,
             isFallback: false,
             modelId: resolved.modelId,
             modelLabel: resolved.modelLabel,
             reasoningMode: resolved.reasoningMode,
             detectedDifficulty: resolved.detectedDifficulty,
             selectionReason: resolved.selectionReason,
+            citations: result.citations,
+            webSearchUsed: result.webSearchApplied,
           };
         }
+        lastError = new Error('Gemini returned an empty response payload.');
       } catch (err: any) {
+        lastError = err;
         const isRateLimit = String(err?.message || '').includes('429');
-        // In adaptive Auto mode, or when Pro hits free-tier HTTP 429 rate limit, fall back live to Flash Latest
         if ((mode === 'auto' || isRateLimit) && resolved.modelId !== 'gemini-flash-latest') {
           try {
             const fallbackModel: GeminiModelId = 'gemini-flash-latest';
-            const output = await requestGeminiEndpoint(fallbackModel, engineeredPrompt);
-            if (output) {
+            const result = await requestGeminiEndpoint(fallbackModel, engineeredPrompt, attachments, {
+              webSearchEnabled: context?.webSearchEnabled,
+              history: context?.history,
+            });
+            if (result.text) {
               return {
-                text: output,
+                text: result.text,
                 isFallback: false,
                 modelId: fallbackModel,
                 modelLabel: isRateLimit
@@ -279,26 +480,85 @@ export const GeminiAIService = {
                 selectionReason: isRateLimit
                   ? `${resolved.shortLabel} hit HTTP 429 quota → served live by Flash`
                   : `Auto fallback (${resolved.detectedDifficulty} → Flash)`,
+                citations: result.citations,
+                webSearchUsed: result.webSearchApplied,
               };
             }
-          } catch {
-            // Fall through to local offline STEM engine
+          } catch (fallbackErr: any) {
+            lastError = fallbackErr || err;
           }
         }
-        console.warn('[Study Labs] Gemini API unavailable, using offline STEM tutor engine.', err);
+        console.warn('[Study Labs] Gemini API unavailable, using offline STEM tutor engine.', lastError);
       }
     }
 
-    return this.generateOfflineEducationalResponse(prompt, context?.subject, resolved);
+    const offline = this.generateOfflineEducationalResponse(
+      analysisHintPrompt,
+      context?.subject,
+      resolved,
+      attachments
+    );
+
+    return {
+      ...offline,
+      errorInfo: buildApiErrorInfo('gemini', lastError, {
+        code: hasApiKey ? undefined : 'MISSING_API_KEY',
+        canRetry: true,
+        canUseOffline: true,
+      }),
+    };
   },
 
   generateOfflineEducationalResponse(
     query: string,
     subject?: string,
-    resolved?: ResolvedModelSelection
+    resolved?: ResolvedModelSelection,
+    attachments?: AIUploadedAttachment[]
   ): AIResponse {
     const modelMeta = resolved || resolveModelForPrompt('auto', query);
     const q = query.toLowerCase();
+
+    if (attachments && attachments.length > 0) {
+      const fileLines = attachments.map((att) => {
+        const snippet = att.extractedText
+          ? att.extractedText
+              .split(/\r?\n/)
+              .map((l) => l.trim())
+              .filter(Boolean)
+              .slice(0, 6)
+              .join('\n  - ')
+          : '';
+        return (
+          `- **${att.name}** (${att.summaryHint || att.kind.toUpperCase()})` +
+          (snippet ? `\n  - ${snippet}` : '')
+        );
+      });
+
+      const hasBinaryMedia = attachments.some((a) => a.kind === 'image' || a.kind === 'pdf');
+
+      return {
+        text:
+          `### Uploaded File Analysis & Study Summary\n\n` +
+          `Analyzed **${attachments.length} file(s)** (*${modelMeta.shortLabel} Offline Parser*):\n\n` +
+          `${fileLines.join('\n')}\n\n` +
+          (hasBinaryMedia
+            ? '**Visual / PDF Note**: Image & scanned PDF OCR requires a live Gemini API connection. Text-based PPTX, DOCX, TXT, MD, and CSV content is extracted locally automatically.\n\n'
+            : '') +
+          `**Prompt Focus**: "${query}"`,
+        steps: [
+          'Review extracted slide headings, definitions, and numerical statements listed above.',
+          'Break multi-part problems into Given Data, Governing Formula, and Substitution steps.',
+          hasBinaryMedia
+            ? 'Paste any unclear equation or verify live internet/API connectivity for full multimodal OCR.'
+            : 'Ask follow-up questions about any specific slide, paragraph, or equation above.',
+        ],
+        tips: [
+          'You can upload `.pptx`, `.docx`, `.pdf`, `.txt`, `.md`, `.csv`, or problem photos together in one message.',
+        ],
+        isFallback: true,
+        ...modelMeta,
+      };
+    }
 
     if (q.includes('photoelectric') || q.includes('einstein') || q.includes('work function')) {
       return {
@@ -427,7 +687,12 @@ export const GeminiAIService = {
     count: number;
     topicHint?: string;
     reasoningMode?: ReasoningPower;
-  }): Promise<{ questions: Question[]; isFallback: boolean; modelLabel: string }> {
+  }): Promise<{
+    questions: Question[];
+    isFallback: boolean;
+    modelLabel: string;
+    errorInfo?: AppErrorInfo;
+  }> {
     const {
       subjectIds,
       difficulties,
@@ -440,12 +705,16 @@ export const GeminiAIService = {
       return { questions: [], isFallback: true, modelLabel: 'Offline Generator' };
     }
 
-    const safeCount = Math.max(1, Math.min(10, count));
+    const safeCount = Math.max(1, Math.min(25, Math.round(count)));
     const resolved = resolveModelForPrompt(
       reasoningMode === 'auto' ? 'flash' : reasoningMode,
       topicHint || subjectIds.join(', '),
       difficulties.includes('Hard') ? 'Hard' : difficulties.includes('Medium') ? 'Medium' : 'Easy'
     );
+
+    let lastGenError: unknown = hasApiKey
+      ? undefined
+      : new Error('Gemini API key is missing or not configured in environment.');
 
     if (hasApiKey) {
       try {
@@ -461,7 +730,8 @@ export const GeminiAIService = {
           .filter(Boolean)
           .join('\n');
 
-        const raw = await requestGeminiEndpoint(resolved.modelId, prompt);
+        const endpointRes = await requestGeminiEndpoint(resolved.modelId, prompt);
+        const raw = endpointRes.text;
         if (raw) {
           const cleaned = raw
             .replace(/^```(?:json)?/i, '')
@@ -520,7 +790,9 @@ export const GeminiAIService = {
             }
           }
         }
+        lastGenError = new Error('Gemini returned empty or invalid JSON questions payload.');
       } catch (err) {
+        lastGenError = err;
         console.warn('[Study Labs] AI question generation fell back offline:', err);
       }
     }
@@ -762,9 +1034,11 @@ export const GeminiAIService = {
       const sub = subjectIds[i % subjectIds.length];
       const diff = difficulties[Math.floor(i / subjectIds.length) % difficulties.length];
       const pool = BANK[sub][diff];
+      const cycle = Math.floor(i / (subjectIds.length * difficulties.length * pool.length));
       const tpl = pool[i % pool.length];
       generated.push({
         ...tpl,
+        prompt: cycle > 0 ? `[Practice Set #${i + 1}] ${tpl.prompt}` : tpl.prompt,
         id: `q_gen_${stamp}_${i}`,
         chapterId: `ch_gen_${sub}`,
       });
@@ -774,6 +1048,155 @@ export const GeminiAIService = {
       questions: generated,
       isFallback: true,
       modelLabel: 'Offline Custom Builder',
+      errorInfo: buildApiErrorInfo('gemini', lastGenError, {
+        code: hasApiKey ? undefined : 'MISSING_API_KEY',
+        canRetry: true,
+        canUseOffline: true,
+      }),
+    };
+  },
+
+  async generateStemVisual(params: {
+    prompt: string;
+    preferredCategory?: StemVisualSubject;
+    bgTheme?: 'dark' | 'light' | 'blueprint';
+  }): Promise<{
+    image: GeneratedStemImage;
+    isFallback: boolean;
+    modelLabel: string;
+    errorInfo?: AppErrorInfo;
+  }> {
+    const cleanPrompt = params.prompt.trim() || 'Projectile Motion Trajectory';
+    const subjectCategory = detectStemVisualCategory(cleanPrompt, params.preferredCategory);
+    const visualPresetKey = detectVisualPreset(cleanPrompt, subjectCategory);
+    const stamp = Date.now();
+    let imageApiError: unknown = hasApiKey
+      ? undefined
+      : new Error('Gemini API key is missing or not configured in environment.');
+
+    if (hasApiKey) {
+      const imageModels = ['gemini-2.5-flash-image', 'gemini-2.0-flash-exp-image-generation'];
+      const visualInstruction =
+        subjectCategory === 'math'
+          ? `Create a crisp, high-contrast textbook mathematical graph diagram on a clean grid with labeled axes, key coordinates, and formulas for: ${cleanPrompt}`
+          : subjectCategory === 'chemistry'
+          ? `Create a clean, legible chemistry reaction diagram / orbital or energy profile schematic with clear chemical labels for: ${cleanPrompt}`
+          : `Create a crisp, labeled physics free-body / vector / ray-optics / wave scientific diagram on a clean dark slate grid for: ${cleanPrompt}`;
+
+      for (const imgModel of imageModels) {
+        try {
+          const response = await fetchWithTimeout(
+            `https://generativelanguage.googleapis.com/v1beta/models/${imgModel}:generateContent`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-goog-api-key': GEMINI_API_KEY,
+              },
+              body: JSON.stringify({
+                contents: [{ role: 'user', parts: [{ text: visualInstruction }] }],
+                generationConfig: {
+                  responseModalities: ['IMAGE', 'TEXT'],
+                },
+              }),
+            },
+            10_000
+          );
+
+          if (!response.ok) {
+            const errText = await response.text().catch(() => '');
+            throw new Error(`Gemini HTTP ${response.status}: ${errText.slice(0, 180)}`);
+          }
+
+          const payload = await response.json();
+          const parts = payload?.candidates?.[0]?.content?.parts || [];
+          const imagePart = parts.find((p: any) => p?.inlineData?.data && p?.inlineData?.mimeType);
+          const captionPart = parts.find((p: any) => typeof p?.text === 'string' && p.text.trim());
+
+          if (imagePart?.inlineData?.data) {
+            const mime = String(imagePart.inlineData.mimeType || 'image/png');
+            const b64 = String(imagePart.inlineData.data);
+            const approxBytes = Math.round(b64.length * 0.75);
+            const image: GeneratedStemImage = {
+              id: `stem_img_${stamp}`,
+              title: cleanPrompt.slice(0, 56),
+              prompt: cleanPrompt,
+              subjectCategory,
+              format: 'png',
+              dataUri: `data:${mime};base64,${b64}`,
+              byteSize: approxBytes,
+              width: 1024,
+              height: 1024,
+              createdAt: new Date().toISOString(),
+              source: 'gemini',
+              modelLabel: imgModel,
+              caption: captionPart?.text?.trim()?.slice(0, 220),
+              visualPresetKey,
+              rotationDeg: 0,
+              flipX: false,
+              bgTheme: params.bgTheme || 'dark',
+              showGrid: true,
+              showLabels: true,
+              annotations: [],
+            };
+            return {
+              image,
+              isFallback: false,
+              modelLabel: imgModel,
+            };
+          }
+          imageApiError = new Error(`Model ${imgModel} did not return inline image data.`);
+        } catch (err) {
+          imageApiError = err;
+        }
+      }
+    }
+
+    // Fallback to Study Labs Interactive Vector STEM Engine (editable SVG diagram)
+    const vec = generateStemDiagramSvg({
+      title: cleanPrompt.length > 48 ? `${cleanPrompt.slice(0, 48)}...` : cleanPrompt,
+      prompt: cleanPrompt,
+      subjectCategory,
+      visualPresetKey,
+      bgTheme: params.bgTheme || 'dark',
+      showGrid: true,
+      showLabels: true,
+      annotations: [],
+    });
+
+    const image: GeneratedStemImage = {
+      id: `stem_vec_${stamp}`,
+      title: vec.title,
+      prompt: cleanPrompt,
+      subjectCategory: vec.subjectCategory,
+      format: 'svg',
+      dataUri: svgToDataUri(vec.svgMarkup),
+      svgMarkup: vec.svgMarkup,
+      byteSize: estimateUtf8Bytes(vec.svgMarkup),
+      width: vec.width,
+      height: vec.height,
+      createdAt: new Date().toISOString(),
+      source: 'stem_engine',
+      modelLabel: 'Interactive STEM Vector Engine',
+      caption: vec.caption,
+      visualPresetKey: vec.visualPresetKey,
+      rotationDeg: 0,
+      flipX: false,
+      bgTheme: params.bgTheme || 'dark',
+      showGrid: true,
+      showLabels: true,
+      annotations: [],
+    };
+
+    return {
+      image,
+      isFallback: true,
+      modelLabel: 'Interactive STEM Vector Engine',
+      errorInfo: buildApiErrorInfo('gemini_image', imageApiError, {
+        code: hasApiKey ? undefined : 'MISSING_API_KEY',
+        canRetry: true,
+        canUseOffline: true,
+      }),
     };
   },
 };

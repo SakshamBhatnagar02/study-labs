@@ -1,20 +1,45 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { registerHooks } from 'node:module';
 import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import vm from 'node:vm';
-import {
+import { strToU8, zipSync } from 'fflate';
+
+registerHooks({
+  resolve(specifier, context, nextResolve) {
+    if (
+      (specifier.startsWith('./') || specifier.startsWith('../')) &&
+      context.parentURL?.startsWith('file://') &&
+      !path.extname(specifier)
+    ) {
+      const parentDir = path.dirname(fileURLToPath(context.parentURL));
+      const tsFile = path.resolve(parentDir, `${specifier}.ts`);
+      if (fs.existsSync(tsFile)) {
+        return nextResolve(pathToFileURL(tsFile).href, context);
+      }
+      const tsIndex = path.resolve(parentDir, specifier, 'index.ts');
+      if (fs.existsSync(tsIndex)) {
+        return nextResolve(pathToFileURL(tsIndex).href, context);
+      }
+    }
+    return nextResolve(specifier, context);
+  },
+});
+
+const {
   classifyQuestionDifficulty,
   GeminiAIService,
   REASONING_POWER_OPTIONS,
   resolveModelForPrompt,
-} from '../src/services/gemini.ts';
-import {
+} = await import('../src/services/gemini.ts');
+const {
   CHAPTERS,
   EXAM_BANK_PRESETS,
   FORMULA_CARDS,
   SAMPLE_QUESTIONS,
-} from '../src/data/curriculumData.ts';
-import {
+} = await import('../src/data/curriculumData.ts');
+const {
   aggregateDailyActivity,
   build7DayLeaderboard,
   buildSeedAttemptLogs,
@@ -26,16 +51,52 @@ import {
   getLatestQuestionStatusMap,
   getMonthHeatmapWeeks,
   resolveLeagueTier,
-} from '../src/utils/activityStats.ts';
-import {
+} = await import('../src/utils/activityStats.ts');
+const {
   buildKatexDocumentHtml,
   hasRichMathOrMarkdown,
   markdownAndLatexToBodyHtml,
   normalizeMathDelimiters,
-} from '../src/utils/mathFormatting.ts';
-import { convertPlainTextToLatex } from '../src/utils/noteLatexConverter.ts';
-import { filterCustomQuestions } from '../src/utils/customTestBuilder.ts';
-import { getThemeColors } from '../src/theme/colors.ts';
+} = await import('../src/utils/mathFormatting.ts');
+const { convertPlainTextToLatex } = await import('../src/utils/noteLatexConverter.ts');
+const {
+  computeRankPercentile,
+  computeTestScoreAndRankSummary,
+  evaluateQuestionAnswer,
+  filterCustomQuestions,
+  parseMultiSelectAnswer,
+  serializeMultiSelectAnswer,
+} = await import('../src/utils/customTestBuilder.ts');
+const {
+  calculateMolarMass,
+  F_BLOCK_GROUP_INFO,
+  getElementExtendedMeta,
+  getPeriodicGroupInfo,
+  PERIODIC_GROUPS,
+  PERIODIC_TABLE,
+} = await import('../src/data/periodicTable.ts');
+const { PHYSICAL_CONSTANTS, REACTIVITY_SERIES } = await import('../src/data/academicConstants.ts');
+const { evaluateMathExpression } = await import('../src/utils/mathEvaluator.ts');
+const { buildApiErrorInfo, formatErrorCloneText } = await import('../src/utils/errorHandling.ts');
+const {
+  checkCanStoreGeneratedImage,
+  computeStorageQuotaUsage,
+  generateStemDiagramSvg,
+  PLAN_CONFIGS,
+  rebuildEditableSvgItem,
+  svgToDataUri,
+} = await import('../src/utils/aiImageLibrary.ts');
+const {
+  buildCalendarMonthGrid,
+  computeDaysRemaining,
+  detectDeviceRegion,
+  getHolidaysForCountryAndYear,
+} = await import('../src/utils/calendarHolidays.ts');
+const {
+  classifyAttachmentKind,
+  extractTextFromPptxBytes,
+} = await import('../src/utils/attachmentParser.ts');
+const { getThemeColors } = await import('../src/theme/colors.ts');
 
 console.log('🧪 Starting Study Labs Domain, Cyber Celebration, LaTeX, SFX & AI Verification Suite...\n');
 
@@ -543,4 +604,268 @@ assert.ok(testEngineSrc.includes('useState<QuestionDifficulty[]>([])'), 'Custom 
 assert.ok(testEngineSrc.includes('convertPlainTextToLatex'), 'TestEngineScreen must wire Convert to LaTeX for notes');
 console.log('✅ 16. Dark Mode Contrast, Scoped MCQ Click SFX & Builder Source Hygiene: Verified');
 
-console.log('\n🎉 ALL 16 STUDY LABS DOMAIN, LATEX, SFX, LEADERBOARD & BUILDER TESTS PASSED!');
+// 17. Verify Complete 118-Element Periodic Table, Molar Mass Calculator, Constants & E° Reactivity
+assert.equal(PERIODIC_TABLE.length, 118, 'Periodic table must include all 118 IUPAC elements');
+const seenNums = new Set();
+const seenSyms = new Set();
+for (let i = 0; i < PERIODIC_TABLE.length; i++) {
+  const el = PERIODIC_TABLE[i];
+  assert.equal(el.number, i + 1, `Atomic number sequence mismatch at index ${i}`);
+  assert.equal(seenNums.has(el.number), false, `Duplicate atomic # ${el.number}`);
+  assert.equal(seenSyms.has(el.symbol), false, `Duplicate symbol ${el.symbol}`);
+  seenNums.add(el.number);
+  seenSyms.add(el.symbol);
+}
+assert.equal(PERIODIC_TABLE[117].symbol, 'Og', 'Element 118 must be Oganesson (Og)');
+
+const h2o = calculateMolarMass('H2O');
+assert.ok(h2o.success && Math.abs((h2o.molarMass || 0) - 18.015) < 0.02, 'H2O molar mass ≈ 18.015 g/mol');
+const caoh2 = calculateMolarMass('Ca(OH)2');
+assert.ok(caoh2.success && Math.abs((caoh2.molarMass || 0) - 74.092) < 0.05, 'Ca(OH)2 molar mass ≈ 74.092 g/mol');
+const hydrate = calculateMolarMass('CuSO4.5H2O');
+assert.ok(hydrate.success && Math.abs((hydrate.molarMass || 0) - 249.68) < 0.2, 'CuSO4.5H2O molar mass ≈ 249.68 g/mol');
+assert.ok(PHYSICAL_CONSTANTS.length >= 20, 'Constants library should expose 20+ STEM constants');
+assert.ok(REACTIVITY_SERIES.length >= 16 && REACTIVITY_SERIES.every((r) => Boolean(r.potentialV)), 'Reactivity series should include E° potentials');
+console.log('✅ 17. Complete 118-Element Periodic Table, Molar Mass & Constants: Verified');
+
+// 18. Verify Device Location Detection & Regional Holiday Calendar
+assert.equal(detectDeviceRegion('Asia/Kolkata', 'en-IN').country, 'IN', 'Asia/Kolkata resolves to India');
+assert.equal(detectDeviceRegion('America/New_York', 'en-US').country, 'US', 'America/New_York resolves to US');
+assert.equal(detectDeviceRegion('Europe/London', 'en-GB').country, 'GB', 'Europe/London resolves to UK');
+const inHolidays2026 = getHolidaysForCountryAndYear('IN', 2026);
+assert.ok(inHolidays2026.length >= 5, 'India 2026 calendar must include public & academic holidays');
+const gridNov2026 = buildCalendarMonthGrid(
+  2026,
+  10,
+  inHolidays2026,
+  new Set(),
+  new Set(),
+  new Date(2026, 10, 10)
+);
+assert.ok(
+  gridNov2026.length >= 4 && gridNov2026.every((week) => week.length === 7),
+  'Calendar grid rows must align to 7-day weeks'
+);
+assert.equal(
+  computeDaysRemaining('2027-01-24', new Date(2027, 0, 10)),
+  14,
+  'computeDaysRemaining must calculate exact day delta'
+);
+console.log('✅ 18. Device Timezone Region Detection & Regional Holiday Calendar: Verified');
+
+// 19. Verify Multiple-Correct MCQ, Integer Evaluation, Custom Marking & Rank Impact Engine
+const multiQ = {
+  id: 'q_test_multi',
+  chapterId: 'ch_1',
+  subjectId: 'physics',
+  type: 'multiple_mcq',
+  prompt: 'Select correct statements',
+  options: [
+    { id: 'a', text: 'A', isCorrect: true },
+    { id: 'b', text: 'B', isCorrect: false },
+    { id: 'c', text: 'C', isCorrect: true },
+    { id: 'd', text: 'D', isCorrect: false },
+  ],
+  explanation: 'A and C',
+  difficulty: 'Medium',
+};
+assert.equal(serializeMultiSelectAnswer(['c', 'a', 'a']), 'a,c', 'Multi-select serializes sorted unique IDs');
+assert.deepEqual(parseMultiSelectAnswer('c, a'), ['a', 'c'], 'Multi-select parses cleanly');
+assert.equal(evaluateQuestionAnswer(multiQ, 'a,c'), true, 'Exact multi-select set matches');
+assert.equal(evaluateQuestionAnswer(multiQ, 'a'), false, 'Partial multi-select must not mark full correct');
+
+const customSummary = computeTestScoreAndRankSummary({
+  questions: [multiQ, { ...multiQ, id: 'q_test_int', type: 'numerical', numericalAnswer: 42, numericalTolerance: 0 }],
+  answers: { q_test_multi: 'a,c', q_test_int: 99 },
+  marksPerCorrect: 5,
+  negativeMarks: 2,
+  targetRank: 1000,
+  totalCandidates: 10000,
+});
+assert.equal(customSummary.score, 3, 'Custom +5/-2 marking: 5 - 2 = 3');
+assert.equal(customSummary.maxScore, 10, 'Custom max score = 2 * 5 = 10');
+assert.equal(computeRankPercentile(50, 10000), 99.5, 'Rank 50/10000 = 99.5 %ile');
+console.log('✅ 19. Multi-MCQ, Custom Marking (+5/-2) & Rank Projection Engine: Verified');
+
+// 20. Verify Scientific Calculator v2 (Deg/Rad, Inverse Trig, Factorial, % & Security)
+assert.equal(evaluateMathExpression('sin(30)', 'deg').formatted, '0.5', 'sin(30 deg) = 0.5');
+assert.equal(evaluateMathExpression('sin(π/6)', 'rad').formatted, '0.5', 'sin(pi/6 rad) = 0.5');
+assert.equal(evaluateMathExpression('asin(0.5)', 'deg').formatted, '30', 'asin(0.5) in deg = 30');
+assert.equal(evaluateMathExpression('5!', 'deg').formatted, '120', '5! = 120');
+assert.equal(evaluateMathExpression('200 * 15%', 'deg').formatted, '30', '200 * 15% = 30');
+assert.equal(evaluateMathExpression('eval("1+1")', 'deg').success, false, 'eval injection blocked');
+console.log('✅ 20. Scientific Evaluator v2 (Deg/Rad, Factorial, %, Security): Verified');
+
+// 21. Verify Multimodal Upload Classification & PPTX Slide Extraction via fflate
+assert.equal(classifyAttachmentKind('notes.pdf', 'application/pdf'), 'pdf');
+assert.equal(classifyAttachmentKind('lecture.pptx', ''), 'ppt');
+assert.equal(classifyAttachmentKind('diagram.png', 'image/png'), 'image');
+assert.equal(classifyAttachmentKind('formulas.txt', 'text/plain'), 'text');
+
+const samplePptxBytes = zipSync({
+  'ppt/slides/slide1.xml': strToU8(
+    '<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:t>Electrostatics</a:t><a:t>Gauss Law: Phi = Q/eps0</a:t></p:sld>'
+  ),
+});
+const extractedSlideText = extractTextFromPptxBytes(samplePptxBytes);
+assert.ok(
+  extractedSlideText.includes('Slide 1:') && extractedSlideText.includes('Gauss Law'),
+  `PPTX extraction must recover slide text, got: ${extractedSlideText}`
+);
+console.log('✅ 21. Multimodal File Classification & PPTX Extraction: Verified');
+
+// 22. Verify UI & Regression Safety Invariants Across All Screens
+for (const screenWithSwitch of [
+  'src/screens/DailyGoalScreen.tsx',
+  'src/screens/StudyMaterialScreen.tsx',
+  'src/screens/TestEngineScreen.tsx',
+  'src/components/common/DailyGoalModal.tsx',
+  'src/components/settings/SettingsModal.tsx',
+]) {
+  const src = fs.readFileSync(path.resolve(screenWithSwitch), 'utf8');
+  if (src.includes('<Switch')) {
+    assert.ok(src.includes('thumbColor='), `${screenWithSwitch} must explicitly style Switch thumbColor`);
+  }
+}
+for (const responsiveScreen of [
+  'src/screens/AnalyticsScreen.tsx',
+  'src/screens/GraphPlaygroundScreen.tsx',
+]) {
+  const src = fs.readFileSync(path.resolve(responsiveScreen), 'utf8');
+  assert.equal(
+    src.includes("Dimensions.get('window')"),
+    false,
+    `${responsiveScreen} must use useWindowDimensions() instead of static Dimensions.get('window')`
+  );
+}
+assert.ok(testEngineSrc.includes('isFocused'), 'TestEngineScreen must pause timer via isFocused');
+assert.ok(testEngineSrc.includes('hiddenHintCatsByQ'), 'TestEngineScreen must support per-category hint toggle');
+assert.equal(
+  testEngineSrc.includes('setHintsCollapsed(false);\n    const nextHint'),
+  false,
+  'Broken conflicting hints setter bug must remain removed'
+);
+console.log('✅ 22. UI Switch, Responsive Viewport & Hint/Focus Safety Invariants: Verified');
+
+// 23. Verify Periodic Table Group 1-18 Family Metadata & Element Extended Attributes
+assert.equal(Object.keys(PERIODIC_GROUPS).length, 18, 'PERIODIC_GROUPS must define all 18 IUPAC groups');
+for (let g = 1; g <= 18; g++) {
+  const grp = getPeriodicGroupInfo(g);
+  assert.equal(grp.groupNumber, g, `Group ${g} metadata mismatch`);
+  assert.ok(grp.familyName && grp.valenceShell && grp.periodicTrends && grp.keyProperties.length >= 2 && grp.signatureCompounds.length >= 3, `Group ${g} must include complete study metadata`);
+}
+assert.equal(F_BLOCK_GROUP_INFO.lanthanide.block, 'f-block');
+assert.equal(F_BLOCK_GROUP_INFO.actinide.block, 'f-block');
+const chlorine = PERIODIC_TABLE.find((e) => e.symbol === 'Cl');
+assert.ok(chlorine, 'Chlorine must exist in PERIODIC_TABLE');
+const clMeta = getElementExtendedMeta(chlorine);
+assert.equal(clMeta.block, 'p-block');
+assert.equal(clMeta.stateAtStp, 'Gas');
+assert.equal(clMeta.electronegativity, 3.16);
+assert.equal(clMeta.groupInfo.groupNumber, 17);
+console.log('✅ 23. Periodic Table Group 1–18 Profiles, Trends & Extended Metadata: Verified');
+
+// 24. Verify Structured Error Classification, Redaction & Clone Report Output
+const secretLeakErr = buildApiErrorInfo(
+  'gemini',
+  new Error('Request failed x-goog-api-key=AIzaSyTestSecretKey123456789 HTTP 429 rate limit exceeded')
+);
+assert.equal(secretLeakErr.code, 429, 'Detects HTTP 429 status code');
+assert.equal(secretLeakErr.canRetry, true);
+assert.equal(secretLeakErr.rawError.includes('AIzaSyTestSecretKey123456789'), false, 'Sensitive API keys must be redacted');
+const cloneReport = formatErrorCloneText(secretLeakErr);
+assert.ok(cloneReport.includes('Study Labs Diagnostic Error Clone') && cloneReport.includes('Code: 429'));
+const supabase404 = buildApiErrorInfo('supabase', { code: 'PGRST205', message: 'Could not find the table public.questions' });
+assert.equal(supabase404.code, 'PGRST205');
+assert.ok(supabase404.title.includes('Not Found'));
+console.log('✅ 24. Structured Error Handling, Key Redaction & Clone Error Format: Verified');
+
+// 25. Verify AI STEM Diagram Generator, Free Plan Quotas & Interactive Editor Rebuilds
+assert.equal(PLAN_CONFIGS.free.maxStorageBytes, 10 * 1024 * 1024, 'Default Free Plan storage is 10 MB');
+assert.equal(PLAN_CONFIGS.free.maxImages, 15, 'Default Free Plan limit is 15 visuals');
+const sampleDiag = generateStemDiagramSvg({
+  prompt: 'Compare SN1 vs SN2 reaction energy diagram',
+  bgTheme: 'blueprint',
+  annotations: [{ id: 'a1', text: 'TS Peak', xPct: 45, yPct: 30 }],
+});
+assert.equal(sampleDiag.subjectCategory, 'chemistry');
+assert.equal(sampleDiag.visualPresetKey, 'sn1_sn2_coordinate');
+assert.ok(sampleDiag.svgMarkup.includes('<svg') && sampleDiag.svgMarkup.includes('TS Peak'));
+const rebuiltDiag = rebuildEditableSvgItem({
+  id: 'vis_test_1',
+  title: 'Custom Edited Visual',
+  prompt: 'Projectile motion curve',
+  subjectCategory: 'physics',
+  format: 'svg',
+  dataUri: svgToDataUri('<svg/>'),
+  svgMarkup: '<svg/>',
+  byteSize: 100,
+  width: 600,
+  height: 400,
+  createdAt: new Date().toISOString(),
+  source: 'stem_engine',
+  visualPresetKey: 'projectile_motion',
+  rotationDeg: 90,
+  flipX: true,
+  bgTheme: 'light',
+  showGrid: false,
+  showLabels: true,
+  annotations: [{ id: 'a2', text: 'Peak H_max', xPct: 50, yPct: 22 }],
+});
+assert.ok(
+  rebuiltDiag.svgMarkup?.includes('Peak H_max') &&
+    rebuiltDiag.svgMarkup?.includes('rotate(90)') &&
+    rebuiltDiag.svgMarkup?.includes('scale(-1,1)'),
+  'Editable SVG rebuilds annotations, rotation, and flip transforms'
+);
+
+const fifteenImages = Array.from({ length: 15 }, (_, idx) => ({
+  ...rebuiltDiag,
+  id: `img_${idx}`,
+  byteSize: 1024,
+}));
+assert.equal(
+  checkCanStoreGeneratedImage(fifteenImages, 'free', 1024).errorInfo?.code,
+  'QUOTA_COUNT_EXCEEDED',
+  '16th image on Free Plan must be blocked by quota'
+);
+assert.equal(
+  checkCanStoreGeneratedImage([], 'free', 11 * 1024 * 1024).errorInfo?.code,
+  'QUOTA_BYTES_EXCEEDED',
+  '11 MB payload on Free Plan must be blocked by byte quota'
+);
+assert.equal(computeStorageQuotaUsage(fifteenImages, 'free').imageCount, 15);
+console.log('✅ 25. AI STEM Visual Generator, Interactive Editor & Free Plan Quota Engine: Verified');
+
+// 26. Verify Pannable LaTeX Tables, Rounded Corner Clipping & Source Safety Invariants
+const tableHtml = buildKatexDocumentHtml({
+  bodyHtml: markdownAndLatexToBodyHtml('| Col A | Col B | Col C |\n| --- | --- | --- |\n| 1 | 2 | 3 |', '#F97316'),
+  textColor: '#F8FAFC',
+  accentColor: '#F97316',
+  mutedColor: '#94A3B8',
+  surfaceBg: '#0F172A',
+  borderColor: '#1E293B',
+  fontSize: 14,
+  lineHeight: 20,
+});
+assert.ok(
+  tableHtml.includes('width: max-content') && tableHtml.includes('touch-action: pan-x pan-y'),
+  'Table WebView CSS must enable full pannable overflow instead of clipping wide comparisons'
+);
+for (const clippedFile of [
+  'src/components/common/Card.tsx',
+  'src/components/common/Button.tsx',
+  'src/components/common/Header.tsx',
+  'src/components/navigation/BottomNav.tsx',
+  'src/screens/DashboardScreen.tsx',
+]) {
+  const src = fs.readFileSync(path.resolve(clippedFile), 'utf8');
+  assert.ok(src.includes("overflow: 'hidden'"), `${clippedFile} must apply overflow: 'hidden' to keep corners rounded on press`);
+}
+const aiScreenSrc = fs.readFileSync(path.resolve('src/screens/AIAssistantScreen.tsx'), 'utf8');
+assert.equal(aiScreenSrc.includes('SoundManager.playClick'), false, 'AIAssistantScreen must not call SoundManager.playClick');
+assert.ok(aiScreenSrc.includes('allowPanModal') && testEngineSrc.includes('allowPanModal'), 'Both AI Tutor & Test Engine must support pannable/zoomable LaTeX modal');
+assert.ok(aiScreenSrc.includes('ApiErrorCard') && aiScreenSrc.includes('ImageLibraryModal') && aiScreenSrc.includes('AttachmentPreviewModal'), 'AIAssistantScreen must integrate Error Cards, Image Library, and Attachment Editor');
+console.log('✅ 26. Pannable LaTeX Tables, Rounded Press Clipping & New Feature Integrations: Verified');
+
+console.log('\n🎉 ALL 26 STUDY LABS DOMAIN, MULTIMODAL, VISUAL GEN, GROUP 1-18, ERROR & UI INVARIANT TESTS PASSED!');
