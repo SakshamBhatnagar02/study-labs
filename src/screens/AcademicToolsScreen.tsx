@@ -21,7 +21,14 @@ import {
   calculateMolarMass,
   getElementExtendedMeta,
 } from '../data/periodicTable';
-import { PHYSICAL_CONSTANTS, REACTIVITY_SERIES } from '../data/academicConstants';
+import {
+  PHYSICAL_CONSTANTS,
+  REACTIVITY_SERIES,
+  CURRENCY_CODES,
+  CURRENCY_LABELS,
+  convertCurrencyAmount,
+} from '../data/academicConstants';
+import { CHEMISTRY_REFERENCE_TABLES } from '../data/curriculumData';
 import { PeriodicElement, PeriodicGroupInfo } from '../types';
 import { evaluateMathExpression, MathAngleMode } from '../utils/mathEvaluator';
 import { AppIcon, IconName } from '../components/common/AppIcon';
@@ -32,15 +39,17 @@ import {
   ChevronRight,
   Droplets,
   FlaskConical,
+  Globe,
   Grid3X3,
   Layers,
   LayoutGrid,
   Search,
   Sparkles,
+  TableProperties,
   X,
 } from 'lucide-react-native';
 
-type ToolSection = 'calc' | 'periodic' | 'converter' | 'constants' | 'reactivity';
+type ToolSection = 'calc' | 'periodic' | 'converter' | 'constants' | 'reactivity' | 'chemtables';
 type ConvCategory =
   | 'length'
   | 'mass'
@@ -49,9 +58,10 @@ type ConvCategory =
   | 'pressure'
   | 'volume'
   | 'speed'
-  | 'time';
+  | 'time'
+  | 'currency';
 
-const UNIT_FACTORS: Record<Exclude<ConvCategory, 'temp'>, Record<string, number>> = {
+const UNIT_FACTORS: Record<Exclude<ConvCategory, 'temp' | 'currency'>, Record<string, number>> = {
   length: {
     km: 1000,
     m: 1,
@@ -116,6 +126,7 @@ const CONV_CATEGORIES: Array<{
   { key: 'volume', label: 'Volume', units: ['m³', 'L', 'mL', 'cm³'], defaultFrom: 'L', defaultTo: 'mL' },
   { key: 'speed', label: 'Speed', units: ['m/s', 'km/h', 'mph'], defaultFrom: 'm/s', defaultTo: 'km/h' },
   { key: 'time', label: 'Time', units: ['s', 'min', 'h', 'day'], defaultFrom: 'h', defaultTo: 's' },
+  { key: 'currency', label: 'Currency (FX)', units: CURRENCY_CODES, defaultFrom: 'USD', defaultTo: 'INR' },
 ];
 
 function formatSmartNumber(num: number): string {
@@ -236,6 +247,11 @@ export const AcademicToolsScreen: React.FC = () => {
       return formatSmartNumber(val);
     }
 
+    if (convCategory === 'currency') {
+      const converted = convertCurrencyAmount(val, fromUnit, toUnit);
+      return parseFloat(converted.toFixed(4)).toString();
+    }
+
     const factors = UNIT_FACTORS[convCategory];
     const fromFactor = factors[fromUnit] ?? 1;
     const toFactor = factors[toUnit] ?? 1;
@@ -344,9 +360,10 @@ export const AcademicToolsScreen: React.FC = () => {
           {[
             { key: 'calc', label: 'Scientific Calc', iconName: 'calculator' as IconName },
             { key: 'periodic', label: 'Periodic (118)', iconName: 'flask' as IconName },
-            { key: 'converter', label: 'Unit Converter', iconName: 'scale' as IconName },
+            { key: 'converter', label: 'Unit & Currency', iconName: 'scale' as IconName },
             { key: 'constants', label: 'Constants', iconName: 'atom' as IconName },
             { key: 'reactivity', label: 'Reactivity Series', iconName: 'flame' as IconName },
+            { key: 'chemtables', label: 'Chem Tables', iconName: 'book' as IconName },
           ].map((item) => {
             const isSelected = activeSection === item.key;
             return (
@@ -881,12 +898,12 @@ export const AcademicToolsScreen: React.FC = () => {
           </View>
         )}
 
-        {/* SECTION 3: 8-CATEGORY SCIENTIFIC UNIT CONVERTER */}
+        {/* SECTION 3: 9-CATEGORY SCIENTIFIC UNIT & CURRENCY CONVERTER */}
         {activeSection === 'converter' && (
           <View>
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>Scientific Unit Converter</Text>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Unit & Currency Converter</Text>
             <Text style={[styles.sectionSubtitle, { color: colors.textSecondary }]}>
-              8 physical dimensions · Instant precision conversion with unit swap
+              9 physical & FX dimensions · Instant precision conversion with swap
             </Text>
 
             <ScrollView
@@ -1013,7 +1030,40 @@ export const AcademicToolsScreen: React.FC = () => {
                 <Text style={[styles.resultValue, { color: colors.primary }]}>
                   {calculateConversion()} {toUnit}
                 </Text>
+                {convCategory === 'currency' && (
+                  <Text
+                    style={{
+                      fontSize: 11,
+                      color: colors.textSecondary,
+                      textAlign: 'center',
+                      marginTop: 6,
+                    }}
+                  >
+                    {(CURRENCY_LABELS as Record<string, string>)[fromUnit] || fromUnit} →{' '}
+                    {(CURRENCY_LABELS as Record<string, string>)[toUnit] || toUnit}
+                  </Text>
+                )}
               </View>
+
+              {convCategory === 'currency' && (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 8,
+                    padding: 10,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    backgroundColor: mode === 'dark' ? '#0F172A' : '#F8FAFC',
+                    borderColor: colors.border,
+                  }}
+                >
+                  <Globe size={15} color={colors.info} />
+                  <Text style={{ flex: 1, fontSize: 11, color: colors.textSecondary, lineHeight: 15 }}>
+                    Using baseline offline FX reference rates for instant conversion. Live market FX rates connect in Phase 5 API integration.
+                  </Text>
+                </View>
+              )}
             </Card>
           </View>
         )}
@@ -1149,6 +1199,91 @@ export const AcademicToolsScreen: React.FC = () => {
                       </Text>
                     </View>
                   </View>
+                </View>
+              </Card>
+            ))}
+          </View>
+        )}
+
+        {/* SECTION 6: CHEMISTRY REFERENCE TABLES (IUPAC Priority, Indicators, Flame Tests) */}
+        {activeSection === 'chemtables' && (
+          <View style={{ gap: 14 }}>
+            <View>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>
+                Chemistry Reference Tables ({CHEMISTRY_REFERENCE_TABLES.length})
+              </Text>
+              <Text style={[styles.sectionSubtitle, { color: colors.textSecondary }]}>
+                IUPAC functional group priority order, titration pH indicators & qualitative flame analysis.
+              </Text>
+            </View>
+
+            {CHEMISTRY_REFERENCE_TABLES.map((sec) => (
+              <Card key={sec.id} style={styles.chemTableCard}>
+                <View style={styles.chemTableHeaderRow}>
+                  <TableProperties size={16} color={colors.primary} />
+                  <View style={{ flex: 1 }}>
+                    <Text style={[styles.chemTableTitle, { color: colors.text }]}>{sec.title}</Text>
+                    <Text style={[styles.chemTableSub, { color: colors.textSecondary }]}>
+                      {sec.subtitle}
+                    </Text>
+                  </View>
+                </View>
+
+                <View
+                  style={[
+                    styles.chemTableBox,
+                    { borderColor: colors.border, backgroundColor: colors.surface },
+                  ]}
+                >
+                  <View
+                    style={[
+                      styles.chemTableRow,
+                      styles.chemTableHeadRow,
+                      {
+                        backgroundColor: mode === 'dark' ? '#1E293B' : '#FFEDD5',
+                        borderBottomColor: colors.border,
+                      },
+                    ]}
+                  >
+                    <Text style={[styles.chemHeadText, styles.chemCol1, { color: colors.primary }]}>
+                      {sec.headers[0]}
+                    </Text>
+                    <Text style={[styles.chemHeadText, styles.chemCol2, { color: colors.primary }]}>
+                      {sec.headers[1]}
+                    </Text>
+                    <Text style={[styles.chemHeadText, styles.chemCol3, { color: colors.primary }]}>
+                      {sec.headers[2]}
+                    </Text>
+                  </View>
+
+                  {sec.rows.map((row, rIdx) => (
+                    <View
+                      key={`${sec.id}_${rIdx}`}
+                      style={[
+                        styles.chemTableRow,
+                        {
+                          borderBottomWidth: rIdx < sec.rows.length - 1 ? 1 : 0,
+                          borderBottomColor: colors.border,
+                          backgroundColor:
+                            rIdx % 2 === 1
+                              ? mode === 'dark'
+                                ? 'rgba(255,255,255,0.02)'
+                                : 'rgba(15,23,42,0.02)'
+                              : 'transparent',
+                        },
+                      ]}
+                    >
+                      <Text style={[styles.chemCellText, styles.chemCol1, { color: colors.text, fontWeight: '700' }]}>
+                        {row.col1}
+                      </Text>
+                      <Text style={[styles.chemCellText, styles.chemCol2, { color: colors.cyan || colors.info, fontWeight: '800' }]}>
+                        {row.col2}
+                      </Text>
+                      <Text style={[styles.chemCellText, styles.chemCol3, { color: colors.textSecondary }]}>
+                        {row.col3}
+                      </Text>
+                    </View>
+                  ))}
                 </View>
               </Card>
             ))}
@@ -1787,4 +1922,50 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     overflow: 'hidden',
   },
+  chemTableCard: {
+    padding: 14,
+    gap: 10,
+  },
+  chemTableHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+  },
+  chemTableTitle: {
+    fontSize: 14.5,
+    fontWeight: '800',
+  },
+  chemTableSub: {
+    fontSize: 11.5,
+    marginTop: 2,
+    lineHeight: 16,
+  },
+  chemTableBox: {
+    borderWidth: 1,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  chemTableRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    gap: 8,
+  },
+  chemTableHeadRow: {
+    borderBottomWidth: 1,
+  },
+  chemHeadText: {
+    fontSize: 10.5,
+    fontWeight: '800',
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
+  },
+  chemCellText: {
+    fontSize: 11.5,
+    lineHeight: 16,
+  },
+  chemCol1: { flex: 1.15 },
+  chemCol2: { flex: 0.75 },
+  chemCol3: { flex: 1.3 },
 });

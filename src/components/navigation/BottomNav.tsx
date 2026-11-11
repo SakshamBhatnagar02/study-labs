@@ -23,6 +23,7 @@ export type NavTab =
   | 'leaderboard'
   | 'dailyGoal'
   | 'notebooks'
+  | 'clubs'
   | 'profile';
 
 interface BottomNavProps {
@@ -58,7 +59,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) 
         // Highlighting active state including sub-tabs
         const isActive = 
           activeTab === key || 
-          (key === 'dashboard' && (activeTab === 'leaderboard' || activeTab === 'dailyGoal' || activeTab === 'profile')) ||
+          (key === 'dashboard' && (activeTab === 'leaderboard' || activeTab === 'dailyGoal' || activeTab === 'clubs' || activeTab === 'profile')) ||
           (key === 'tracker' && activeTab === 'analytics') ||
           (key === 'study' && (activeTab === 'syllabus' || activeTab === 'notebooks')) ||
           (key === 'tools' && activeTab === 'playground');

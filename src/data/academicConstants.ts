@@ -59,3 +59,56 @@ export const REACTIVITY_SERIES: ReactivityEntry[] = [
   { rank: 15, metal: 'Silver (Ag)', symbol: 'Ag', reactivity: 'Noble', potentialV: '+0.80 V', reactionWithWater: 'Unreactive with water; tarnishes with H₂S', reactionWithAcid: 'Dissolves only in hot HNO₃ / conc. H₂SO₄' },
   { rank: 16, metal: 'Gold (Au)', symbol: 'Au', reactivity: 'Lowest (Noble)', potentialV: '+1.50 V', reactionWithWater: 'Completely unreactive in water and steam', reactionWithAcid: 'Dissolves only in Aqua Regia (3 HCl : 1 HNO₃)' },
 ];
+
+export type CurrencyCode = 'USD' | 'INR' | 'EUR' | 'GBP' | 'SGD' | 'AED' | 'JPY' | 'CAD' | 'AUD';
+
+export const CURRENCY_CODES: CurrencyCode[] = [
+  'USD',
+  'INR',
+  'EUR',
+  'GBP',
+  'SGD',
+  'AED',
+  'JPY',
+  'CAD',
+  'AUD',
+];
+
+/**
+ * Baseline offline FX reference rates relative to 1 USD.
+ * Live market FX rates connect in Phase 5 API integration.
+ */
+export const CURRENCY_RATES_PER_USD: Record<CurrencyCode, number> = {
+  USD: 1,
+  INR: 84.4,
+  EUR: 0.92,
+  GBP: 0.78,
+  SGD: 1.33,
+  AED: 3.6725,
+  JPY: 153.5,
+  CAD: 1.39,
+  AUD: 1.52,
+};
+
+export const CURRENCY_LABELS: Record<CurrencyCode, string> = {
+  USD: 'US Dollar ($)',
+  INR: 'Indian Rupee (₹)',
+  EUR: 'Euro (€)',
+  GBP: 'British Pound (£)',
+  SGD: 'Singapore Dollar (S$)',
+  AED: 'UAE Dirham',
+  JPY: 'Japanese Yen (¥)',
+  CAD: 'Canadian Dollar (C$)',
+  AUD: 'Australian Dollar (A$)',
+};
+
+export function convertCurrencyAmount(
+  amount: number,
+  fromCurrency: string,
+  toCurrency: string
+): number {
+  if (!Number.isFinite(amount)) return 0;
+  const fromRate = CURRENCY_RATES_PER_USD[fromCurrency as CurrencyCode] ?? 1;
+  const toRate = CURRENCY_RATES_PER_USD[toCurrency as CurrencyCode] ?? 1;
+  return (amount / fromRate) * toRate;
+}

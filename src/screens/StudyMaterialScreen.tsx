@@ -12,15 +12,24 @@ import { Card } from '../components/common/Card';
 import { Badge } from '../components/common/Badge';
 import { Button } from '../components/common/Button';
 import { RichMathText } from '../components/common/MathRenderer';
-import { CHAPTERS, FORMULA_CARDS, SAMPLE_QUESTIONS, SUBJECTS } from '../data/curriculumData';
-import { StorageService } from '../services/storage';
+import {
+  BOARD_DISPLAY_NAMES,
+  CHAPTERS,
+  FORMULA_CARDS,
+  SAMPLE_QUESTIONS,
+  SUBJECTS,
+  getChapterStudyModule,
+} from '../data/curriculumData';
+import { DEFAULT_USER, StorageService } from '../services/storage';
 import { HapticManager } from '../services/hapticManager';
 import {
   FormulaStatus,
+  LearningMode,
   QuestionAttemptStat,
   QuestionDifficulty,
   SubjectId,
   TestSessionLaunch,
+  UserProfile,
 } from '../types';
 import {
   computeDifficultyBreakdown,
@@ -63,11 +72,13 @@ export const StudyMaterialScreen: React.FC<StudyMaterialScreenProps> = ({
   const { colors, mode } = useTheme();
   const [sectionTab, setSectionTab] = useState<'chapters' | 'formulas'>(initialView);
   const [activeSubject, setActiveSubject] = useState<SubjectId>(initialSubject);
-  const [learningMode, setLearningMode] = useState<'Detailed' | 'Normal' | 'Rapid Revision'>('Normal');
+  const [learningMode, setLearningMode] = useState<LearningMode>('Normal');
+  const [profile, setProfile] = useState<UserProfile>(DEFAULT_USER);
   const [expandedChapterId, setExpandedChapterId] = useState<string | null>('ch_p_01');
   const [chapterSubTab, setChapterSubTab] = useState<
-    Record<string, 'topics' | 'questions' | 'analysis' | 'mistakes'>
+    Record<string, 'topics' | 'notes' | 'questions' | 'analysis' | 'mistakes'>
   >({});
+  const [expandedExampleId, setExpandedExampleId] = useState<string | null>(null);
 
   const [hideAttempted, setHideAttempted] = useState(false);
   const [difficultyFilter, setDifficultyFilter] = useState<'All' | QuestionDifficulty>('All');
@@ -87,12 +98,15 @@ export const StudyMaterialScreen: React.FC<StudyMaterialScreenProps> = ({
   }, [initialSubject]);
 
   const loadProgress = useCallback(async () => {
-    const [attemptLogs, fStatuses] = await Promise.all([
+    const [attemptLogs, fStatuses, prof] = await Promise.all([
       StorageService.getAttemptLogs(),
       StorageService.getFormulaStatuses(),
+      StorageService.getUserProfile(),
     ]);
     setLogs(attemptLogs);
     setFormulaStatuses(fStatuses);
+    setProfile(prof);
+    if (prof.preferredMode) setLearningMode(prof.preferredMode);
   }, []);
 
   useEffect(() => {
@@ -135,7 +149,7 @@ export const StudyMaterialScreen: React.FC<StudyMaterialScreenProps> = ({
       <View style={[styles.hierarchyHeader, { backgroundColor: colors.card, borderBottomColor: colors.border }]}>
         <View style={styles.topRowFlex}>
           <Text style={[styles.hierarchyPath, { color: colors.textSecondary }]} numberOfLines={1}>
-            CBSE & JEE / NEET ❯ Class 12 ❯ PCMB
+            {BOARD_DISPLAY_NAMES[profile.board || 'JEE_MAIN']} ({profile.country || 'India'}) ❯ {profile.classGrade} ❯ {profile.stream}
           </Text>
           {onOpenNotebooks && (
             <TouchableOpacity
@@ -202,7 +216,10 @@ export const StudyMaterialScreen: React.FC<StudyMaterialScreenProps> = ({
             {(['Detailed', 'Normal', 'Rapid Revision'] as const).map((m) => (
               <TouchableOpacity
                 key={m}
-                onPress={() => setLearningMode(m)}
+                onPress={() => {
+                  setLearningMode(m);
+                  void StorageService.saveUserProfile({ ...profile, preferredMode: m });
+                }}
                 style={[styles.modeTab, learningMode === m && { backgroundColor: colors.secondary }]}
               >
                 <Text
@@ -335,7 +352,7 @@ export const StudyMaterialScreen: React.FC<StudyMaterialScreenProps> = ({
                       </View>
                     )}
 
-                    {/* Chapter Sub-tabs: Topics | All Qs | Analysis | Mistakes */}
+                    {/* Chapter Sub-tabs: Topics | Notes & Visuals | All Qs | Analysis | Mistakes */}
                     <View
                       style={[
                         styles.subTabBar,
@@ -345,6 +362,7 @@ export const StudyMaterialScreen: React.FC<StudyMaterialScreenProps> = ({
                       {(
                         [
                           { id: 'topics', label: 'Topics' },
+                          { id: 'notes', label: 'Notes' },
                           { id: 'questions', label: `Qs (${chapterQuestions.length})` },
                           { id: 'analysis', label: 'Analysis' },
                           { id: 'mistakes', label: `Mistakes (${mistakeQs.length})` },
@@ -435,6 +453,195 @@ export const StudyMaterialScreen: React.FC<StudyMaterialScreenProps> = ({
                           </TouchableOpacity>
                         </View>
                       ))}
+
+                    {/* 1B. STRUCTURED NOTES, FLOWCHART, MIND MAP & WORKED EXAMPLES */}
+                    {activeSub === 'notes' && (() => {
+                      const studyMod = getChapterStudyModule(chapter);
+                      const activeNotes =
+                        learningMode === 'Detailed'
+                          ? studyMod.detailedNotes
+                          : learningMode === 'Rapid Revision'
+                          ? studyMod.rapidBullets
+                          : studyMod.normalNotes;
+                      return (
+                        <View style={{ gap: 10 }}>
+                          <View style={[styles.miniQuestionCard, { backgroundColor: colors.surface, borderColor: colors.primary }]}>
+                            <Badge label={`${learningMode.toUpperCase()} GUIDE`} variant="primary" size="sm" />
+                            <RichMathText
+                              content={studyMod.summary}
+                              fontSize={12.5}
+                              color={colors.text}
+                              accentColor={colors.primary}
+                              compact
+                            />
+                          </View>
+
+                          <View style={[styles.miniQuestionCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+                            <Text style={{ fontSize: 12, fontWeight: '800', color: colors.text }}>
+                              {learningMode} Revision Notes ({activeNotes.length})
+                            </Text>
+                            {activeNotes.map((line, i) => (
+                              <RichMathText
+                                key={`${chapter.id}_note_${i}`}
+                                content={line}
+                                fontSize={12.5}
+                                color={colors.text}
+                                accentColor={colors.primary}
+                                compact
+                              />
+                            ))}
+                          </View>
+
+                          {/* Concept Flowchart */}
+                          <View style={[styles.miniQuestionCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+                            <Text style={{ fontSize: 12, fontWeight: '800', color: colors.cyan }}>
+                              PROBLEM-SOLVING FLOWCHART
+                            </Text>
+                            <View style={{ gap: 6, marginTop: 2 }}>
+                              {studyMod.flowSteps.map((step, idx) => (
+                                <View
+                                  key={`${chapter.id}_flow_${idx}`}
+                                  style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    gap: 8,
+                                    padding: 8,
+                                    borderRadius: 10,
+                                    borderWidth: 1,
+                                    backgroundColor: colors.card,
+                                    borderColor: colors.borderSubtle,
+                                  }}
+                                >
+                                  <View
+                                    style={{
+                                      width: 22,
+                                      height: 22,
+                                      borderRadius: 11,
+                                      backgroundColor: colors.primary,
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                    }}
+                                  >
+                                    <Text style={{ fontSize: 11, fontWeight: '800', color: '#FFFFFF' }}>
+                                      {idx + 1}
+                                    </Text>
+                                  </View>
+                                  <View style={{ flex: 1 }}>
+                                    <RichMathText content={step} fontSize={12} color={colors.text} compact />
+                                  </View>
+                                </View>
+                              ))}
+                            </View>
+                          </View>
+
+                          {/* Visual Mind Map */}
+                          <View style={[styles.miniQuestionCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+                            <Text style={{ fontSize: 12, fontWeight: '800', color: colors.primary }}>
+                              MIND MAP · {studyMod.mindMapRoot.toUpperCase()}
+                            </Text>
+                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                              {studyMod.mindMapBranches.map((br) => (
+                                <View
+                                  key={br.id}
+                                  style={{
+                                    width: '48%',
+                                    minWidth: 138,
+                                    padding: 9,
+                                    borderRadius: 11,
+                                    borderWidth: 1,
+                                    backgroundColor: colors.card,
+                                    borderColor: br.color,
+                                    gap: 4,
+                                  }}
+                                >
+                                  <Text style={{ fontSize: 12, fontWeight: '800', color: br.color }}>
+                                    {br.title}
+                                  </Text>
+                                  {br.nodes.map((nd, ni) => (
+                                    <RichMathText
+                                      key={`${br.id}_n_${ni}`}
+                                      content={`• ${nd}`}
+                                      fontSize={11.5}
+                                      color={colors.text}
+                                      compact
+                                    />
+                                  ))}
+                                  {br.keyFormula && (
+                                    <RichMathText
+                                      content={br.keyFormula}
+                                      fontSize={11.5}
+                                      color={br.color}
+                                      compact
+                                    />
+                                  )}
+                                </View>
+                              ))}
+                            </View>
+                          </View>
+
+                          {/* Worked Examples */}
+                          {studyMod.workedExamples.map((ex) => {
+                            const isOpen = expandedExampleId === ex.id;
+                            return (
+                              <TouchableOpacity
+                                key={ex.id}
+                                activeOpacity={0.8}
+                                onPress={() => setExpandedExampleId(isOpen ? null : ex.id)}
+                                style={[
+                                  styles.miniQuestionCard,
+                                  { backgroundColor: colors.surface, borderColor: colors.success },
+                                ]}
+                              >
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <Text style={{ fontSize: 12.5, fontWeight: '800', color: colors.success }}>
+                                    Worked Example: {ex.title}
+                                  </Text>
+                                  <Text style={{ fontSize: 11, fontWeight: '700', color: colors.primary }}>
+                                    {isOpen ? 'Hide Proof' : 'View Steps'}
+                                  </Text>
+                                </View>
+                                <RichMathText content={ex.problem} fontSize={12.5} color={colors.text} compact />
+                                {isOpen && (
+                                  <View style={{ gap: 5, marginTop: 4 }}>
+                                    {ex.solutionSteps.map((s, si) => (
+                                      <RichMathText
+                                        key={`${ex.id}_s_${si}`}
+                                        content={`${si + 1}. ${s}`}
+                                        fontSize={12}
+                                        color={colors.textSecondary}
+                                        compact
+                                      />
+                                    ))}
+                                    <RichMathText
+                                      content={`**Answer:** ${ex.finalAnswer}`}
+                                      fontSize={12.5}
+                                      color={colors.primary}
+                                      compact
+                                    />
+                                  </View>
+                                )}
+                              </TouchableOpacity>
+                            );
+                          })}
+
+                          {/* Exam Pitfalls */}
+                          <View style={[styles.miniQuestionCard, { backgroundColor: colors.surface, borderColor: colors.warning }]}>
+                            <Text style={{ fontSize: 11.5, fontWeight: '800', color: colors.warning }}>
+                              COMMON EXAM PITFALLS
+                            </Text>
+                            {studyMod.examPitfalls.map((p, pi) => (
+                              <RichMathText
+                                key={`${chapter.id}_pit_${pi}`}
+                                content={`⚠ ${p}`}
+                                fontSize={12}
+                                color={colors.text}
+                                compact
+                              />
+                            ))}
+                          </View>
+                        </View>
+                      );
+                    })()}
 
                     {/* 2. ALL QUESTIONS WITH HIDE ATTEMPTED & DIFFICULTY FILTERS */}
                     {activeSub === 'questions' && (

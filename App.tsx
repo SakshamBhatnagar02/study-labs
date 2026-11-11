@@ -18,6 +18,9 @@ import { LeaderboardScreen } from './src/screens/LeaderboardScreen';
 import { DailyGoalScreen } from './src/screens/DailyGoalScreen';
 import { NotebooksScreen } from './src/screens/NotebooksScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
+import { ClubsScreen } from './src/screens/ClubsScreen';
+import { QuickCalculatorModal } from './src/components/common/QuickCalculatorModal';
+import { OnboardingAuthModal } from './src/components/auth/OnboardingAuthModal';
 import { DEFAULT_USER, StorageService } from './src/services/storage';
 import { SoundManager } from './src/services/soundManager';
 import { aggregateDailyActivity, computeStreakAndWeek } from './src/utils/activityStats';
@@ -36,6 +39,8 @@ function MainApp() {
 
   const [userProfile, setUserProfile] = useState<UserProfile>(DEFAULT_USER);
   const [liveStreakDays, setLiveStreakDays] = useState<number>(DEFAULT_USER.studyStreakDays);
+  const [quickCalcOpen, setQuickCalcOpen] = useState(false);
+  const [onboardingOpen, setOnboardingOpen] = useState(false);
 
   useEffect(() => {
     if (activeTab === 'test' && !hasMountedTestTab) {
@@ -91,6 +96,7 @@ function MainApp() {
     'leaderboard',
     'dailyGoal',
     'notebooks',
+    'clubs',
     'profile',
   ].includes(activeTab);
 
@@ -103,11 +109,13 @@ function MainApp() {
       case 'playground':
         return 'STEM Graph Playground';
       case 'leaderboard':
-        return '7-Day Weekly Leaderboard';
+        return 'Leaderboards & Challenges';
       case 'dailyGoal':
         return 'Daily Goal & Heatmap';
       case 'notebooks':
         return 'Notebooks & My Notes';
+      case 'clubs':
+        return 'Study Clubs & Institutes';
       case 'profile':
         return 'My Profile & Alerts';
       default:
@@ -127,6 +135,7 @@ function MainApp() {
         return (
           <DashboardScreen
             onNavigate={setActiveTab}
+            onOpenOnboarding={() => setOnboardingOpen(true)}
             onOpenCustomTest={() => {
               setHasMountedTestTab(true);
               setCustomTestBuilderNonce((n) => n + 1);
@@ -194,10 +203,18 @@ function MainApp() {
         );
       case 'notebooks':
         return <NotebooksScreen onLaunchSession={launchTestSession} />;
+      case 'clubs':
+        return (
+          <ClubsScreen
+            onLaunchSession={launchTestSession}
+            onOpenProfile={() => setActiveTab('profile')}
+          />
+        );
       case 'profile':
         return (
           <ProfileScreen
             onNavigate={setActiveTab}
+            onOpenOnboarding={() => setOnboardingOpen(true)}
             onProfileUpdated={(updated) => setUserProfile(updated)}
           />
         );
@@ -217,6 +234,8 @@ function MainApp() {
         onProfilePress={() => setActiveTab('profile')}
         onStreakPress={() => setActiveTab('dailyGoal')}
         onLeaderboardPress={() => setActiveTab('leaderboard')}
+        onClubsPress={() => setActiveTab('clubs')}
+        onQuickCalcPress={() => setQuickCalcOpen(true)}
       />
 
       {/* Sub-screen Navigation Bar */}
@@ -264,6 +283,21 @@ function MainApp() {
 
       {/* Bottom Navigation */}
       <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+
+      {/* Global Popup Quick Calculator */}
+      <QuickCalculatorModal
+        visible={quickCalcOpen}
+        onClose={() => setQuickCalcOpen(false)}
+        onOpenFullTools={() => setActiveTab('tools')}
+      />
+
+      {/* Global Onboarding, Curriculum, Language & Account SSO Setup */}
+      <OnboardingAuthModal
+        visible={onboardingOpen}
+        onClose={() => setOnboardingOpen(false)}
+        initialProfile={userProfile}
+        onSaved={(updated) => setUserProfile(updated)}
+      />
     </SafeAreaView>
   );
 }

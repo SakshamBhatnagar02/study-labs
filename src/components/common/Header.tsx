@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Image } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Image, useWindowDimensions } from 'react-native';
 import { useTheme } from '../../theme';
-import { Sun, Moon, Flame, Sliders, Trophy } from 'lucide-react-native';
+import { Sun, Moon, Flame, Sliders, Trophy, Calculator, Users } from 'lucide-react-native';
 import { SettingsModal } from '../settings/SettingsModal';
 
 interface HeaderProps {
@@ -10,6 +10,8 @@ interface HeaderProps {
   onProfilePress?: () => void;
   onStreakPress?: () => void;
   onLeaderboardPress?: () => void;
+  onClubsPress?: () => void;
+  onQuickCalcPress?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -18,42 +20,84 @@ export const Header: React.FC<HeaderProps> = ({
   onProfilePress,
   onStreakPress,
   onLeaderboardPress,
+  onClubsPress,
+  onQuickCalcPress,
 }) => {
   const { colors, mode, toggleTheme } = useTheme();
+  const { width } = useWindowDimensions();
+  const isCompact = width < 430;
+  const iconSize = isCompact ? 13 : 15;
+  const compactBtnStyle = isCompact ? { width: 27, height: 27, borderRadius: 8 } : null;
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
     <>
-      <View style={[styles.container, { backgroundColor: colors.card, borderBottomColor: colors.border }]}>
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor: colors.card,
+            borderBottomColor: colors.border,
+            paddingHorizontal: isCompact ? 10 : 14,
+            gap: isCompact ? 6 : 8,
+          },
+        ]}
+      >
         {/* Brand & Cyber Logo Identity */}
         <Pressable
           focusable={false}
           onPress={() => {
             onProfilePress?.();
           }}
-          style={({ pressed }) => [styles.brandRow, pressed && { opacity: 0.78 }]}
+          style={({ pressed }) => [
+            styles.brandRow,
+            { gap: isCompact ? 7 : 9 },
+            pressed && { opacity: 0.78 },
+          ]}
           accessibilityLabel="Open My Profile"
         >
-          <View style={[styles.logoWrapper, { borderColor: colors.primary }]}>
+          <View
+            style={[
+              styles.logoWrapper,
+              {
+                borderColor: colors.primary,
+                width: isCompact ? 30 : 36,
+                height: isCompact ? 30 : 36,
+                borderRadius: isCompact ? 8 : 10,
+              },
+            ]}
+          >
             <Image
               source={require('../../../assets/icon.png')}
               style={styles.logoImage}
               resizeMode="cover"
             />
           </View>
-          <View>
+          <View style={{ flex: 1, minWidth: 0 }}>
             <View style={styles.titleRow}>
-              <Text style={[styles.brandTitle, { color: colors.text }]}>Study</Text>
-              <Text style={[styles.brandTitleOrange, { color: colors.primary }]}>Labs</Text>
+              <Text style={[styles.brandTitle, { color: colors.text, fontSize: isCompact ? 15 : 17 }]}>
+                Study
+              </Text>
+              <Text
+                style={[styles.brandTitleOrange, { color: colors.primary, fontSize: isCompact ? 15 : 17 }]}
+              >
+                Labs
+              </Text>
             </View>
-            <Text style={[styles.companySubtitle, { color: colors.textSecondary }]} numberOfLines={1}>
+            <Text
+              style={[
+                styles.companySubtitle,
+                { color: colors.textSecondary, fontSize: isCompact ? 9 : 10 },
+              ]}
+              numberOfLines={1}
+            >
               study.io · {userIoId}
             </Text>
           </View>
         </Pressable>
 
         {/* Action Badges */}
-        <View style={styles.actionsRow}>
+        <View style={[styles.actionsRow, { gap: isCompact ? 4 : 6 }]}>
           {/* 7-Day Streak Counter -> Opens Daily Goal & Heatmap */}
           <Pressable
             focusable={false}
@@ -65,14 +109,62 @@ export const Header: React.FC<HeaderProps> = ({
               {
                 backgroundColor: mode === 'dark' ? '#431407' : '#FFEDD5',
                 borderColor: colors.primary,
+                paddingHorizontal: isCompact ? 5 : 7,
+                paddingVertical: isCompact ? 4 : 5,
                 opacity: pressed ? 0.75 : 1,
               },
             ]}
             accessibilityLabel="Daily Goal and 7-day Streak"
           >
-            <Flame color={colors.primary} size={14} />
-            <Text style={[styles.streakText, { color: colors.primary }]}>{streakDays}d</Text>
+            <Flame color={colors.primary} size={isCompact ? 12 : 14} />
+            <Text style={[styles.streakText, { color: colors.primary, fontSize: isCompact ? 10.5 : 11.5 }]}>
+              {streakDays}d
+            </Text>
           </Pressable>
+
+          {/* Quick Floating Calculator */}
+          {onQuickCalcPress && (
+            <Pressable
+              focusable={false}
+              onPress={() => {
+                onQuickCalcPress();
+              }}
+              style={({ pressed }) => [
+                styles.iconButton,
+                compactBtnStyle,
+                {
+                  backgroundColor: colors.surface,
+                  borderColor: colors.border,
+                  opacity: pressed ? 0.72 : 1,
+                },
+              ]}
+              accessibilityLabel="Open Quick Scientific Calculator"
+            >
+              <Calculator color={colors.cyan} size={iconSize} />
+            </Pressable>
+          )}
+
+          {/* Study Clubs & Institute Platform */}
+          {onClubsPress && (
+            <Pressable
+              focusable={false}
+              onPress={() => {
+                onClubsPress();
+              }}
+              style={({ pressed }) => [
+                styles.iconButton,
+                compactBtnStyle,
+                {
+                  backgroundColor: colors.surface,
+                  borderColor: colors.border,
+                  opacity: pressed ? 0.72 : 1,
+                },
+              ]}
+              accessibilityLabel="Open Study Clubs and Institutes"
+            >
+              <Users color={colors.success} size={iconSize} />
+            </Pressable>
+          )}
 
           {/* 7-Day Leaderboard Trophy */}
           {onLeaderboardPress && (
@@ -83,6 +175,7 @@ export const Header: React.FC<HeaderProps> = ({
               }}
               style={({ pressed }) => [
                 styles.iconButton,
+                compactBtnStyle,
                 {
                   backgroundColor: colors.surface,
                   borderColor: colors.border,
@@ -91,7 +184,7 @@ export const Header: React.FC<HeaderProps> = ({
               ]}
               accessibilityLabel="7-Day Weekly Leaderboard"
             >
-              <Trophy color={colors.warning} size={15} />
+              <Trophy color={colors.warning} size={iconSize} />
             </Pressable>
           )}
 
@@ -103,6 +196,7 @@ export const Header: React.FC<HeaderProps> = ({
             }}
             style={({ pressed }) => [
               styles.iconButton,
+              compactBtnStyle,
               {
                 backgroundColor: colors.surface,
                 borderColor: colors.border,
@@ -111,7 +205,7 @@ export const Header: React.FC<HeaderProps> = ({
             ]}
             accessibilityLabel="Sound and effects settings"
           >
-            <Sliders color={colors.primary} size={15} />
+            <Sliders color={colors.primary} size={iconSize} />
           </Pressable>
 
           {/* Theme Toggle */}
@@ -122,6 +216,7 @@ export const Header: React.FC<HeaderProps> = ({
             }}
             style={({ pressed }) => [
               styles.iconButton,
+              compactBtnStyle,
               {
                 backgroundColor: colors.surface,
                 borderColor: colors.border,
@@ -131,9 +226,9 @@ export const Header: React.FC<HeaderProps> = ({
             accessibilityLabel="Toggle light and dark mode"
           >
             {mode === 'dark' ? (
-              <Sun color={colors.warning} size={15} />
+              <Sun color={colors.warning} size={iconSize} />
             ) : (
-              <Moon color={colors.textSecondary} size={15} />
+              <Moon color={colors.textSecondary} size={iconSize} />
             )}
           </Pressable>
         </View>

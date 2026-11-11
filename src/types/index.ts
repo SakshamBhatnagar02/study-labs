@@ -1,16 +1,45 @@
 export type CountryCode = 'IN' | 'US' | 'UK' | 'SG' | 'AE' | 'GLOBAL';
 
-export type CurriculumBoard = 
-  | 'CBSE' 
-  | 'ICSE' 
-  | 'JEE_MAIN' 
-  | 'JEE_ADVANCED' 
-  | 'NEET' 
-  | 'STATE_BOARD' 
-  | 'IB_CAMBRIDGE' 
-  | 'AP_SAT';
+export type CurriculumBoard =
+  | 'CBSE'
+  | 'ICSE'
+  | 'PSEB'
+  | 'JEE_MAIN'
+  | 'JEE_ADVANCED'
+  | 'NEET'
+  | 'STATE_BOARD'
+  | 'IB_CAMBRIDGE'
+  | 'AP_SAT'
+  | 'US_COMMON_CORE'
+  | 'UK_GCSE_ALEVEL'
+  | 'SINGAPORE_MOE';
 
-export type AcademicStream = 'Science (PCM)' | 'Science (PCB)' | 'Science (PCMB)' | 'Commerce' | 'Arts & Humanities' | 'General STEM';
+export type EducationLevel =
+  | 'Middle School'
+  | 'High School'
+  | 'Competitive Prep'
+  | 'Undergraduate / Self-Study';
+
+export type PreferredLanguage =
+  | 'English'
+  | 'Hindi'
+  | 'Spanish'
+  | 'French'
+  | 'German'
+  | 'Arabic'
+  | 'Mandarin';
+
+export type AuthProviderType = 'guest' | 'email' | 'google' | 'microsoft';
+
+export type LearningMode = 'Detailed' | 'Normal' | 'Rapid Revision';
+
+export type AcademicStream =
+  | 'Science (PCM)'
+  | 'Science (PCB)'
+  | 'Science (PCMB)'
+  | 'Commerce'
+  | 'Arts & Humanities'
+  | 'General STEM';
 
 export interface UserProfile {
   id: string;
@@ -23,10 +52,16 @@ export interface UserProfile {
   stream: AcademicStream;
   targetYear?: number;
   targetExams: string[];
-  preferredMode: 'Detailed' | 'Normal' | 'Rapid Revision';
+  preferredMode: LearningMode;
   studyStreakDays: number;
   totalXp: number;
   level: number;
+  educationLevel?: EducationLevel;
+  language?: PreferredLanguage;
+  avatarUri?: string;
+  avatarColor?: string;
+  authProvider?: AuthProviderType;
+  onboardingCompleted?: boolean;
 }
 
 export type SubjectId = 'physics' | 'chemistry' | 'math' | 'biology';
@@ -333,6 +368,7 @@ export interface PlannerExam {
   name: string;
   targetDate: string; // YYYY-MM-DD
   category: string;
+  reminderDaysBefore?: 1 | 2 | 3;
 }
 
 export interface PlannerGoal {
@@ -499,5 +535,325 @@ export interface ActiveTestWorkspaceState {
   secondsElapsed: number;
   questionSeconds: Record<string, number>;
 }
+
+// ---------- Rich Chapter Study Material (Module C) ----------
+export interface WorkedExample {
+  id: string;
+  title: string;
+  problem: string;
+  solutionSteps: string[];
+  finalAnswer: string;
+}
+
+export interface MindMapBranch {
+  id: string;
+  title: string;
+  color: string;
+  nodes: string[];
+  keyFormula?: string;
+}
+
+export interface ChapterStudyModule {
+  chapterId: string;
+  summary: string;
+  detailedNotes: string[];
+  normalNotes: string[];
+  rapidBullets: string[];
+  flowSteps: string[];
+  mindMapRoot: string;
+  mindMapBranches: MindMapBranch[];
+  workedExamples: WorkedExample[];
+  examPitfalls: string[];
+}
+
+// ---------- Editable Custom Syllabus & Revision Tracker (Module G) ----------
+export type SyllabusTopicStatus = 'not_started' | 'in_progress' | 'revised';
+
+export interface CustomSyllabusTopic {
+  id: string;
+  title: string;
+  status: SyllabusTopicStatus;
+}
+
+export interface CustomSyllabusModule {
+  id: string;
+  subject: string;
+  color: string;
+  completedChapters: number;
+  totalChapters: number;
+  recentTopic: string;
+  status: 'Ahead' | 'On Track' | 'Needs Acceleration';
+  topics: CustomSyllabusTopic[];
+}
+
+// ---------- Extended Gamification (Module M) ----------
+export type LeaderboardTimeframe = 'today' | 'week' | 'month' | 'year' | 'all_time';
+
+export interface AchievementBadge {
+  id: string;
+  title: string;
+  description: string;
+  iconName: 'flame' | 'target' | 'trophy' | 'sparkles' | 'book' | 'users' | 'award';
+  color: string;
+  unlocked: boolean;
+  progressLabel: string;
+}
+
+export interface DailyChallenge {
+  id: string;
+  title: string;
+  subtitle: string;
+  xpReward: number;
+  currentCount: number;
+  targetCount: number;
+  claimed: boolean;
+}
+
+// ---------- Community, Clubs & Teacher/Institute Platform (Modules L & N) ----------
+export type ClubKind = 'institute' | 'study_club';
+
+export type ClubCategoryTag =
+  | 'JEE / NEET Cohort'
+  | 'School / Board Class'
+  | 'Peer Study Guild'
+  | 'Olympiad & STEM Lab'
+  | 'IB / AP / SAT Circle'
+  | 'Doubt Solving Hub';
+
+export type SystemStaffRole =
+  | 'Platform Admin'
+  | 'Institute Owner'
+  | 'Principal'
+  | 'Teacher'
+  | 'Subject Teacher'
+  | 'Class Monitor'
+  | 'Student';
+
+export interface ClubPermissions {
+  canManageClub: boolean;
+  canManageChannels: boolean;
+  canManageRoles: boolean;
+  canCreateAssignments: boolean;
+  canTakeAttendance: boolean;
+  canModerateMessages: boolean;
+  canPostAnnouncements: boolean;
+  canPinMessages: boolean;
+  canViewAnalytics: boolean;
+}
+
+export interface ClubRole {
+  id: string;
+  name: string;
+  color: string;
+  badgeIcon: string; // e.g. 'crown' | 'shield' | 'graduation' | 'sparkles' | 'book' | 'user'
+  priority: number;
+  isDefault?: boolean;
+  permissions: ClubPermissions;
+}
+
+export type ChannelCategoryType = 'Information' | 'Academic Feeds' | 'Study Channels';
+
+export type ChannelType = 'text' | 'announcements' | 'assignments' | 'resources' | 'polls' | 'rules';
+
+export type ChannelAccessMode = 'open' | 'public_view' | 'role_private';
+
+export interface ClubChannel {
+  id: string;
+  clubId: string;
+  name: string;
+  topic: string;
+  category: ChannelCategoryType;
+  type: ChannelType;
+  accessMode: ChannelAccessMode;
+  isReadOnly: boolean;
+  isSystem?: boolean; // #rules, #announcements cannot be deleted
+  allowedRoleIds: string[];
+  blockExternalLinks?: boolean;
+  unreadCount?: number;
+}
+
+export interface ClubMember {
+  userId: string;
+  name: string;
+  ioId: string;
+  avatarColor: string;
+  staffLabel: SystemStaffRole;
+  roleIds: string[];
+  joinedAt: string;
+  isOnline: boolean;
+  xp: number;
+  bio?: string;
+}
+
+export interface ClubJoinRequest {
+  id: string;
+  userId: string;
+  name: string;
+  ioId: string;
+  message: string;
+  requestedAt: string;
+  status: 'pending' | 'approved' | 'rejected';
+}
+
+export interface ClubPollOption {
+  id: string;
+  text: string;
+  voterIds: string[];
+}
+
+export interface ClubPoll {
+  question: string;
+  allowMultiple?: boolean;
+  options: ClubPollOption[];
+}
+
+export interface ClubResourceAttachment {
+  id: string;
+  title: string;
+  kind: 'pdf' | 'notes' | 'ppt' | 'image';
+  sizeLabel: string;
+  previewSummary: string;
+}
+
+export interface ClubMessageReaction {
+  emoji: string;
+  userIds: string[];
+}
+
+export interface ClubMessage {
+  id: string;
+  channelId: string;
+  senderId: string;
+  senderName: string;
+  senderRoleBadge?: string;
+  senderRoleColor?: string;
+  content: string;
+  createdAt: string;
+  isPinned?: boolean;
+  isVerifiedAnswer?: boolean;
+  isSystemMessage?: boolean;
+  isBotMessage?: boolean;
+  poll?: ClubPoll;
+  assignmentId?: string;
+  resource?: ClubResourceAttachment;
+  reactions: ClubMessageReaction[];
+  replyToSnippet?: string;
+}
+
+export interface InstituteAssignment {
+  id: string;
+  clubId: string;
+  channelId: string;
+  title: string;
+  subject: string;
+  description: string;
+  dueDate: string; // YYYY-MM-DD
+  maxMarks: number;
+  createdByName: string;
+  createdAt: string;
+  linkedQuestionIds?: string[]; // Opens directly in Study Labs Test Engine!
+  linkedTestMode?: 'practice' | 'exam';
+  targetExamLabel?: string;
+}
+
+export interface AssignmentSubmission {
+  id: string;
+  assignmentId: string;
+  studentId: string;
+  studentName: string;
+  responseText: string;
+  submittedAt: string;
+  score?: number;
+  feedback?: string;
+  status: 'submitted' | 'graded';
+}
+
+export type AttendanceStatus = 'present' | 'absent' | 'late' | 'excused';
+
+export interface AttendanceRecord {
+  id: string;
+  clubId: string;
+  date: string; // YYYY-MM-DD
+  sessionLabel: string;
+  studentId: string;
+  studentName: string;
+  status: AttendanceStatus;
+  markedByName: string;
+  recordedAt: string;
+  note?: string;
+}
+
+export interface StudyClub {
+  id: string;
+  name: string;
+  slug: string;
+  inviteCode: string;
+  kind: ClubKind;
+  category: ClubCategoryTag;
+  description: string;
+  tags: string[];
+  primaryLanguage: PreferredLanguage;
+  country: string;
+  isPrivate: boolean;
+  isVerified: boolean;
+  isOfficial?: boolean;
+  ownerId: string;
+  ownerName: string;
+  aboutAdmin: string;
+  bannerColor: string;
+  iconColor: string;
+  rules: string[];
+  createdAt: string;
+  roles: ClubRole[];
+  members: ClubMember[];
+  channels: ClubChannel[];
+  messages: ClubMessage[];
+  assignments: InstituteAssignment[];
+  submissions: AssignmentSubmission[];
+  attendance: AttendanceRecord[];
+  joinRequests: ClubJoinRequest[];
+}
+
+export interface DirectMessageItem {
+  id: string;
+  senderId: string;
+  senderName: string;
+  text: string;
+  createdAt: string;
+}
+
+export interface DirectMessageThread {
+  id: string;
+  peerUserId: string;
+  peerName: string;
+  peerIoId: string;
+  peerRole: string;
+  avatarColor: string;
+  messages: DirectMessageItem[];
+}
+
+export interface SafetyReport {
+  id: string;
+  targetType: 'message' | 'user' | 'club';
+  targetId: string;
+  targetName: string;
+  reason: string;
+  details: string;
+  createdAt: string;
+  status: 'logged_locally' | 'submitted';
+}
+
+export interface ClubsWorkspaceState {
+  clubs: StudyClub[];
+  activeClubId: string;
+  activeChannelId: string;
+  joinedClubIds: string[];
+  dmThreads: DirectMessageThread[];
+  blockedUserIds: string[];
+  followingUserIds: string[];
+  safetyReports: SafetyReport[];
+  roleOverrideByClub: Record<string, SystemStaffRole | 'actual'>;
+}
+
 
 

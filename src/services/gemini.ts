@@ -88,6 +88,10 @@ export interface AIResponse {
 export interface AskTutorContext {
   subject?: string;
   grade?: string;
+  country?: string;
+  board?: string;
+  language?: string;
+  learningMode?: string;
   difficulty?: QuestionDifficulty;
   reasoningMode?: ReasoningPower;
   attachments?: AIUploadedAttachment[];
@@ -417,6 +421,15 @@ export const GeminiAIService = {
 
     const engineeredPrompt = [
       `You are the Study Labs AI Master Tutor for ${context?.grade || 'Class 11-12 STEM'} (${context?.subject || 'Science & Math'}).`,
+      context?.board || context?.country
+        ? `Curriculum alignment: ${context?.board || 'International STEM'} (${context?.country || 'Global'}). Adapt examples & notation accordingly.`
+        : '',
+      context?.language && context.language !== 'English'
+        ? `Preferred learner explanation language: ${context.language} (keep mathematical symbols & standard IUPAC/SI technical terms clear).`
+        : '',
+      context?.learningMode
+        ? `Learning depth mode: ${context.learningMode}.`
+        : '',
       depthInstruction,
       context?.webSearchEnabled
         ? 'Live Web Search Grounding is enabled: verify up-to-date syllabus facts, dates, constants, and cite real references where helpful.'

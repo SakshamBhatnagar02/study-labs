@@ -1,4 +1,14 @@
-import type { Chapter, FormulaItem, Question, Subject } from '../types';
+import type {
+  AcademicStream,
+  Chapter,
+  ChapterStudyModule,
+  CurriculumBoard,
+  EducationLevel,
+  FormulaItem,
+  PreferredLanguage,
+  Question,
+  Subject,
+} from '../types';
 
 export const SUBJECTS: Subject[] = [
   {
@@ -877,5 +887,523 @@ export const FORMULA_CARDS: FormulaItem[] = [
     formula: '$$[\\text{A}] = [\\text{T}], \\quad [\\text{G}] = [\\text{C}], \\quad \\frac{[\\text{A}] + [\\text{G}]}{[\\text{T}] + [\\text{C}]} = 1$$',
     variables: 'Holds strictly for double-stranded DNA helices across all species',
     notes: 'Purines (A, G) equal Pyrimidines (T, C); AT rich DNA denatures at lower $T_m$.',
+  },
+];
+
+// =========================================================================
+// GLOBAL MULTI-SYSTEM CURRICULUM CATALOG (Module A & Module C)
+// =========================================================================
+export interface GlobalCountryCurriculum {
+  country: string;
+  flagLabel: string;
+  boards: { id: CurriculumBoard; label: string; category: string }[];
+  defaultExams: string[];
+}
+
+export const GLOBAL_CURRICULUM_CATALOG: GlobalCountryCurriculum[] = [
+  {
+    country: 'India',
+    flagLabel: 'IN · India',
+    boards: [
+      { id: 'CBSE', label: 'CBSE (NCERT)', category: 'National Board' },
+      { id: 'ICSE', label: 'ICSE / ISC', category: 'Council Board' },
+      { id: 'PSEB', label: 'PSEB (Punjab Board)', category: 'State Board' },
+      { id: 'STATE_BOARD', label: 'Other State Boards', category: 'State Board' },
+      { id: 'JEE_MAIN', label: 'JEE Main Track', category: 'Engineering Entrance' },
+      { id: 'JEE_ADVANCED', label: 'JEE Advanced Track', category: 'Engineering Entrance' },
+      { id: 'NEET', label: 'NEET UG Track', category: 'Medical Entrance' },
+    ],
+    defaultExams: ['JEE Main', 'JEE Advanced', 'NEET UG', 'BITSAT', 'CBSE Boards'],
+  },
+  {
+    country: 'United States',
+    flagLabel: 'US · United States',
+    boards: [
+      { id: 'AP_SAT', label: 'AP & SAT Track', category: 'College Prep' },
+      { id: 'US_COMMON_CORE', label: 'US High School / NextGen STEM', category: 'School System' },
+      { id: 'IB_CAMBRIDGE', label: 'IB Diploma (US)', category: 'International' },
+    ],
+    defaultExams: ['AP Physics C', 'AP Calculus BC', 'SAT Math', 'ACT STEM'],
+  },
+  {
+    country: 'United Kingdom',
+    flagLabel: 'UK · United Kingdom',
+    boards: [
+      { id: 'UK_GCSE_ALEVEL', label: 'GCSE & A-Level (Edexcel / OCR)', category: 'UK System' },
+      { id: 'IB_CAMBRIDGE', label: 'Cambridge International / IB', category: 'International' },
+    ],
+    defaultExams: ['A-Level Physics', 'A-Level Further Math', 'UCAT', 'BMAT'],
+  },
+  {
+    country: 'Singapore',
+    flagLabel: 'SG · Singapore',
+    boards: [
+      { id: 'SINGAPORE_MOE', label: 'Singapore MOE (O / A-Level H2)', category: 'MOE Curriculum' },
+      { id: 'IB_CAMBRIDGE', label: 'IB Diploma (SG)', category: 'International' },
+    ],
+    defaultExams: ['GCE A-Level H2', 'GCE O-Level', 'SMO Olympiad'],
+  },
+  {
+    country: 'United Arab Emirates',
+    flagLabel: 'AE · UAE',
+    boards: [
+      { id: 'IB_CAMBRIDGE', label: 'IB / British IGCSE', category: 'International' },
+      { id: 'CBSE', label: 'CBSE Gulf Track', category: 'Indian Curriculum Abroad' },
+      { id: 'AP_SAT', label: 'American AP / SAT Track', category: 'College Prep' },
+    ],
+    defaultExams: ['EmSAT STEM', 'SAT', 'IB HL Sciences', 'CBSE Gulf'],
+  },
+  {
+    country: 'Global',
+    flagLabel: 'GLOBAL · International',
+    boards: [
+      { id: 'IB_CAMBRIDGE', label: 'IB / Cambridge IGCSE & A-Level', category: 'International' },
+      { id: 'AP_SAT', label: 'AP / SAT Prep', category: 'International' },
+      { id: 'CBSE', label: 'CBSE International', category: 'Board' },
+    ],
+    defaultExams: ['IPhO / IChO / IMO', 'SAT', 'IB HL STEM'],
+  },
+];
+
+export const EDUCATION_LEVELS: EducationLevel[] = [
+  'Middle School',
+  'High School',
+  'Competitive Prep',
+  'Undergraduate / Self-Study',
+];
+
+export const PREFERRED_LANGUAGES: PreferredLanguage[] = [
+  'English',
+  'Hindi',
+  'Spanish',
+  'French',
+  'German',
+  'Arabic',
+  'Mandarin',
+];
+
+export const GRADE_LEVEL_OPTIONS = [
+  'Grade 6',
+  'Grade 7',
+  'Grade 8',
+  'Grade 9',
+  'Grade 10',
+  'Class 11',
+  'Class 12',
+  'Dropper / Gap Year',
+  'University Year 1',
+];
+
+export const BOARD_DISPLAY_NAMES: Record<CurriculumBoard, string> = {
+  CBSE: 'CBSE (NCERT)',
+  ICSE: 'ICSE / ISC',
+  PSEB: 'PSEB (Punjab)',
+  STATE_BOARD: 'State Board',
+  JEE_MAIN: 'JEE Main',
+  JEE_ADVANCED: 'JEE Advanced',
+  NEET: 'NEET UG',
+  IB_CAMBRIDGE: 'IB / Cambridge',
+  AP_SAT: 'AP & SAT',
+  US_COMMON_CORE: 'US High School STEM',
+  UK_GCSE_ALEVEL: 'GCSE & A-Level',
+  SINGAPORE_MOE: 'Singapore MOE',
+};
+
+// =========================================================================
+// MODE-ADAPTIVE NOTES, FLOWCHARTS, MIND MAPS & WORKED EXAMPLES (Module C)
+// =========================================================================
+export const CHAPTER_STUDY_MODULES: Record<string, ChapterStudyModule> = {
+  ch_p_01: {
+    chapterId: 'ch_p_01',
+    summary:
+      'Rigid body rotational dynamics unites translational and angular motion using torque ($\\vec{\\tau} = \\vec{r} \\times \\vec{F}$), rotational inertia ($I = \\sum m_i r_i^2$), parallel & perpendicular axis theorems, and pure rolling constraint $v_{cm} = \\omega R$.',
+    detailedNotes: [
+      '1. **Moment of Inertia ($I$)**: Scalar analog of mass measuring rotational opposition: $I = \\int r^2 \\, dm$. Always depends on axis location & mass distribution.',
+      '2. **Parallel Axis Theorem**: Valid for *all* shapes (planar or 3D): $I = I_{\\text{cm}} + Md^2$ where $I_{\\text{cm}}$ passes through the center of mass.',
+      '3. **Perpendicular Axis Theorem**: Strictly for planar laminae in $x$-$y$ plane: $I_z = I_x + I_y$.',
+      '4. **Rolling Without Slipping**: Static friction does zero net work! Down an incline of angle $\\theta$, $a = \\frac{g\\sin\\theta}{1 + I/(MR^2)}$ and $K_{\\text{total}} = \\frac{1}{2}Mv^2(1 + k^2/R^2)$.',
+      '5. **Angular Momentum Conservation**: If $\\vec{\\tau}_{\\text{ext}} = 0$ about a fixed point, $\\vec{L} = \\vec{r} \\times \\vec{p} + I\\vec{\\omega}$ remains conserved even during non-elastic collisions.',
+    ],
+    normalNotes: [
+      'Torque $\\tau = I\\alpha$; rolling kinetic energy combines translation $\\frac{1}{2}Mv^2$ and rotation $\\frac{1}{2}I\\omega^2$.',
+      'Always use $I_{\\text{cm}} + Md^2$ when shifting to a parallel axis, never between two non-COM axes directly.',
+      'For pure rolling on incline: $a = \\frac{g\\sin\\theta}{1 + I/(MR^2)}$; smaller $I/(MR^2)$ reaches bottom fastest (solid sphere beats disc & ring).',
+    ],
+    rapidBullets: [
+      '$\\tau = I\\alpha = \\frac{dL}{dt}$',
+      'Sphere $\\frac{2}{5}MR^2$ · Cylinder $\\frac{1}{2}MR^2$ · Ring $MR^2$',
+      'Rolling race: Solid Sphere > Solid Cylinder > Hollow Sphere > Ring',
+      'Conserve $\\vec{L}$ about hinge/impulse point whenever external impulse passes through it!',
+    ],
+    flowSteps: [
+      'Identify Fixed / Instantaneous Axis',
+      'Compute $I_{\\text{axis}}$ via Parallel/Perp Theorem',
+      'Check Constraints ($a = \\alpha R$ for pure rolling)',
+      'Solve Torque ($\\tau = I\\alpha$) OR Energy ($\\Delta K + \\Delta U = 0$)',
+      'Verify $f_s \\le \\mu_s N$ before assuming no slip',
+    ],
+    mindMapRoot: 'Rotational Mechanics',
+    mindMapBranches: [
+      {
+        id: 'mm_p1_1',
+        title: 'Inertia & Axis Theorems',
+        color: '#3B82F6',
+        nodes: ['Parallel Axis $I = I_{cm}+Md^2$', 'Perp Axis $I_z=I_x+I_y$', 'Radius of Gyration $k$'],
+        keyFormula: '$I_{\\text{rod, end}} = \\frac{1}{3}ML^2$',
+      },
+      {
+        id: 'mm_p1_2',
+        title: 'Angular Impulse & $\\vec{L}$',
+        color: '#F97316',
+        nodes: ['$\\vec{L} = \\vec{r}\\times m\\vec{v}_{cm} + I\\vec{\\omega}$', 'Bullet-Rod Collision Conservation'],
+        keyFormula: '$\\int \\tau\\,dt = \\Delta L$',
+      },
+      {
+        id: 'mm_p1_3',
+        title: 'Pure Rolling Dynamics',
+        color: '#10B981',
+        nodes: ['Zero work by $f_s$', 'Contact point speed $= 0$', 'Minimum $\\mu_s$ condition'],
+        keyFormula: '$a = \\frac{g\\sin\\theta}{1 + k^2/R^2}$',
+      },
+    ],
+    workedExamples: [
+      {
+        id: 'we_p1',
+        title: 'Rolling Sphere vs Disc Speed Ratio',
+        problem:
+          'A solid sphere and a solid disc roll without slipping from rest down the same incline of vertical height $h$. Find the ratio of their speeds at the bottom.',
+        solutionSteps: [
+          'By energy conservation (pure rolling => $f_s$ does zero work): $Mgh = \\frac{1}{2}Mv^2\\left(1 + \\frac{k^2}{R^2}\\right)$.',
+          'For solid sphere, $k^2/R^2 = \\frac{2}{5} \\Rightarrow v_{\\text{sphere}} = \\sqrt{\\frac{10gh}{7}}$.',
+          'For solid disc, $k^2/R^2 = \\frac{1}{2} \\Rightarrow v_{\\text{disc}} = \\sqrt{\\frac{4gh}{3}}$.',
+        ],
+        finalAnswer: '$v_{\\text{sphere}} : v_{\\text{disc}} = \\sqrt{15} : \\sqrt{14}$',
+      },
+    ],
+    examPitfalls: [
+      'Applying perpendicular axis theorem to cylinders or spheres (valid ONLY for thin 2D flat laminae!).',
+      'Assuming friction is $\\mu N$ during pure rolling; static friction is self-adjusting ($f_s \\le \\mu_s N$).',
+    ],
+  },
+
+  ch_p_02: {
+    chapterId: 'ch_p_02',
+    summary:
+      'Electrostatics connects inverse-square forces ($\\vec{F} = q\\vec{E}$), Gauss’s flux law ($\\oint \\vec{E}\\cdot d\\vec{A} = q_{\\text{in}}/\\varepsilon_0$), conservative electric potential ($V$), and conductors in electrostatic equilibrium.',
+    detailedNotes: [
+      '1. **Gauss’s Law Symmetry**: Choose Gaussian surfaces matching spherical, cylindrical, or planar symmetry so $\\vec{E}$ is constant & normal.',
+      '2. **Field vs Potential**: $\\vec{E} = -\\nabla V$; $E$ points in the direction of steepest *decrease* of $V$. Equipotentials are always perpendicular to field lines.',
+      '3. **Conductor Cavities**: Inside a bulk conductor $\\vec{E}=0$ and $V$ is constant. Any enclosed charge $+q$ induces $-q$ on inner wall and $+q$ distributes cleanly outside (Faraday shielding).',
+      '4. **Electric Dipole**: Axial field $E_a = \\frac{2kp}{r^3}$ is double equatorial $E_e = \\frac{kp}{r^3}$; torque $\\vec{\\tau} = \\vec{p}\\times\\vec{E}$ and potential energy $U = -\\vec{p}\\cdot\\vec{E}$.',
+    ],
+    normalNotes: [
+      'Flux depends ONLY on charge enclosed ($q_{\\text{in}}/\\varepsilon_0$), while $\\vec{E}$ at every point depends on *all* charges (inside & outside).',
+      'Shell theorem: Outside a uniform sphere it acts like a point charge; inside a hollow conducting shell, $E = 0$ and $V = \\frac{kQ}{R}$.',
+    ],
+    rapidBullets: [
+      '$\\Phi_E = \\frac{q_{\\text{in}}}{\\varepsilon_0}$ (zero for closed surface with no enclosed $q$)',
+      'Solid Sphere Self-Energy: $U = \\frac{3}{5}\\frac{kQ^2}{R}$',
+      'Cube corner charge flux: $\\Phi = \\frac{q}{8\\varepsilon_0}$ (share of 8 cubes)',
+    ],
+    flowSteps: [
+      'Check Charge Symmetry (Point, Line, Sheet, Sphere)',
+      'Pick Law: Coulomb Integration vs Gauss Surface',
+      'Use Potential $V$ for scalar work $W = q(V_f - V_i)$',
+      'Enforce Grounding ($V=0$) or Shell Earthing Charge Flow',
+    ],
+    mindMapRoot: 'Electrostatics',
+    mindMapBranches: [
+      {
+        id: 'mm_p2_1',
+        title: 'Flux & Gauss Law',
+        color: '#22D3EE',
+        nodes: ['Closed Surface $\\Phi=q_{in}/\\varepsilon_0$', 'Cube Corner = $q/24\\varepsilon_0$ per face'],
+        keyFormula: '$E_{\\text{sheet}} = \\frac{\\sigma}{2\\varepsilon_0}$',
+      },
+      {
+        id: 'mm_p2_2',
+        title: 'Conducting Shells',
+        color: '#F97316',
+        nodes: ['Zero internal $E$', 'Concentric Earthing => $V_{\\text{shell}}=0$'],
+        keyFormula: '$V_{\\text{shell}} = \\frac{kQ_1}{r_1} + \\frac{kQ_2}{r_2}$',
+      },
+    ],
+    workedExamples: [
+      {
+        id: 'we_p2',
+        title: 'Flux Through Five Faces of a Cube',
+        problem: 'A charge $q$ sits at the center of one open face of a cube. Find the electric flux passing through the other five faces.',
+        solutionSteps: [
+          'Imagine placing an identical second cube adjacent to the open face so $q$ lies at the exact center of the 2-cube prism.',
+          'Total flux exiting both cubes (10 outer faces total) is $q/\\varepsilon_0$.',
+          'By symmetry each cube receives half the total flux: $\\Phi_{\\text{cube}} = \\frac{q}{2\\varepsilon_0}$.',
+        ],
+        finalAnswer: '$\\Phi = \\frac{q}{2\\varepsilon_0}$',
+      },
+    ],
+    examPitfalls: [
+      'Confusing potential of a uniform non-conducting solid sphere at center ($1.5 \\frac{kQ}{R}$) vs surface ($\\frac{kQ}{R}$).',
+    ],
+  },
+
+  ch_c_01: {
+    chapterId: 'ch_c_01',
+    summary:
+      'General Organic Chemistry governs carbocation/carbanion stability, resonance canonical weight, $+I/-I/+M/-M$ electronic effects, Hückel aromaticity ($4n+2\\,\\pi\\,e^-$), and $pK_a$ / $pK_b$ rankings.',
+    detailedNotes: [
+      '1. **Electronic Hierarchy**: Resonance ($M/R$) > Hyperconjugation ($H$) > Inductive ($I$) in deciding carbocation & radical stability — EXCEPT halogens on benzene where $-I > +M$.',
+      '2. **Hückel Aromaticity Rules**: Molecule must be **Cyclic**, **Planar ($sp^2$)**, **Completely Conjugated**, and contain $(4n+2)\\pi$ electrons ($2, 6, 10, 14\\dots$). Anti-aromatic has $4n\\,\\pi$ electrons and is highly unstable.',
+      '3. **Ortho Effect in Benzoic Acid**: Almost any ortho-substituent increases acidity of benzoic acid relative to para/meta due to steric inhibition of resonance (SIR) forcing $-COOH$ out of plane and stabilizing conjugate base.',
+    ],
+    normalNotes: [
+      'Count $\\alpha$-C–H bonds next to alkene or carbocation to rank Hyperconjugation stability.',
+      'Basicity order of amines in water ($\\text{R}=\\text{Et}$): $2^\\circ > 3^\\circ > 1^\\circ > \\text{NH}_3$; in gas phase: $3^\\circ > 2^\\circ > 1^\\circ$.',
+    ],
+    rapidBullets: [
+      'Stability: Aromatic > Conjugated $3^\\circ$ > $3^\\circ$ > $2^\\circ$ > $1^\\circ$ > Anti-aromatic',
+      'Acidity $\\propto$ stability of conjugate base $A^-$',
+      'Tropylium cation ($C_7H_7^+$) & Cyclopentadienyl anion ($C_5H_5^-$) are aromatic ($6\\pi\\,e^-$)!',
+    ],
+    flowSteps: [
+      'Draw Resonance Structures & Check Octets',
+      'Apply Aromatic / Anti-aromatic $4n+2$ Test',
+      'Compare Hybridization Electronegativity ($sp > sp^2 > sp^3$)',
+      'Rank Conjugate Base Stability for $K_a$ / $pK_a$',
+    ],
+    mindMapRoot: 'GOC Mastery',
+    mindMapBranches: [
+      {
+        id: 'mm_c1_1',
+        title: 'Electronic Effects',
+        color: '#10B981',
+        nodes: ['Inductive ($\sigma$ permanent)', 'Resonance ($\pi$ delocalized)', 'Hyperconjugation ($\sigma$-$\\pi$)'],
+        keyFormula: 'Electronegativity: $sp > sp^2 > sp^3$',
+      },
+      {
+        id: 'mm_c1_2',
+        title: 'Aromaticity & Strength',
+        color: '#F97316',
+        nodes: ['Aromatic $(4n+2)\\pi$', 'Ortho Effect (SIR)', 'Guanidine strong base'],
+        keyFormula: '$pK_a + pK_b = 14$ (conj pair)',
+      },
+    ],
+    workedExamples: [
+      {
+        id: 'we_c1',
+        title: 'Comparing Phenol, Ethanol & Acetic Acid Acidity',
+        problem: 'Arrange $CH_3CH_2OH$, $C_6H_5OH$, and $CH_3COOH$ in increasing order of acidic strength.',
+        solutionSteps: [
+          'Acetate ion ($CH_3COO^-$) has two equivalent resonance structures distributing negative charge on electronegative O atoms.',
+          'Phenoxide ion ($C_6H_5O^-$) delocalizes charge onto less electronegative ring carbons (non-equivalent canonical forms).',
+          'Ethoxide ion ($CH_3CH_2O^-$) suffers destabilizing $+I$ effect from ethyl group.',
+        ],
+        finalAnswer: '$CH_3CH_2OH < C_6H_5OH < CH_3COOH$',
+      },
+    ],
+    examPitfalls: [
+      'Forgetting Bredt’s Rule: Carbocations/alkenes cannot stably form at bridgehead carbons of small bicyclic systems.',
+    ],
+  },
+
+  ch_m_01: {
+    chapterId: 'ch_m_01',
+    summary:
+      'Definite Integration solves area and limit-of-sum problems rapidly using symmetry properties (King’s Property, even/odd parity, periodicity) and Newton-Leibniz differentiation under the integral sign.',
+    detailedNotes: [
+      '1. **King’s Property**: $\\int_a^b f(x)\\,dx = \\int_a^b f(a+b-x)\\,dx$. Add $I + I$ whenever denominator contains symmetric expressions like $f(x)+f(a+b-x)$ or $\\sin^n x + \\cos^n x$.',
+      '2. **Wallis / Reduction Intuition**: On $[0, \\pi/2]$, $\\int \\sin^n x\\,dx = \\int \\cos^n x\\,dx$.',
+      '3. **Leibnitz Rule**: $\\frac{d}{dx}\\int_{g(x)}^{h(x)} f(t)\\,dt = f(h(x))h\'(x) - f(g(x))g\'(x)$. Essential for $0/0$ L’Hôpital limit problems.',
+    ],
+    normalNotes: [
+      'Always test odd/even parity first on symmetric interval $[-a, a]$: $\\int_{-a}^a \\text{odd}\\,dx = 0$.',
+      'Convert Limit of a Sum $\\lim_{n\\to\\infty} \\frac{1}{n}\\sum f(r/n)$ into $\\int_0^1 f(x)\\,dx$.',
+    ],
+    rapidBullets: [
+      '$I = \\int_a^b \\frac{f(x)}{f(x)+f(a+b-x)}\\,dx = \\frac{b-a}{2}$',
+      'Area between $y^2 = 4ax$ & $x^2 = 4by$: $A = \\frac{16ab}{3}$',
+      'Periodic $f(x+T)=f(x)$: $\\int_0^{nT} f(x)\\,dx = n\\int_0^T f(x)\\,dx$',
+    ],
+    flowSteps: [
+      'Check Interval Symmetry ($[-a,a]$ -> Even/Odd)',
+      'Try King Substitution ($x \\to a+b-x$)',
+      'Handle Piecewise / $|\\cdot|$ / $[\\cdot]$ Split Points',
+      'Apply Leibnitz if Differentiating Variable Limits',
+    ],
+    mindMapRoot: 'Definite Calculus',
+    mindMapBranches: [
+      {
+        id: 'mm_m1_1',
+        title: 'Core Integral Theorems',
+        color: '#8B5CF6',
+        nodes: ['King’s Property', 'Queen’s Property ($0..2a$)', 'Even/Odd Parity'],
+        keyFormula: '$\\int_{-a}^a f(x)dx = 2\\int_0^a f(x)dx$ (even)',
+      },
+      {
+        id: 'mm_m1_2',
+        title: 'Leibnitz & Area Traps',
+        color: '#F97316',
+        nodes: ['Derivative of Integral', 'Parabola-Line Area $\\frac{8a^2}{3m^3}$', 'Symmetry Sketching'],
+        keyFormula: '$\\frac{d}{dx}\\int_{g}^{h} f(t)dt = f(h)h\'-f(g)g\'$',
+      },
+    ],
+    workedExamples: [
+      {
+        id: 'we_m1',
+        title: 'Classic Trigonometric King Integral',
+        problem: 'Evaluate $I = \\int_0^{\\pi/2} \\frac{\\sqrt{\\sin x}}{\\sqrt{\\sin x} + \\sqrt{\\cos x}}\\,dx$.',
+        solutionSteps: [
+          'Replace $x \\to \\frac{\\pi}{2} - x$ using King’s Property.',
+          'Then $I = \\int_0^{\\pi/2} \\frac{\\sqrt{\\cos x}}{\\sqrt{\\cos x} + \\sqrt{\\sin x}}\\,dx$.',
+          'Adding the two integrals: $2I = \\int_0^{\\pi/2} 1\\,dx = \\frac{\\pi}{2}$.',
+        ],
+        finalAnswer: '$I = \\frac{\\pi}{4}$',
+      },
+    ],
+    examPitfalls: [
+      'Integrating across vertical asymptotes (like $\\int_{-1}^1 \\frac{1}{x^2}\\,dx$) using naive antiderivatives — always check continuity!',
+    ],
+  },
+
+  ch_b_01: {
+    chapterId: 'ch_b_01',
+    summary:
+      'Molecular Genetics explains semiconservative DNA replication, transcription/translation through the genetic code, Lac Operon transcriptional control, and population genetics via Hardy-Weinberg equilibrium.',
+    detailedNotes: [
+      '1. **DNA Replication Fork**: Leading strand synthesizes continuously $5\'\\to 3\'$; lagging strand forms Okazaki fragments joined by **DNA Ligase**. RNA primers placed by **Primase**.',
+      '2. **Lac Operon**: Negatively regulated inducible operon. In presence of lactose (allolactose inducer), repressor detaches from Operator so RNA polymerase transcribes `lacZ` ($\\beta$-galactosidase), `lacY` (permease), `lacA` (transacetylase).',
+      '3. **Hardy-Weinberg Equilibrium**: Allele frequencies remain constant across generations only when NO mutation, NO gene flow, NO genetic drift, NO natural selection, and strictly random mating hold.',
+    ],
+    normalNotes: [
+      'Chargaff rule holds for dsDNA: $[A]=[T]$ and $[G]=[C]$.',
+      'AUG codes for Methionine (Start codon); UAA, UAG, UGA are Stop (nonsense) codons.',
+    ],
+    rapidBullets: [
+      'DNA Pol ALWAYS polymerizes $5\' \\to 3\'$ (template read $3\' \\to 5\'$)',
+      '$p + q = 1$; Carriers = $2pq$; Homozygous Recessive = $q^2$',
+      'Heterochromatin = darkly stained, transcriptionally inactive',
+    ],
+    flowSteps: [
+      'DNA Unwinds (Helicase) + SSB stabilization',
+      'Leading / Lagging $5\'\\to 3\'$ Synthesis (DNA Pol III)',
+      'Transcription to pre-mRNA (Capping + Poly-A + Splicing)',
+      'Ribosomal Translation ($AUG \\to$ Polypeptide)',
+    ],
+    mindMapRoot: 'Molecular Genetics',
+    mindMapBranches: [
+      {
+        id: 'mm_b1_1',
+        title: 'Central Dogma & Enzymes',
+        color: '#EC4899',
+        nodes: ['Helicase & Topoisomerase', 'DNA Ligase', 'Intron Splicing (snRNP)'],
+        keyFormula: '$[A+G] / [T+C] = 1$ (dsDNA)',
+      },
+      {
+        id: 'mm_b1_2',
+        title: 'Operon & Population',
+        color: '#10B981',
+        nodes: ['Inducer: Allolactose', 'Carrier Freq = $2pq$', '5 Evolution Violations'],
+        keyFormula: '$p^2 + 2pq + q^2 = 1$',
+      },
+    ],
+    workedExamples: [
+      {
+        id: 'we_b1',
+        title: 'Hardy-Weinberg Carrier Frequency Problem',
+        problem: 'In a randomly mating population, $9\\%$ of individuals show an autosomal recessive trait. Find the percentage of heterozygous carriers.',
+        solutionSteps: [
+          'Recessive phenotype frequency is $q^2 = 0.09 \\Rightarrow q = \\sqrt{0.09} = 0.3$.',
+          'Dominant allele frequency $p = 1 - q = 0.7$.',
+          'Heterozygous carrier frequency $= 2pq = 2(0.7)(0.3) = 0.42$.',
+        ],
+        finalAnswer: '$42\\%$ of the population are heterozygous carriers',
+      },
+    ],
+    examPitfalls: [
+      'Confusing template strand ($3\'\\to 5\'$) vs coding strand ($5\'\\to 3\'$) sequence when writing mRNA transcripts (replace T with U directly in coding strand!).',
+    ],
+  },
+};
+
+export function getChapterStudyModule(chapter: Chapter): ChapterStudyModule {
+  if (CHAPTER_STUDY_MODULES[chapter.id]) {
+    return CHAPTER_STUDY_MODULES[chapter.id];
+  }
+  return {
+    chapterId: chapter.id,
+    summary: `${chapter.title} covers ${chapter.topics.length} core syllabus pillars with ${chapter.totalQuestions} exam-style practice problems.`,
+    detailedNotes: chapter.topics.map(
+      (t, i) => `${i + 1}. **${t.title}** — Master definitions, boundary conditions, and ${t.pyqCount} past-year problem patterns.`
+    ),
+    normalNotes: chapter.topics.map((t) => `${t.title}: focus on core derivations & ${t.pyqCount} high-yield PYQs.`),
+    rapidBullets: chapter.topics.map((t) => `${t.title} · ${t.pyqCount} PYQs`),
+    flowSteps: chapter.topics.map((t) => t.title),
+    mindMapRoot: chapter.title,
+    mindMapBranches: chapter.topics.map((t, idx) => ({
+      id: `${chapter.id}_mm_${idx}`,
+      title: t.title,
+      color: idx % 2 === 0 ? '#F97316' : '#22D3EE',
+      nodes: [`PYQs: ${t.pyqCount}`, `Revisions logged: ${t.revisionCount}`],
+    })),
+    workedExamples: [],
+    examPitfalls: ['Verify SI units and sign conventions before locking numerical answers.'],
+  };
+}
+
+// =========================================================================
+// CHEMISTRY REFERENCE TABLES (Module H: Academic Tools)
+// =========================================================================
+export interface ChemReferenceSection {
+  id: string;
+  title: string;
+  subtitle: string;
+  rows: { col1: string; col2: string; col3: string }[];
+  headers: [string, string, string];
+}
+
+export const CHEMISTRY_REFERENCE_TABLES: ChemReferenceSection[] = [
+  {
+    id: 'iupac_priority',
+    title: 'IUPAC Functional Group Priority Order',
+    subtitle: 'Ordered from highest principal suffix priority to prefix-only substituents',
+    headers: ['Priority / Class', 'Formula', 'Prefix / Suffix'],
+    rows: [
+      { col1: '1. Carboxylic Acid', col2: '-COOH', col3: 'carboxy- / -oic acid' },
+      { col1: '2. Sulfonic Acid', col2: '-SO₃H', col3: 'sulfo- / -sulfonic acid' },
+      { col1: '3. Ester', col2: '-COOR', col3: 'alkoxycarbonyl- / -oate' },
+      { col1: '4. Acyl Halide', col2: '-COX', col3: 'halocarbonyl- / -oyl halide' },
+      { col1: '5. Amide', col2: '-CONH₂', col3: 'carbamoyl- / -amide' },
+      { col1: '6. Nitrile', col2: '-CN', col3: 'cyano- / -nitrile' },
+      { col1: '7. Aldehyde', col2: '-CHO', col3: 'formyl- / -al' },
+      { col1: '8. Ketone', col2: '>C=O', col3: 'oxo- / -one' },
+      { col1: '9. Alcohol', col2: '-OH', col3: 'hydroxy- / -ol' },
+      { col1: '10. Amine', col2: '-NH₂', col3: 'amino- / -amine' },
+    ],
+  },
+  {
+    id: 'indicators',
+    title: 'Acid–Base Indicators & pH Transitions',
+    subtitle: 'Standard titration endpoints for strong/weak acid-base curves',
+    headers: ['Indicator', 'pH Range', 'Acid → Base Color'],
+    rows: [
+      { col1: 'Methyl Orange', col2: '3.1 – 4.4', col3: 'Red → Yellow' },
+      { col1: 'Methyl Red', col2: '4.4 – 6.2', col3: 'Red → Yellow' },
+      { col1: 'Bromothymol Blue', col2: '6.0 – 7.6', col3: 'Yellow → Blue' },
+      { col1: 'Litmus', col2: '5.0 – 8.0', col3: 'Red → Blue' },
+      { col1: 'Phenolphthalein', col2: '8.2 – 10.0', col3: 'Colorless → Pink' },
+    ],
+  },
+  {
+    id: 'flame_tests',
+    title: 'Qualitative Flame Tests & Cation Analysis',
+    subtitle: 'Characteristic emission wavelengths and precipitate confirmatory hues',
+    headers: ['Cation', 'Flame Color', 'Group / Confirmatory Note'],
+    rows: [
+      { col1: 'Li⁺ (Lithium)', col2: 'Crimson Red', col3: '670.8 nm · Intense red-carmine' },
+      { col1: 'Na⁺ (Sodium)', col2: 'Golden Yellow', col3: '589 nm D-doublet' },
+      { col1: 'K⁺ (Potassium)', col2: 'Lilac / Violet', col3: 'Viewed through cobalt glass' },
+      { col1: 'Ca²⁺ (Calcium)', col2: 'Brick Red', col3: 'Group V · (NH₄)₂C₂O₄ white ppt' },
+      { col1: 'Ba²⁺ (Barium)', col2: 'Apple Green', col3: 'Group V · K₂CrO₄ yellow ppt' },
+      { col1: 'Cu²⁺ (Copper)', col2: 'Bluish-Green', col3: 'Deep blue [Cu(NH₃)₄]²⁺ in NH₃' },
+    ],
   },
 ];

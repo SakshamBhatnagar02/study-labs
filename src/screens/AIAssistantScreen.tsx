@@ -729,9 +729,14 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({ prefillPro
     setTimeout(() => scrollViewRef.current?.scrollToEnd({ animated: true }), 80);
 
     try {
+      const profile = await StorageService.getUserProfile();
       const response: AIResponse = await GeminiAIService.askTutor(query, {
         subject: subjectCtx || 'STEM',
-        grade: 'Class 12 / JEE & NEET',
+        grade: profile.classGrade || 'Class 12',
+        country: profile.country,
+        board: profile.board,
+        language: profile.language,
+        learningMode: profile.preferredMode,
         reasoningMode,
         difficulty: previewResolved.detectedDifficulty,
         attachments: attachmentsToSend,

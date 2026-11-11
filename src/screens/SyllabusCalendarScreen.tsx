@@ -12,14 +12,16 @@ import { useTheme } from '../theme';
 import { Card } from '../components/common/Card';
 import { Badge } from '../components/common/Badge';
 import { Button } from '../components/common/Button';
-import { DEFAULT_PLANNER_STATE, StorageService } from '../services/storage';
+import { DEFAULT_CUSTOM_SYLLABUS, DEFAULT_PLANNER_STATE, StorageService } from '../services/storage';
 import { HapticManager } from '../services/hapticManager';
 import {
   CalendarHoliday,
+  CustomSyllabusModule,
   HolidayCountryCode,
   PlannerCalendarState,
   PlannerExam,
   PlannerGoal,
+  SyllabusTopicStatus,
 } from '../types';
 import {
   buildCalendarMonthGrid,
@@ -92,41 +94,18 @@ export const SyllabusCalendarScreen: React.FC = () => {
   const [examName, setExamName] = useState('');
   const [examDate, setExamDate] = useState('2027-01-24');
   const [examCategory, setExamCategory] = useState('Mock / Entrance');
+  const [examReminderDays, setExamReminderDays] = useState<1 | 2 | 3>(1);
 
-  const [syllabusModules] = useState([
-    {
-      subject: 'Physics',
-      color: '#3B82F6',
-      completedChapters: 14,
-      totalChapters: 28,
-      recentTopic: 'Electromagnetic Induction & Faraday Laws',
-      status: 'On Track',
-    },
-    {
-      subject: 'Chemistry',
-      color: '#10B981',
-      completedChapters: 21,
-      totalChapters: 30,
-      recentTopic: 'Coordination Compounds & Crystal Field Theory',
-      status: 'Ahead',
-    },
-    {
-      subject: 'Mathematics',
-      color: '#F97316',
-      completedChapters: 11,
-      totalChapters: 26,
-      recentTopic: 'Differential Equations & Applications',
-      status: 'Needs Acceleration',
-    },
-    {
-      subject: 'Biology',
-      color: '#8B5CF6',
-      completedChapters: 24,
-      totalChapters: 32,
-      recentTopic: 'Biotechnology & Principles and Processes',
-      status: 'On Track',
-    },
-  ]);
+  const [syllabusModules, setSyllabusModules] = useState<CustomSyllabusModule[]>(
+    DEFAULT_CUSTOM_SYLLABUS
+  );
+  const [expandedModuleId, setExpandedModuleId] = useState<string | null>(
+    DEFAULT_CUSTOM_SYLLABUS[0]?.id || null
+  );
+  const [newTopicDraftByMod, setNewTopicDraftByMod] = useState<Record<string, string>>({});
+  const [addSubjectModalOpen, setAddSubjectModalOpen] = useState(false);
+  const [newSubjectName, setNewSubjectName] = useState('');
+  const [newSubjectColor, setNewSubjectColor] = useState('#3B82F6');
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -161,7 +140,95 @@ export const SyllabusCalendarScreen: React.FC = () => {
       setPlannerState(st);
       void syncHolidaysForView(st.selectedCountry, viewYear);
     });
+    StorageService.getCustomSyllabusModules().then((mods) => {
+      setSyllabusModules(mods);
+      if (mods.length > 0 && !expandedModuleId) setExpandedModuleId(mods[0].id);
+    });
   }, []);
+
+  const persistSyllabus = async (next: CustomSyllabusModule[]) => {
+    setSyllabusModules(next);
+    await StorageService.saveCustomSyllabusModules(next);
+  };
+
+  const recalcModuleStats = (mod: CustomSyllabusModule): CustomSyllabusModule => {
+    const total = Math.max(1, mod.topics.length);
+    const revisedCount = mod.topics.filter((t) => t.status === 'revised').length;
+    const inProgTopic = mod.topics.find((t) => t.status === 'in_progress') || mod.topics[0];
+    const ratio = revisedCount / total;
+    const nextStatus: CustomSyllabusModule['status'] =
+      ratio >= 0.65 ? 'Ahead' : ratio >= 0.35 ? 'On Track' : 'Needs Acceleration';
+    return {
+      ...mod,
+      completedChapters: revisedCount,
+      totalChapters: mod.topics.length,
+      recentTopic: inProgTopic ? inProgTopic.title : mod.recentTopic,
+      status: nextStatus,
+    };
+  };
+
+  const handleCycleTopicStatus = async (modId: string, topicId: string) => {
+    HapticManager.triggerSelection();
+    const order: SyllabusTopicStatus[] = ['not_started', 'in_progress', 'revised'];
+    const next = syllabusModules.map((mod) => {
+      if (mod.id !== modId) return mod;
+      const updatedTopics = mod.topics.map((t) => {
+        if (t.id !== topicId) return t;
+        const nextSt = order[(order.indexOf(t.status) + 1) % order.length];
+        return { ...t, status: nextSt };
+      });
+      return recalcModuleStats({ ...mod, topics: updatedTopics });
+    });
+    await persistSyllabus(next);
+  };
+
+  const handleAddTopicToModule = async (modId: string) => {
+    const title = (newTopicDraftByMod[modId] || '').trim();
+    if (!title) return;
+    const next = syllabusModules.map((mod) => {
+      if (mod.id !== modId) return mod;
+      const updatedTopics = [
+        ...mod.topics,
+        { id: `top_${Date.now()}`, title, status: 'not_started' as const },
+      ];
+      return recalcModuleStats({ ...mod, topics: updatedTopics });
+    });
+    setNewTopicDraftByMod((p) => ({ ...p, [modId]: '' }));
+    await persistSyllabus(next);
+  };
+
+  const handleDeleteTopic = async (modId: string, topicId: string) => {
+    const next = syllabusModules.map((mod) => {
+      if (mod.id !== modId) return mod;
+      const updatedTopics = mod.topics.filter((t) => t.id !== topicId);
+      return recalcModuleStats({ ...mod, topics: updatedTopics });
+    });
+    await persistSyllabus(next);
+  };
+
+  const handleAddCustomSubject = async () => {
+    const clean = newSubjectName.trim();
+    if (!clean) return;
+    const created: CustomSyllabusModule = {
+      id: `mod_${Date.now()}`,
+      subject: clean,
+      color: newSubjectColor,
+      completedChapters: 0,
+      totalChapters: 1,
+      recentTopic: `${clean} Foundations`,
+      status: 'Needs Acceleration',
+      topics: [{ id: `top_${Date.now()}`, title: `${clean} Foundations`, status: 'not_started' }],
+    };
+    await persistSyllabus([...syllabusModules, created]);
+    setExpandedModuleId(created.id);
+    setNewSubjectName('');
+    setAddSubjectModalOpen(false);
+  };
+
+  const handleDeleteSubjectModule = async (modId: string) => {
+    if (syllabusModules.length <= 1) return;
+    await persistSyllabus(syllabusModules.filter((m) => m.id !== modId));
+  };
 
   const persistPlanner = async (next: PlannerCalendarState) => {
     setPlannerState(next);
@@ -274,6 +341,7 @@ export const SyllabusCalendarScreen: React.FC = () => {
       name: examName.trim(),
       targetDate: examDate.trim(),
       category: examCategory.trim() || 'Entrance / Mock',
+      reminderDaysBefore: examReminderDays,
     };
     await persistPlanner({
       ...plannerState,
@@ -678,7 +746,7 @@ export const SyllabusCalendarScreen: React.FC = () => {
                   <View style={styles.examDateRow}>
                     <CalendarIcon size={13} color={colors.textSecondary} />
                     <Text style={[styles.examDate, { color: colors.textSecondary }]}>
-                      {exam.targetDate}
+                      {exam.targetDate} {exam.reminderDaysBefore ? `· 🔔 ${exam.reminderDaysBefore}d prior` : ''}
                     </Text>
                   </View>
                   <TouchableOpacity onPress={() => deleteExam(exam.id)} hitSlop={8}>
@@ -773,57 +841,140 @@ export const SyllabusCalendarScreen: React.FC = () => {
           ))}
         </Card>
 
-        {/* Syllabus Completion Tracker */}
+        {/* Custom Editable Syllabus & Revision Tracker */}
         <View style={styles.syllabusSectionHeader}>
           <Text style={[styles.sectionHeading, { color: colors.textPrimary, marginBottom: 0 }]}>
-            Curriculum Syllabus Coverage
+            Custom Syllabus & Revision Tracker
           </Text>
-          <Badge label="Curriculum Map" variant="neutral" />
+          <TouchableOpacity
+            onPress={() => setAddSubjectModalOpen(true)}
+            style={[
+              styles.inlineAddBtn,
+              { backgroundColor: colors.surface, borderColor: colors.border },
+            ]}
+          >
+            <Plus size={13} color={colors.primary} />
+            <Text style={[styles.inlineAddText, { color: colors.primary }]}>Add Subject</Text>
+          </TouchableOpacity>
         </View>
 
         {syllabusModules.map((mod) => {
-          const pct = Math.round((mod.completedChapters / mod.totalChapters) * 100);
+          const denom = Math.max(1, mod.totalChapters);
+          const pct = mod.totalChapters > 0 ? Math.round((mod.completedChapters / denom) * 100) : 0;
+          const isOpen = expandedModuleId === mod.id;
           return (
-            <Card key={mod.subject} style={styles.syllabusCard}>
-              <View style={styles.syllabusTop}>
-                <View style={styles.subjectTitleRow}>
-                  <View style={[styles.dotIndicator, { backgroundColor: mod.color }]} />
-                  <Text style={[styles.syllabusSubject, { color: colors.textPrimary }]}>
-                    {mod.subject}
+            <Card key={mod.id} style={styles.syllabusCard}>
+              <TouchableOpacity
+                activeOpacity={0.78}
+                onPress={() => setExpandedModuleId(isOpen ? null : mod.id)}
+              >
+                <View style={styles.syllabusTop}>
+                  <View style={styles.subjectTitleRow}>
+                    <View style={[styles.dotIndicator, { backgroundColor: mod.color }]} />
+                    <Text style={[styles.syllabusSubject, { color: colors.textPrimary }]}>
+                      {mod.subject}
+                    </Text>
+                  </View>
+                  <Text style={[styles.syllabusPct, { color: mod.color }]}>{pct}%</Text>
+                </View>
+
+                <View
+                  style={[styles.progressBarBg, { backgroundColor: colors.borderSubtle, marginVertical: 8 }]}
+                >
+                  <View
+                    style={[styles.progressBarFill, { width: `${pct}%`, backgroundColor: mod.color }]}
+                  />
+                </View>
+
+                <View style={styles.syllabusBottom}>
+                  <Text style={[styles.syllabusChapters, { color: colors.textSecondary }]}>
+                    {mod.completedChapters}/{mod.totalChapters} Topics Revised · Tap to {isOpen ? 'collapse' : 'manage'}
+                  </Text>
+                  <Badge
+                    label={mod.status}
+                    variant={
+                      mod.status === 'Ahead'
+                        ? 'success'
+                        : mod.status === 'On Track'
+                        ? 'primary'
+                        : 'warning'
+                    }
+                  />
+                </View>
+                <View style={[styles.activeTopicBox, { backgroundColor: colors.surface }]}>
+                  <BookOpen size={14} color={colors.primary} />
+                  <Text style={[styles.activeTopicText, { color: colors.textPrimary }]} numberOfLines={1}>
+                    Focus: {mod.recentTopic}
                   </Text>
                 </View>
-                <Text style={[styles.syllabusPct, { color: mod.color }]}>{pct}%</Text>
-              </View>
+              </TouchableOpacity>
 
-              <View
-                style={[styles.progressBarBg, { backgroundColor: colors.borderSubtle, marginVertical: 8 }]}
-              >
-                <View
-                  style={[styles.progressBarFill, { width: `${pct}%`, backgroundColor: mod.color }]}
-                />
-              </View>
+              {isOpen && (
+                <View style={{ marginTop: 12, paddingTop: 10, borderTopWidth: 1, borderTopColor: colors.borderSubtle, gap: 8 }}>
+                  {mod.topics.map((top) => {
+                    const statusLabel =
+                      top.status === 'revised'
+                        ? 'Revised'
+                        : top.status === 'in_progress'
+                        ? 'In Progress'
+                        : 'Not Started';
+                    const statusVariant =
+                      top.status === 'revised'
+                        ? 'success'
+                        : top.status === 'in_progress'
+                        ? 'primary'
+                        : 'neutral';
+                    return (
+                      <View
+                        key={top.id}
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: 8,
+                          paddingVertical: 6,
+                          paddingHorizontal: 8,
+                          borderRadius: 9,
+                          backgroundColor: colors.surface,
+                        }}
+                      >
+                        <TouchableOpacity
+                          onPress={() => handleCycleTopicStatus(mod.id, top.id)}
+                          style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 }}
+                        >
+                          <Badge label={statusLabel} variant={statusVariant} size="sm" />
+                          <Text style={{ fontSize: 12.5, fontWeight: '600', color: colors.textPrimary, flex: 1 }}>
+                            {top.title}
+                          </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleDeleteTopic(mod.id, top.id)} hitSlop={8}>
+                          <Trash2 size={13} color={colors.textSecondary} />
+                        </TouchableOpacity>
+                      </View>
+                    );
+                  })}
 
-              <View style={styles.syllabusBottom}>
-                <Text style={[styles.syllabusChapters, { color: colors.textSecondary }]}>
-                  {mod.completedChapters}/{mod.totalChapters} Chapters Finished
-                </Text>
-                <Badge
-                  label={mod.status}
-                  variant={
-                    mod.status === 'Ahead'
-                      ? 'success'
-                      : mod.status === 'On Track'
-                      ? 'primary'
-                      : 'warning'
-                  }
-                />
-              </View>
-              <View style={[styles.activeTopicBox, { backgroundColor: colors.surface }]}>
-                <BookOpen size={14} color={colors.primary} />
-                <Text style={[styles.activeTopicText, { color: colors.textPrimary }]} numberOfLines={1}>
-                  In Progress: {mod.recentTopic}
-                </Text>
-              </View>
+                  <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center', marginTop: 2 }}>
+                    <TextInput
+                      value={newTopicDraftByMod[mod.id] || ''}
+                      onChangeText={(txt) =>
+                        setNewTopicDraftByMod((p) => ({ ...p, [mod.id]: txt }))
+                      }
+                      placeholder={`Add topic to ${mod.subject}...`}
+                      placeholderTextColor={colors.textSecondary}
+                      style={[
+                        styles.modalInput,
+                        { flex: 1, color: colors.textPrimary, backgroundColor: colors.inputBg, borderColor: colors.border },
+                      ]}
+                    />
+                    <Button title="Add" size="sm" onPress={() => handleAddTopicToModule(mod.id)} />
+                    {syllabusModules.length > 1 && (
+                      <TouchableOpacity onPress={() => handleDeleteSubjectModule(mod.id)}>
+                        <Trash2 size={15} color={colors.error} />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                </View>
+              )}
             </Card>
           );
         })}
@@ -993,9 +1144,79 @@ export const SyllabusCalendarScreen: React.FC = () => {
               </View>
             </View>
 
+            <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Reminder Lead Time</Text>
+            <View style={styles.modalChipsRow}>
+              {([1, 2, 3] as const).map((days) => {
+                const active = examReminderDays === days;
+                return (
+                  <TouchableOpacity
+                    key={days}
+                    onPress={() => setExamReminderDays(days)}
+                    style={[
+                      styles.modalChip,
+                      {
+                        backgroundColor: active ? colors.primary : colors.surface,
+                        borderColor: active ? colors.primary : colors.borderSubtle,
+                      },
+                    ]}
+                  >
+                    <Text style={{ fontSize: 11.5, fontWeight: '700', color: active ? '#FFF' : colors.text }}>
+                      {days} {days === 1 ? 'day' : 'days'} before
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
             <View style={styles.modalBtnRow}>
               <Button title="Cancel" variant="outline" size="sm" onPress={() => setExamModalOpen(false)} style={{ flex: 1 }} />
               <Button title="Save Exam" variant="primary" size="sm" onPress={handleAddExam} style={{ flex: 1 }} />
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Add Custom Syllabus Subject Modal */}
+      <Modal visible={addSubjectModalOpen} transparent animationType="fade" onRequestClose={() => setAddSubjectModalOpen(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={styles.modalHeader}>
+              <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Add Custom Syllabus Subject</Text>
+              <TouchableOpacity onPress={() => setAddSubjectModalOpen(false)}>
+                <X size={18} color={colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+            <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Subject / Course Name *</Text>
+            <TextInput
+              value={newSubjectName}
+              onChangeText={setNewSubjectName}
+              placeholder="e.g. Computer Science (AP / IB) or English Literature"
+              placeholderTextColor={colors.textSecondary}
+              style={[
+                styles.modalInput,
+                { color: colors.textPrimary, backgroundColor: colors.inputBg, borderColor: colors.border },
+              ]}
+            />
+            <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Accent Color</Text>
+            <View style={styles.modalChipsRow}>
+              {['#3B82F6', '#10B981', '#F97316', '#8B5CF6', '#EC4899', '#22D3EE'].map((hex) => (
+                <TouchableOpacity
+                  key={hex}
+                  onPress={() => setNewSubjectColor(hex)}
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: 14,
+                    backgroundColor: hex,
+                    borderWidth: newSubjectColor === hex ? 3 : 0,
+                    borderColor: '#FFFFFF',
+                  }}
+                />
+              ))}
+            </View>
+            <View style={styles.modalBtnRow}>
+              <Button title="Cancel" variant="outline" size="sm" onPress={() => setAddSubjectModalOpen(false)} style={{ flex: 1 }} />
+              <Button title="Create Subject" variant="primary" size="sm" onPress={handleAddCustomSubject} style={{ flex: 1 }} />
             </View>
           </View>
         </View>

@@ -5,7 +5,9 @@ import {
   CalendarHoliday,
   ChatMessage,
   ChatSession,
+  ClubsWorkspaceState,
   CustomNotebook,
+  CustomSyllabusModule,
   CustomTestConfig,
   DailyGoalConfig,
   FormulaStatus,
@@ -19,6 +21,7 @@ import {
   UserPlanTier,
   UserProfile,
 } from '../types';
+import { DEFAULT_CLUBS_WORKSPACE } from '../data/clubsSeedData';
 import { buildSeedAttemptLogs, XP_ATTEMPTED, XP_CORRECT } from '../utils/activityStats';
 
 const KEYS = {
@@ -27,6 +30,7 @@ const KEYS = {
   TEST_ATTEMPTS: '@study_labs_test_attempts',
   BOOKMARKS: '@study_labs_bookmarks',
   SYLLABUS_PROGRESS: '@study_labs_syllabus_progress',
+  CUSTOM_SYLLABUS: '@study_labs_custom_syllabus_v2',
   CHAT_MESSAGES: '@study_labs_chat_messages',
   CHAT_SESSIONS: '@study_labs_chat_sessions_v2',
   ACTIVE_CHAT_ID: '@study_labs_active_chat_id',
@@ -44,6 +48,8 @@ const KEYS = {
   PLANNER_STATE: '@study_labs_planner_state',
   ACTIVE_TEST_SESSION: '@study_labs_active_test_session',
   CACHED_HOLIDAYS: '@study_labs_cached_holidays',
+  CLUBS_WORKSPACE: '@study_labs_clubs_workspace_v1',
+  CLAIMED_CHALLENGES: '@study_labs_claimed_challenges',
 };
 
 const MAX_STORED_ATTACHMENT_BASE64 = 300_000;
@@ -185,7 +191,69 @@ export const DEFAULT_USER: UserProfile = {
   studyStreakDays: 14,
   totalXp: 3420,
   level: 8,
+  educationLevel: 'Competitive Prep',
+  language: 'English',
+  avatarColor: '#F97316',
+  authProvider: 'guest',
+  onboardingCompleted: false,
 };
+
+export const DEFAULT_CUSTOM_SYLLABUS: CustomSyllabusModule[] = [
+  {
+    id: 'syl_phy',
+    subject: 'Physics',
+    color: '#3B82F6',
+    completedChapters: 14,
+    totalChapters: 28,
+    recentTopic: 'Electromagnetic Induction & Faraday Laws',
+    status: 'On Track',
+    topics: [
+      { id: 'st_p1', title: 'Rotational Dynamics & Pure Rolling', status: 'revised' },
+      { id: 'st_p2', title: 'Gauss Law & Conducting Shells', status: 'in_progress' },
+      { id: 'st_p3', title: 'Wave Optics & YDSE Fringe Shift', status: 'not_started' },
+    ],
+  },
+  {
+    id: 'syl_chem',
+    subject: 'Chemistry',
+    color: '#10B981',
+    completedChapters: 21,
+    totalChapters: 30,
+    recentTopic: 'Coordination Compounds & Crystal Field Theory',
+    status: 'Ahead',
+    topics: [
+      { id: 'st_c1', title: 'GOC Resonance & Aromaticity', status: 'revised' },
+      { id: 'st_c2', title: 'Chemical Bonding & MOT', status: 'revised' },
+      { id: 'st_c3', title: 'SN1 vs SN2 Stereochemistry', status: 'in_progress' },
+    ],
+  },
+  {
+    id: 'syl_math',
+    subject: 'Mathematics',
+    color: '#F97316',
+    completedChapters: 11,
+    totalChapters: 26,
+    recentTopic: 'Differential Equations & Applications',
+    status: 'Needs Acceleration',
+    topics: [
+      { id: 'st_m1', title: 'Definite Integrals (King Property)', status: 'in_progress' },
+      { id: 'st_m2', title: 'Vectors & Skew Line Shortest Distance', status: 'not_started' },
+    ],
+  },
+  {
+    id: 'syl_bio',
+    subject: 'Biology',
+    color: '#8B5CF6',
+    completedChapters: 24,
+    totalChapters: 32,
+    recentTopic: 'Biotechnology & Principles and Processes',
+    status: 'On Track',
+    topics: [
+      { id: 'st_b1', title: 'DNA Replication Enzymes & Lac Operon', status: 'revised' },
+      { id: 'st_b2', title: 'Hardy-Weinberg Equilibrium', status: 'in_progress' },
+    ],
+  },
+];
 
 // Seed Offline Coaching Tests for realistic data & immediate visualization
 export const SEED_OFFLINE_TESTS: OfflineTestRecord[] = [
@@ -796,6 +864,102 @@ export const StorageService = {
       // Non-fatal
     }
     return tier;
+  },
+
+  async getClubsWorkspace(): Promise<ClubsWorkspaceState> {
+    try {
+      const raw = await AsyncStorage.getItem(KEYS.CLUBS_WORKSPACE);
+      if (raw) {
+        const parsed = JSON.parse(raw) as Partial<ClubsWorkspaceState>;
+        if (Array.isArray(parsed.clubs) && parsed.clubs.length > 0) {
+          return {
+            ...DEFAULT_CLUBS_WORKSPACE,
+            ...parsed,
+            roleOverrideByClub: parsed.roleOverrideByClub || {},
+          };
+        }
+      }
+      await AsyncStorage.setItem(
+        KEYS.CLUBS_WORKSPACE,
+        JSON.stringify(DEFAULT_CLUBS_WORKSPACE)
+      );
+      return DEFAULT_CLUBS_WORKSPACE;
+    } catch {
+      return DEFAULT_CLUBS_WORKSPACE;
+    }
+  },
+
+  async saveClubsWorkspace(state: ClubsWorkspaceState): Promise<ClubsWorkspaceState> {
+    try {
+      await AsyncStorage.setItem(KEYS.CLUBS_WORKSPACE, JSON.stringify(state));
+    } catch {
+      // Non-fatal fallback on storage pressure
+    }
+    return state;
+  },
+
+  async resetClubsWorkspace(): Promise<ClubsWorkspaceState> {
+    await AsyncStorage.setItem(
+      KEYS.CLUBS_WORKSPACE,
+      JSON.stringify(DEFAULT_CLUBS_WORKSPACE)
+    );
+    return DEFAULT_CLUBS_WORKSPACE;
+  },
+
+  async getCustomSyllabusModules(): Promise<CustomSyllabusModule[]> {
+    try {
+      const raw = await AsyncStorage.getItem(KEYS.CUSTOM_SYLLABUS);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+      await AsyncStorage.setItem(
+        KEYS.CUSTOM_SYLLABUS,
+        JSON.stringify(DEFAULT_CUSTOM_SYLLABUS)
+      );
+      return DEFAULT_CUSTOM_SYLLABUS;
+    } catch {
+      return DEFAULT_CUSTOM_SYLLABUS;
+    }
+  },
+
+  async saveCustomSyllabusModules(
+    modules: CustomSyllabusModule[]
+  ): Promise<CustomSyllabusModule[]> {
+    await AsyncStorage.setItem(KEYS.CUSTOM_SYLLABUS, JSON.stringify(modules));
+    return modules;
+  },
+
+  async getClaimedChallengeIds(dateKey: string): Promise<string[]> {
+    try {
+      const raw = await AsyncStorage.getItem(`${KEYS.CLAIMED_CHALLENGES}_${dateKey}`);
+      return raw ? (JSON.parse(raw) as string[]) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  async claimChallengeReward(
+    dateKey: string,
+    challengeId: string,
+    xpReward: number
+  ): Promise<string[]> {
+    const existing = await this.getClaimedChallengeIds(dateKey);
+    if (existing.includes(challengeId)) return existing;
+    const updated = [...existing, challengeId];
+    await AsyncStorage.setItem(
+      `${KEYS.CLAIMED_CHALLENGES}_${dateKey}`,
+      JSON.stringify(updated)
+    );
+    try {
+      const profile = await this.getUserProfile();
+      const nextXp = (profile.totalXp || 0) + xpReward;
+      const nextLevel = Math.max(1, Math.floor(nextXp / 450) + 1);
+      await this.saveUserProfile({ ...profile, totalXp: nextXp, level: nextLevel });
+    } catch {
+      // Non-fatal
+    }
+    return updated;
   },
 };
 

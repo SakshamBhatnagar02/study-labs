@@ -1,138 +1,109 @@
 # Study Labs (`io.study.labs`)
-### AI-Powered Global Education & Student Productivity Platform
-**study.io**
+
+### AI-Powered Global Education, Study Clubs & Teacher Platform — **study.io**
+
+> **Version**: `1.1.0` (Phases 1–4 Client Complete · Pre-API Backend Integration Ready) · **Framework**: Expo SDK `~58.0.23` / React Native `0.88.1` / React `19.3.0` / TypeScript `~6.0.3`  
+> **Verified Baseline**: `0` TS Errors · `30/30` Domain, RBAC & UI Invariant Tests Passing · `20/20` Expo Doctor Checks Passing · `29/29` Playwright E2E Checks Passing (`390×844` Light/Dark & `1280×800` Desktop)
 
 ---
 
 ## 1. Project Overview
 
-Study Labs is an original, scalable, modern education platform designed for students, teachers, educational institutions, and independent learners worldwide. It unifies competitive examination practice (e.g., JEE Main, JEE Advanced, NEET, BITSAT) and school curricula (CBSE, ICSE, State Boards, International) with institutional asset management and an intelligent AI study tutor.
+**Study Labs** (`io.study.labs`, by **study.io**) is a cross-platform Android, Responsive Web, and iOS-ready educational ecosystem built for global school curricula (India CBSE/ICSE/State Boards, USA AP/SAT, UK GCSE/A-Level, IB/Cambridge, UAE, Singapore, Canada, Australia) and competitive STEM exams (JEE Main/Advanced, NEET UG, BITSAT, MHT-CET). Study Labs unifies:
+
+1. **Practice & Custom Test Engine** (`single_mcq`, `multiple_mcq`, `numerical`, explicit Submit guard, 3-tier Hints with individual/master toggles, Pannable KaTeX math/tables, Practice Notes with idempotent LaTeX conversion, Custom Test Builder & Question CRUD, Rank/Percentile Projection, Past Test Attempts History).
+2. **Gemini AI Master Tutor & STEM Visual Studio** (Manual/Auto model router, Google Search grounding citations, Multimodal PDF/PPTX/DOCX/Image/TXT preview & editor, AI STEM Diagram/Visual generator + Free/Pro/Ultra quota-tracked Image Library, animated waveform thinking indicator, message regenerate/edit/feedback & session history).
+3. **Global Curriculum Suite, Smart Notebooks & Editable Syllabus Planner** (Chapter Notes, Summaries, Flowcharts, Mind Maps, Formula Sheets, `Detailed / Normal / Rapid` learning modes, Custom Syllabus CRUD, Live Clock + Geo-Timezone Holiday Calendar + `2–3` day Exam Reminders).
+4. **Offline Coaching Tracker & Performance Analytics** (Manual Allen/FIITJEE/Aakash/School mock log CRUD, `+4/-1` quick counters, Percentage vs Rank separation, trend charts & weak-chapter recommendations).
+5. **Academic Toolkit, Quick Calc & 6-Lab STEM Playground** (Floating Quick Scientific Calc overlay, 118-element Periodic Table + 18 IUPAC Groups + Molar Mass calculator, 10-category Unit + Baseline FX Currency Converter, Chemistry Reference Tables, 21 Physical Constants, 16-entry Reactivity Series, and 6-mode STEM Playground with Save to AI Image Library + 3D Lab Preview).
+6. **Discord-Style Study Clubs, Community & Teacher/Institute Platform** (Server rail, categorized channels, 3-way channel access modes, 7-tier RBAC roles & Role Simulator, KaTeX channel chat + polls/resources/replies/verified answers, Peer Direct Messages, Clubs Directory & Creation Wizard, Anti-Spam/Reporting/Blocking, and Teacher Console for Assignments, Submissions Grading, Announcements & Attendance with strict non-presence disclaimer).
+7. **Multi-Period Gamification & Onboarding Auth** (5 Leaderboard Timeframes, 6 League Tiers, Daily Challenges, Achievement Badges, Score Reminders, Contribution Heatmap, Global Onboarding & SSO Auth Preview).
 
 ---
 
-## 2. Key Architecture & Features
+## 2. Architecture & Source Layout (`62` Modules in `src/` + Root `App.tsx`)
 
-### A. Design System (Warm Orange Identity)
-- **Primary Orange**: `#F97316`
-- **Secondary Orange**: `#EA580C`
-- **Background Light**: `#FFF7ED`
-- **Card Background Light**: `#FFFFFF`
-- **Text Light Primary**: `#1F2937` | **Secondary**: `#64748B`
-- **Success**: `#16A34A` | **Error**: `#DC2626`
-- **Dark Background**: `#111827` | **Dark Cards**: `#1F2937`
-- Dynamic light/dark theme toggle with persistent preference storage.
+> **Routing Note**: Study Labs intentionally uses a persistent stateful `14`-route `NavTab` switcher in [`App.tsx`](App.tsx) (`BottomNav.tsx`) with a mounted-but-hidden `TestEngineScreen` (`display: 'none'` when unfocused) so active quiz timers, drafts, and workspace state survive tab navigation across Calculator, AI Tutor, and Clubs.
 
-### B. Implemented Modules (Phase 1 MVP)
-
-1. **Student Dashboard (`DashboardScreen`)**:
-   - Hero status with 14-day streak counter and study metrics.
-   - Continue Learning card with progress indicators.
-   - Coaching average score and syllabus completion widgets.
-   - Quick access to the Coaching Test Tracker and Academic Tools.
-
-2. **Offline Coaching Test Tracker (`OfflineTrackerScreen`)**:
-   - Manually record physical coaching institute tests (Allen, FIITJEE, Aakash, Resonance, School).
-   - Real-time score calculation: $\text{Percentage} = \left(\frac{\text{Obtained Marks}}{\text{Maximum Marks}}\right) \times 100$.
-   - Breakdown of Correct, Incorrect, and Unattempted questions.
-   - Rank and batch size tracking.
-   - Visual trend bar charts showing historical improvement over time.
-   - Complete CRUD operations (Add, View, Filter, Delete) with local persistence.
-
-3. **Performance Analytics (`AnalyticsScreen`)**:
-   - Subject-wise accuracy breakdown (Physics, Chemistry, Math, Biology).
-   - High-yield mastery identification vs. priority revision areas.
-   - Time range filtering (7-day, 30-day, all-time).
-   - Educational metric honesty banner (clarifying difference between percentage, percentile, and rank).
-
-4. **Syllabus Tracker & Planner (`SyllabusCalendarScreen`)**:
-   - Live exam countdowns (JEE Main Session 1, CBSE Class 12 Boards, NEET UG).
-   - Target daily study goals with interactive completion toggles.
-   - Curriculum syllabus completion meters per subject.
-   - Smart notification reminders for upcoming mock examinations.
-
-5. **STEM Graph & Diagram Playground (`GraphPlaygroundScreen`)**:
-   - 2D mathematical function plotting ($f(x) = A \cdot \sin(Bx)$, quadratic parabolas, exponential curves).
-   - Real-time parameter sliders (amplitude, frequency, scaling).
-   - Physics kinematics simulations (projectile trajectory, damped SHM, velocity-time graph).
-   - Organic chemistry structural explorer (Benzene resonance, Ethyl Ethanoate ester, Ethanol primary alcohol, Isobutane alkane).
-
-6. **Test & Quiz Engine (`TestEngineScreen`)**:
-   - Practice Mode (instant explanation reveal) vs. Timed Exam Mode.
-   - Single MCQ and numerical value input questions.
-   - Digital Question Navigation pill bar.
-   - One-tap question bookmarking.
-   - Configurable scoring (+4 correct, -1 negative marking, 0 unattempted).
-   - Step-by-step solution sheets.
-
-7. **Curriculum & Study Material (`StudyMaterialScreen`)**:
-   - Structured hierarchy: *Country $\rightarrow$ Board $\rightarrow$ Class $\rightarrow$ Stream $\rightarrow$ Subject $\rightarrow$ Chapter $\rightarrow$ Topic*.
-   - 3 Learning Modes: **Detailed Learning**, **Normal Learning**, and **Rapid Revision**.
-   - Topic-level completion checklists with PYQ counts and revision counters.
-
-8. **Academic Toolkit (`AcademicToolsScreen`)**:
-   - **Scientific Calculator**: Trigonometric functions, logarithms, square roots, and basic operators.
-   - **Interactive Periodic Table**: Visual grid of elements with atomic numbers, masses, electron configurations, and group/period modal details.
-   - **Unit Converter**: Length, mass, and temperature conversions.
-   - **Universal Physical Constants**: Table of constants ($c$, $h$, $e$, $G$, $R$, $N_A$, $k_B$, $\varepsilon_0$, $\mu_0$, etc.).
-   - **Metal Reactivity Series**: Standard activity hierarchy with water/steam reaction characteristics.
-
-9. **AI Study Assistant (`AIAssistantScreen`)**:
-   - Powered by Gemini API with an offline fallback knowledge engine.
-   - Multi-turn conversational interface.
-   - Step-by-step academic problem breakdowns and high-yield exam tips.
-   - Pre-configured quick-prompt suggestions.
+```text
+study-labs/
+├── App.tsx                                    # Root shell, 14-view NavTab router, Quick Calc & Onboarding modals, web focus CSS fix
+├── app.json                                   # Expo SDK 58 config, package io.study.labs, Cyber Orange icons
+├── package.json                               # Dependencies & scripts
+├── .env.example                               # Client environment template (Supabase + Gemini dev keys)
+├── supabase/schema.sql                        # 13-table PostgreSQL schema + RLS templates (Core + Onboarding + Clubs + Teacher Suite)
+├── scripts/verify-study-labs.mjs              # 30-assertion automated verification suite
+├── assets/                                    # 13 files: 7 icons/branding images + 6 MP3 SFX in assets/audio/
+│   └── audio/                                 # click, correct-answer, wrong-answer, test-complete, notification, calling
+└── src/
+    ├── theme/                                 # colors.ts (light/dark), tokens.ts (Cyber Orange #F97316 palette), index.tsx
+    ├── types/                                 # index.ts (all domain, AI, Clubs, RBAC & Gamification contracts), assets.d.ts
+    ├── data/
+    │   ├── curriculumData.ts                  # Global curricula catalog, Chapters, Notes/MindMaps/Flowcharts, Chem tables, Sample Qs
+    │   ├── clubsSeedData.ts                   # Pre-seeded Institutes/Study Clubs, RBAC roles, KaTeX posts, DMs, Assignments
+    │   ├── periodicTable.ts                   # All 118 IUPAC elements + Groups 1–18 + f-block metadata + calculateMolarMass()
+    │   └── academicConstants.ts               # 21 Physical Constants, 16-entry Reactivity Series & Baseline FX rates
+    ├── services/
+    │   ├── gemini.ts                          # Multi-model router, difficulty classifier, Web Search grounding, STEM visual gen + offline solver
+    │   ├── supabase.ts                        # Remote `questions` & `offline_test_records` sync + offline graceful fallback
+    │   ├── storage.ts                         # AsyncStorage persistence, v2 migrations, Clubs/Syllabus/Challenges/Attempts stores
+    │   ├── soundManager.ts                    # 6 MP3 SFX via expo-audio + Web Audio oscillator fallback (MCQ-scoped click SFX)
+    │   ├── hapticManager.ts                   # Expo Haptics honoring reduced-motion & settings
+    │   └── celebrationManager.ts              # Personal-best detection & tier orchestration
+    ├── utils/
+    │   ├── activityStats.ts                   # Streak, heatmap, 7-day baseline stats & score reminder evaluator
+    │   ├── aiImageLibrary.ts                  # SVG STEM generator, image annotations/transforms & Free/Pro/Ultra quotas
+    │   ├── attachmentParser.ts                # Client ZIP/XML extractor (fflate) for PPTX/DOCX + PDF/TXT/Image intake
+    │   ├── calendarHolidays.ts                # Intl timezone -> country resolver, offline holidays (7 countries) + Nager.Date sync
+    │   ├── clubsEngine.ts                     # RBAC permission resolver, 3-way channel access, anti-spam, cohort stats, disclaimer constant
+    │   ├── customTestBuilder.ts               # Filtering, multi-select serializer, numerical tolerance & rank projection
+    │   ├── errorHandling.ts                   # API/resource error classifier, API-key redactor (`AIza*`/`AQ.*`/Bearer) & clone helper
+    │   ├── gamificationEngine.ts              # 5-timeframe leaderboards, daily challenges, XP caps & achievement badges
+    │   ├── mathEvaluator.ts                   # Injection-safe scientific evaluator (DEG/RAD, inverse trig, `!`, `%`)
+    │   ├── mathFormatting.ts                  # Markdown + KaTeX compiler, Unicode normalizer, horizontal pan table wrapper
+    │   └── noteLatexConverter.ts              # Idempotent plain-text-to-LaTeX converter
+    ├── components/
+    │   ├── ai/                                # AttachmentPreviewModal.tsx, ImageLibraryModal.tsx
+    │   ├── auth/                              # OnboardingAuthModal.tsx (Global Curricula, Language, Avatar, Google/MS/Email SSO)
+    │   ├── celebration/                       # CelebrationOverlay.tsx, ParticleCanvas.tsx, TrophyAnimation.tsx
+    │   ├── clubs/                             # ChannelSettingsModal, ClubDirectoryModal, ClubPreviewModal, CreateClubModal, TeacherManagementModal
+    │   ├── common/                            # AppIcon, Badge, Button, Card, DailyGoalModal, Header, MathRenderer, QuickCalculatorModal, StateFeedbackCard
+    │   ├── navigation/                        # BottomNav.tsx (6 primary bottom tabs mapping 14 routed views)
+    │   └── settings/                          # SettingsModal.tsx
+    └── screens/                               # 14 routed screens (Dashboard, StudyMaterial, TestEngine, OfflineTracker, Analytics, SyllabusCalendar, GraphPlayground, AcademicTools, AIAssistant, Leaderboard, DailyGoal, Notebooks, Clubs, Profile)
+```
 
 ---
 
-## 3. Technology Stack & Android SDK Environment
+## 3. Setup, Verification & Run Commands
 
-- **Cross-Platform Framework**: React Native 0.88 & Expo SDK 58 (TypeScript)
-- **Application ID**: `io.study.labs` (Android target 8.0+ / API 26+)
-- **Android SDK Path**: `C:\Users\bhatn\AppData\Local\Android\Sdk`
-- **Android Platform-Tools**: ADB v1.0.41 (37.0.1)
-- **Android Platforms Installed**: `platforms;android-34`
-- **Android Build Tools Installed**: `build-tools;34.0.0`
-- **Responsive Web**: React Native Web with Metro bundler (Production web bundle exported in `dist/`)
-- **Offline Persistence**: `@react-native-async-storage/async-storage` (v2.2.0)
-- **Backend & Database**: Supabase JS client with offline fallback
-- **AI Integration**: Gemini API (`gemini-1.5-flash`) with provider-independent abstraction
-
----
-
-## 4. Setup & Running the Application
-
-### Verify Environment:
 ```powershell
-adb --version
-adb devices
-npx expo-doctor
-```
+cd "c:\Users\bhatn\Downloads\Study Labs\study-labs"
 
-### Development Server:
-```bash
-cd study-labs
-npm run web       # Start responsive web preview in browser
-npm run android   # Start on connected Android device or emulator
-```
+# 1. Install dependencies (if fresh clone)
+npm install
 
-### Run Automated Domain & Logic Tests:
-```bash
+# 2. TypeScript check (expected: 0 errors)
+.\node_modules\.bin\tsc.cmd --noEmit
+
+# 3. Domain, Clubs RBAC, LaTeX, Multimodal & UI invariant verification suite (expected: 30/30 passing)
 node scripts/verify-study-labs.mjs
-```
 
-### Production Build / Web Export:
-```bash
-npx expo export -p web
+# 4. Expo SDK dependency health check (expected: 20/20 passing)
+npx expo-doctor
+
+# 5. Launch Web or Android Dev Build
+npm run web
+npm run android
 ```
-The exported static web bundle is saved in `study-labs/dist/`.
 
 ---
 
-## 5. Security & Configuration
-- Create `.env` based on `.env.example`:
-  ```bash
-  EXPO_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-  EXPO_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-  EXPO_PUBLIC_GEMINI_API_KEY=your-gemini-key
-  ```
-- All secret credentials remain protected; the app gracefully operates offline in local mode when keys are omitted.
+## 4. Database Setup & Pre-API Security Checklist
+
+1. Copy `.env.example` to `.env` (never commit `.env` to Git):
+   - `EXPO_PUBLIC_SUPABASE_URL`
+   - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
+   - `EXPO_PUBLIC_GEMINI_API_KEY` *(dev prototyping only; move behind a Supabase Edge Function before production APK builds)*
+2. Execute [`supabase/schema.sql`](supabase/schema.sql) in **Supabase Dashboard → SQL Editor** so `questions`, `profiles` (extended onboarding fields), `offline_test_records`, `custom_tests`, `syllabus_modules`, `clubs`, `club_roles`, `club_members`, `club_channels`, `club_messages`, `club_assignments`, `assignment_submissions`, `attendance_records`, and `safety_reports` exist (avoiding `/rest/v1/questions` `404` fallback on first boot).
+3. See [`DEVELOPMENT_STATUS.md`](../DEVELOPMENT_STATUS.md) and [`AUDIT_CHECKLIST.md`](../AUDIT_CHECKLIST.md) for the complete **Phase 5 Backend APIs, Assets, Images & Contacts Checklist**.

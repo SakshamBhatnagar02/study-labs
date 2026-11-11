@@ -15,8 +15,13 @@ import { Badge } from '../components/common/Badge';
 import { AppIcon } from '../components/common/AppIcon';
 import { NavTab } from '../components/navigation/BottomNav';
 import { DEFAULT_DAILY_GOAL, DEFAULT_USER, StorageService } from '../services/storage';
-import { EXAM_BANK_PRESETS, FORMULA_CARDS } from '../data/curriculumData';
-import { DailyGoalConfig, QuestionAttemptStat, SubjectId, UserProfile } from '../types';
+import {
+  BOARD_DISPLAY_NAMES,
+  EXAM_BANK_PRESETS,
+  FORMULA_CARDS,
+  SAMPLE_QUESTIONS,
+} from '../data/curriculumData';
+import { DailyGoalConfig, OfflineTestRecord, QuestionAttemptStat, SubjectId, UserProfile } from '../types';
 import {
   aggregateDailyActivity,
   build7DayLeaderboard,
@@ -52,12 +57,14 @@ import {
   TrendingUp,
   Trophy,
   User,
+  Users,
   X,
   Zap,
 } from 'lucide-react-native';
 
 interface DashboardScreenProps {
   onNavigate: (tab: NavTab) => void;
+  onOpenOnboarding?: () => void;
   onOpenCustomTest?: () => void;
   onOpenFormulas?: (subjectId?: SubjectId) => void;
   onOpenCurriculumSubject?: (subjectId: SubjectId) => void;
@@ -66,6 +73,7 @@ interface DashboardScreenProps {
 
 export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   onNavigate,
+  onOpenOnboarding,
   onOpenCustomTest,
   onOpenFormulas,
   onOpenCurriculumSubject,
@@ -75,27 +83,32 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const [profile, setProfile] = useState<UserProfile>(DEFAULT_USER);
   const [goalConfig, setGoalConfig] = useState<DailyGoalConfig>(DEFAULT_DAILY_GOAL);
   const [logs, setLogs] = useState<QuestionAttemptStat[]>([]);
+  const [offlineTests, setOfflineTests] = useState<OfflineTestRecord[]>([]);
   const [offlineAvgPct, setOfflineAvgPct] = useState<number>(79.8);
+  const [joinedClubsCount, setJoinedClubsCount] = useState<number>(2);
   const [conceptQuery, setConceptQuery] = useState('');
   const [now, setNow] = useState<Date>(() => new Date());
   const [selectedHolidayCountry, setSelectedHolidayCountry] = useState<HolidayCountryCode>('AUTO');
   const [cachedRemoteHolidays, setCachedRemoteHolidays] = useState<CalendarHoliday[]>([]);
 
   const loadDashboard = useCallback(async () => {
-    const [prof, cfg, attemptLogs, offlineTests, plannerState] = await Promise.all([
+    const [prof, cfg, attemptLogs, offTests, plannerState, clubsWs] = await Promise.all([
       StorageService.getUserProfile(),
       StorageService.getDailyGoalConfig(),
       StorageService.getAttemptLogs(),
       StorageService.getOfflineTests(),
       StorageService.getPlannerState(),
+      StorageService.getClubsWorkspace(),
     ]);
     setProfile(prof);
     setGoalConfig(cfg);
     setLogs(attemptLogs);
+    setOfflineTests(offTests);
+    setJoinedClubsCount(clubsWs.joinedClubIds.length);
     setSelectedHolidayCountry(plannerState.selectedCountry);
-    if (offlineTests.length > 0) {
+    if (offTests.length > 0) {
       const avg =
-        offlineTests.reduce((sum, t) => sum + t.calculatedPercentage, 0) / offlineTests.length;
+        offTests.reduce((sum, t) => sum + t.calculatedPercentage, 0) / offTests.length;
       setOfflineAvgPct(parseFloat(avg.toFixed(1)));
     }
     const resolved = resolveActiveCountry(plannerState.selectedCountry);
@@ -165,6 +178,33 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   );
   const todayHoliday = allCountryHolidays.find((h) => h.date === todayIso);
   const upcomingHoliday = allCountryHolidays.find((h) => h.date > todayIso);
+  const activeBoardLabel = BOARD_DISPLAY_NAMES[profile.board || 'JEE_MAIN'] || 'Curriculum';
+
+  const weakTopicSuggestions = (() => {
+    const misses = logs.filter((l) => !l.isCorrect);
+    const seenIds = new Set<string>();
+    const items: Array<{ label: string; subjectId: SubjectId; stat: string }> = [];
+    for (const m of misses) {
+      const q = SAMPLE_QUESTIONS.find((item) => item.id === m.questionId);
+      if (q && !seenIds.has(q.id)) {
+        seenIds.add(q.id);
+        items.push({
+          label: `${q.examOrigin} (${q.difficulty})`,
+          subjectId: q.subjectId,
+          stat: 'Missed recently',
+        });
+      }
+      if (items.length >= 3) break;
+    }
+    if (items.length === 0) {
+      return [
+        { label: 'Rotational Rolling & Friction', subjectId: 'physics' as const, stat: 'High Yield' },
+        { label: 'GOC Aromaticity & ortho-Effect', subjectId: 'chemistry' as const, stat: 'High Yield' },
+        { label: "King's Definite Integral Property", subjectId: 'math' as const, stat: 'Core Drill' },
+      ];
+    }
+    return items;
+  })();
 
   return (
     <ScrollView
@@ -187,7 +227,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
               Hey, {firstName}
             </Text>
             <Text style={[styles.greetingSub, { color: colors.textSecondary }]} numberOfLines={1}>
-              {profile.classGrade} · Rank #{leaderboard.currentUserEntry.rank} (7d)
+              {profile.classGrade} · {activeBoardLabel} ({profile.country || 'India'}) · Rank #{leaderboard.currentUserEntry.rank}
             </Text>
           </View>
         </Pressable>
@@ -242,6 +282,36 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       </View>
 
       {/* Live Regional Date, Clock & Holiday Calendar Strip */}
+      {!profile.onboardingCompleted && onOpenOnboarding && (
+        <Pressable
+          focusable={false}
+          onPress={onOpenOnboarding}
+          style={({ pressed }) => [
+            styles.liveClockStrip,
+            {
+              backgroundColor: mode === 'dark' ? '#1E293B' : '#FFF7ED',
+              borderColor: colors.primary,
+              opacity: pressed ? 0.85 : 1,
+            },
+          ]}
+        >
+          <View style={styles.liveClockTopRow}>
+            <View style={[styles.liveClockLeft, { flex: 1, minWidth: 0 }]}>
+              <Sparkles size={14} color={colors.primary} />
+              <Text
+                style={[styles.liveDateText, { color: colors.text, flex: 1 }]}
+                numberOfLines={2}
+              >
+                Personalize Global Curriculum, Language & Account
+              </Text>
+            </View>
+            <Text style={[styles.calendarCtaText, { color: colors.primary, flexShrink: 0 }]}>
+              Setup →
+            </Text>
+          </View>
+        </Pressable>
+      )}
+
       <Pressable
         focusable={false}
         onPress={() => onNavigate('syllabus')}
@@ -726,6 +796,97 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           icon={<Sparkles size={14} color="#FFFFFF" />}
           style={{ marginTop: 12 }}
         />
+      </Card>
+
+      {/* Study Clubs & Teacher Institute Platform Portal */}
+      <View style={styles.spotlightHeader}>
+        <Text style={[styles.sectionHeading, { color: colors.text }]}>Study Clubs & Institutes</Text>
+        <TouchableOpacity onPress={() => onNavigate('clubs')}>
+          <Text style={[styles.seeAllText, { color: colors.primary }]}>Open Workspace →</Text>
+        </TouchableOpacity>
+      </View>
+      <Pressable
+        focusable={false}
+        onPress={() => onNavigate('clubs')}
+        style={({ pressed }) => [
+          styles.trackerSpotlightCard,
+          {
+            backgroundColor: colors.card,
+            borderColor: colors.primary,
+            borderRadius: 16,
+            borderWidth: 1,
+            overflow: 'hidden',
+            marginBottom: 16,
+            opacity: pressed ? 0.86 : 1,
+          },
+        ]}
+      >
+        <View style={styles.spotlightRow}>
+          <View
+            style={[
+              styles.spotlightIcon,
+              { backgroundColor: mode === 'dark' ? '#052E16' : '#DCFCE7' },
+            ]}
+          >
+            <Users size={22} color={colors.success} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+              <Text style={[styles.spotlightTitle, { color: colors.text, marginBottom: 0 }]}>
+                Cohort Channels & Teacher Suite
+              </Text>
+              <Badge label={`${joinedClubsCount} Joined`} variant="success" size="sm" />
+            </View>
+            <Text style={[styles.spotlightSubtitle, { color: colors.textSecondary, marginTop: 3 }]}>
+              Discord-style role channels, Faculty assignments, polls, digital attendance & direct messages.
+            </Text>
+          </View>
+        </View>
+      </Pressable>
+
+      {/* Recommended Weak Topics & Recent Activity */}
+      <View style={styles.spotlightHeader}>
+        <Text style={[styles.sectionHeading, { color: colors.text }]}>Focus Recommendations</Text>
+        <TouchableOpacity onPress={() => onNavigate('analytics')}>
+          <Text style={[styles.seeAllText, { color: colors.primary }]}>Full Analytics →</Text>
+        </TouchableOpacity>
+      </View>
+      <Card style={[styles.trackerSpotlightCard, { borderColor: colors.border, marginBottom: 16 }]}>
+        <View style={{ gap: 8 }}>
+          {weakTopicSuggestions.map((item, idx) => (
+            <TouchableOpacity
+              key={`${item.label}_${idx}`}
+              onPress={() =>
+                onOpenCurriculumSubject
+                  ? onOpenCurriculumSubject(item.subjectId)
+                  : onNavigate('study')
+              }
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingVertical: 6,
+                borderBottomWidth: idx === weakTopicSuggestions.length - 1 ? 0 : StyleSheet.hairlineWidth,
+                borderBottomColor: colors.borderSubtle,
+              }}
+            >
+              <View style={{ flex: 1, paddingRight: 8 }}>
+                <Text style={{ fontSize: 13, fontWeight: '700', color: colors.text }} numberOfLines={1}>
+                  {item.label}
+                </Text>
+                <Text style={{ fontSize: 11, color: colors.textSecondary }}>
+                  {item.subjectId.toUpperCase()} · {item.stat}
+                </Text>
+              </View>
+              <Badge label="Revise" variant="warning" size="sm" />
+            </TouchableOpacity>
+          ))}
+          {offlineTests.length > 0 && (
+            <Text style={{ fontSize: 11, color: colors.textSecondary, marginTop: 2 }}>
+              Latest Coaching Log: {offlineTests[0].testName} ({offlineTests[0].calculatedPercentage}%)
+            </Text>
+          )}
+        </View>
       </Card>
 
       {/* Quick Academic Tools Shortcuts */}

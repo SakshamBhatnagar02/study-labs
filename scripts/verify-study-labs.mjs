@@ -75,7 +75,7 @@ const {
   PERIODIC_GROUPS,
   PERIODIC_TABLE,
 } = await import('../src/data/periodicTable.ts');
-const { PHYSICAL_CONSTANTS, REACTIVITY_SERIES } = await import('../src/data/academicConstants.ts');
+const { PHYSICAL_CONSTANTS, REACTIVITY_SERIES, CURRENCY_CODES, CURRENCY_RATES_PER_USD, convertCurrencyAmount } = await import('../src/data/academicConstants.ts');
 const { evaluateMathExpression } = await import('../src/utils/mathEvaluator.ts');
 const { buildApiErrorInfo, formatErrorCloneText } = await import('../src/utils/errorHandling.ts');
 const {
@@ -96,6 +96,28 @@ const {
   classifyAttachmentKind,
   extractTextFromPptxBytes,
 } = await import('../src/utils/attachmentParser.ts');
+const {
+  CHAPTER_STUDY_MODULES,
+  CHEMISTRY_REFERENCE_TABLES,
+  getChapterStudyModule,
+  GLOBAL_CURRICULUM_CATALOG,
+} = await import('../src/data/curriculumData.ts');
+const {
+  ATTENDANCE_POLICY_DISCLAIMER,
+  canPostInChannel,
+  canViewChannel,
+  checkMessageAntiSpam,
+  computeClubCohortStats,
+  createNewStudyClubObject,
+  filterDirectoryClubs,
+  resolveMemberPermissions,
+} = await import('../src/utils/clubsEngine.ts');
+const { DEFAULT_CLUBS_WORKSPACE, SEED_STUDY_CLUBS } = await import('../src/data/clubsSeedData.ts');
+const {
+  buildDailyChallenges,
+  buildMultiPeriodLeaderboard,
+  evaluateAchievementBadges,
+} = await import('../src/utils/gamificationEngine.ts');
 const { getThemeColors } = await import('../src/theme/colors.ts');
 
 console.log('🧪 Starting Study Labs Domain, Cyber Celebration, LaTeX, SFX & AI Verification Suite...\n');
@@ -868,4 +890,138 @@ assert.ok(aiScreenSrc.includes('allowPanModal') && testEngineSrc.includes('allow
 assert.ok(aiScreenSrc.includes('ApiErrorCard') && aiScreenSrc.includes('ImageLibraryModal') && aiScreenSrc.includes('AttachmentPreviewModal'), 'AIAssistantScreen must integrate Error Cards, Image Library, and Attachment Editor');
 console.log('✅ 26. Pannable LaTeX Tables, Rounded Press Clipping & New Feature Integrations: Verified');
 
-console.log('\n🎉 ALL 26 STUDY LABS DOMAIN, MULTIMODAL, VISUAL GEN, GROUP 1-18, ERROR & UI INVARIANT TESTS PASSED!');
+// 27. Verify Clubs & Teacher/Institute RBAC, 3-Way Channel Access, Anti-Spam & Attendance Disclaimer
+assert.ok(SEED_STUDY_CLUBS.length >= 3, 'Should seed at least 3 Study Clubs / Institutes');
+const vertexClub = SEED_STUDY_CLUBS.find((c) => c.id === 'club_vertex_academy');
+assert.ok(vertexClub, 'Vertex STEM Institute seed club must exist');
+assert.equal(DEFAULT_CLUBS_WORKSPACE.activeClubId, vertexClub.id);
+
+const facultyPrivateCh = vertexClub.channels.find((ch) => ch.accessMode === 'role_private');
+const readOnlyAnnCh = vertexClub.channels.find((ch) => ch.type === 'announcements');
+assert.ok(facultyPrivateCh && readOnlyAnnCh, 'Seed club must include both role_private and announcements channels');
+
+const studentPerms = resolveMemberPermissions(vertexClub, 'usr_local_01', 'Student');
+assert.equal(studentPerms.isManager, false, 'Student simulated view must not grant manager access');
+assert.equal(
+  canViewChannel(facultyPrivateCh, studentPerms.roles.map((r) => r.id), studentPerms.isManager),
+  false,
+  'role_private channel must be hidden from Student role'
+);
+assert.equal(
+  canPostInChannel(readOnlyAnnCh, studentPerms.roles.map((r) => r.id), studentPerms.isManager).allowed,
+  false,
+  'Read-only #announcements must block posts from Student role'
+);
+
+const teacherPerms = resolveMemberPermissions(vertexClub, 'usr_local_01', 'Teacher');
+assert.equal(teacherPerms.permissions.canCreateAssignments, true);
+assert.equal(teacherPerms.permissions.canTakeAttendance, true);
+assert.equal(
+  canViewChannel(facultyPrivateCh, teacherPerms.roles.map((r) => r.id), teacherPerms.isManager),
+  true,
+  'role_private faculty channel must be visible to Teacher role'
+);
+assert.equal(
+  canPostInChannel(readOnlyAnnCh, teacherPerms.roles.map((r) => r.id), teacherPerms.isManager, teacherPerms.permissions.canPostAnnouncements).allowed,
+  true,
+  'Teacher should be allowed to post announcements'
+);
+
+assert.equal(checkMessageAntiSpam('See https://study.io/notes/123', true).ok, true, 'Trusted study.io URL must be allowed');
+assert.equal(checkMessageAntiSpam('Win free prizes at https://spam-promo.example/buy', true).ok, false, 'Untrusted external link must be blocked by club safety filter');
+assert.equal(filterDirectoryClubs(SEED_STUDY_CLUBS, { query: 'INST-VERT27' }).length, 1, 'Invite code search in Directory must locate Vertex STEM Institute');
+
+const customClub = createNewStudyClubObject({
+  name: 'AP Physics Circle',
+  description: 'Weekly problem-solving seminar.',
+  kind: 'study_club',
+  category: 'Olympiad & STEM Lab',
+  tags: ['AP Physics', 'Mechanics'],
+  primaryLanguage: 'English',
+  country: 'United States',
+  isPrivate: false,
+  aboutAdmin: 'Lead Mentor',
+  rules: ['Show LaTeX derivations'],
+  bannerColor: '#EA580C',
+  iconColor: '#F97316',
+  owner: { userId: 'usr_local_01', name: 'Aarav Sharma', ioId: 'STUDY-7734-IO' },
+});
+assert.ok(customClub.inviteCode.startsWith('CLUB-') && customClub.channels.length >= 4);
+const cohortStats = computeClubCohortStats(vertexClub);
+assert.ok(cohortStats.totalMembers >= 4 && cohortStats.totalAssignments >= 1);
+assert.ok(
+  ATTENDANCE_POLICY_DISCLAIMER.toLowerCase().includes('participation records only') &&
+    ATTENDANCE_POLICY_DISCLAIMER.toLowerCase().includes('do not verify'),
+  'Attendance disclaimer must explicitly state participation logging only'
+);
+console.log('✅ 27. Clubs RBAC, 3-Way Channel Access, Anti-Spam, Cohort Stats & Attendance Policy: Verified');
+
+// 28. Verify Multi-Period Leaderboard (5 Timeframes), Daily Challenges & Achievement Badges
+const seededProfile = {
+  id: 'usr_local_01',
+  ioId: 'STUDY-7734-IO',
+  name: 'Aarav Sharma',
+  email: 'aarav@study.io',
+  country: 'India',
+  board: 'JEE_MAIN',
+  classGrade: 'Class 12',
+  stream: 'Science (PCM)',
+  targetExams: ['JEE Main'],
+  preferredMode: 'Detailed',
+  studyStreakDays: 14,
+  totalXp: 3420,
+  level: 5,
+};
+const timeframes = ['today', 'week', 'month', 'year', 'all_time'];
+for (const tf of timeframes) {
+  const res = buildMultiPeriodLeaderboard(seedLogs, seededProfile, tf, refDate);
+  assert.equal(res.timeframe, tf);
+  assert.ok(res.entries.length >= 6 && res.currentUserEntry.rank >= 1, `Timeframe ${tf} must rank current user`);
+}
+const allTimeRes = buildMultiPeriodLeaderboard(seedLogs, seededProfile, 'all_time', refDate);
+const todayRes = buildMultiPeriodLeaderboard(seedLogs, seededProfile, 'today', refDate);
+assert.ok(allTimeRes.currentUserStats.xp >= todayRes.currentUserStats.xp, 'All-time XP must be >= today XP');
+const dailyCh = buildDailyChallenges(seedLogs, 15, ['ch_club_engage']);
+assert.equal(dailyCh.length, 3, 'Daily Challenges should expose 3 challenges');
+assert.equal(dailyCh.find((c) => c.id === 'ch_club_engage')?.claimed, true);
+const achBadges = evaluateAchievementBadges(seedLogs, seededProfile, 15, 2);
+assert.ok(achBadges.length >= 5 && achBadges.some((b) => b.id === 'badge_club_scholar' && b.unlocked), 'Achievement badges must unlock Study Guild Collaborator');
+console.log('✅ 28. Multi-Period Leaderboard (5 Timeframes), Daily Challenges & Achievement Badges: Verified');
+
+// 29. Verify Global Multi-Curriculum Catalog, Chapter Notes/Mind Maps, Chemistry Tables & Currency FX
+assert.ok(GLOBAL_CURRICULUM_CATALOG.length >= 6, 'Global curriculum catalog should cover India, US, UK, SG, UAE & Global');
+assert.ok(CHEMISTRY_REFERENCE_TABLES.length >= 3, 'Chemistry Reference Tables should include IUPAC, Indicators, Flame Tests');
+const firstChapterMod = getChapterStudyModule(CHAPTERS[0]);
+assert.ok(CHAPTER_STUDY_MODULES[CHAPTERS[0].id] && firstChapterMod.mindMapBranches.length >= 2 && firstChapterMod.workedExamples.length >= 1);
+assert.ok(CURRENCY_CODES.includes('INR') && CURRENCY_CODES.includes('EUR') && CURRENCY_CODES.includes('USD'));
+const usdToInr = convertCurrencyAmount(10, 'USD', 'INR');
+assert.ok(Math.abs(usdToInr - 10 * CURRENCY_RATES_PER_USD.INR) < 0.01, '10 USD -> INR must match baseline rate');
+assert.ok(Math.abs(convertCurrencyAmount(usdToInr, 'INR', 'USD') - 10) < 0.01, 'Round-trip INR -> USD conversion must preserve value');
+console.log('✅ 29. Global Curricula, Mind Maps/Notes, Chemistry Reference Tables & FX Converter: Verified');
+
+// 30. Verify UI Component Safety Invariants (Zero browser alert/confirm, Attendance Disclaimer, Rounded Overflow)
+const uiFilesToAudit = [
+  'src/screens/ClubsScreen.tsx',
+  'src/components/clubs/ChannelSettingsModal.tsx',
+  'src/components/clubs/TeacherManagementModal.tsx',
+  'src/components/clubs/ClubDirectoryModal.tsx',
+  'src/components/clubs/ClubPreviewModal.tsx',
+  'src/components/clubs/CreateClubModal.tsx',
+  'src/components/auth/OnboardingAuthModal.tsx',
+  'src/components/common/QuickCalculatorModal.tsx',
+  'src/screens/GraphPlaygroundScreen.tsx',
+  'src/screens/LeaderboardScreen.tsx',
+  'src/screens/StudyMaterialScreen.tsx',
+  'src/screens/SyllabusCalendarScreen.tsx',
+];
+for (const relPath of uiFilesToAudit) {
+  const content = fs.readFileSync(path.resolve(relPath), 'utf8');
+  assert.equal(/\b(window\.)?(alert|confirm|prompt)\s*\(/.test(content), false, `${relPath} must never call browser alert/confirm/prompt`);
+}
+const teacherModalSrc = fs.readFileSync(path.resolve('src/components/clubs/TeacherManagementModal.tsx'), 'utf8');
+assert.ok(teacherModalSrc.includes('ATTENDANCE_POLICY_DISCLAIMER'), 'TeacherManagementModal must display the mandatory attendance participation disclaimer');
+const channelModalSrc = fs.readFileSync(path.resolve('src/components/clubs/ChannelSettingsModal.tsx'), 'utf8');
+assert.ok(channelModalSrc.includes('activeThumbColor'), 'ChannelSettingsModal Switches must declare explicit activeThumbColor for crisp Cyber Orange styling');
+console.log('✅ 30. Zero Browser Dialogs, Mandatory Attendance Notice & Switch Contrast Invariants: Verified');
+
+console.log('\n🎉 ALL 30 STUDY LABS DOMAIN, CLUBS RBAC, MULTIMODAL, GLOBAL & UI INVARIANT TESTS PASSED!');

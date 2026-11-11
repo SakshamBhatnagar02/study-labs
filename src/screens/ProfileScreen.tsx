@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
+  Image,
   Modal,
   ScrollView,
   StyleSheet,
@@ -17,7 +18,17 @@ import { NavTab } from '../components/navigation/BottomNav';
 import { DEFAULT_DAILY_GOAL, DEFAULT_USER, StorageService } from '../services/storage';
 import { SoundManager } from '../services/soundManager';
 import { HapticManager } from '../services/hapticManager';
-import { AcademicStream, DailyGoalConfig, QuestionAttemptStat, UserProfile } from '../types';
+import { BOARD_DISPLAY_NAMES } from '../data/curriculumData';
+import { evaluateAchievementBadges } from '../utils/gamificationEngine';
+import { computeStorageQuotaUsage, formatByteSize, PLAN_CONFIGS } from '../utils/aiImageLibrary';
+import {
+  AcademicStream,
+  DailyGoalConfig,
+  GeneratedStemImage,
+  QuestionAttemptStat,
+  UserPlanTier,
+  UserProfile,
+} from '../types';
 import {
   aggregateDailyActivity,
   computeHistorySummary,
@@ -31,17 +42,21 @@ import {
   Check,
   ChevronRight,
   Flame,
+  Globe,
   Moon,
   Pencil,
+  Shield,
   Sun,
   Target,
   Trophy,
   User,
+  Users,
   X,
 } from 'lucide-react-native';
 
 interface ProfileScreenProps {
   onNavigate: (tab: NavTab) => void;
+  onOpenOnboarding?: () => void;
   onProfileUpdated?: (profile: UserProfile) => void;
 }
 
@@ -56,12 +71,16 @@ const CLASS_OPTIONS = ['Class 11', 'Class 12', 'Dropper'];
 
 export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   onNavigate,
+  onOpenOnboarding,
   onProfileUpdated,
 }) => {
   const { colors, mode, setTheme } = useTheme();
   const [profile, setProfile] = useState<UserProfile>(DEFAULT_USER);
   const [goalConfig, setGoalConfig] = useState<DailyGoalConfig>(DEFAULT_DAILY_GOAL);
   const [logs, setLogs] = useState<QuestionAttemptStat[]>([]);
+  const [savedImages, setSavedImages] = useState<GeneratedStemImage[]>([]);
+  const [planTier, setPlanTier] = useState<UserPlanTier>('free');
+  const [joinedClubsCount, setJoinedClubsCount] = useState<number>(2);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const [goalModalOpen, setGoalModalOpen] = useState(false);
   const [historyRange, setHistoryRange] = useState<'week' | 'month' | 'quarter'>('week');
@@ -73,14 +92,20 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   const [draftYear, setDraftYear] = useState(String(DEFAULT_USER.targetYear || 2027));
 
   const loadData = useCallback(async () => {
-    const [prof, cfg, attemptLogs] = await Promise.all([
+    const [prof, cfg, attemptLogs, imgs, tier, clubsWs] = await Promise.all([
       StorageService.getUserProfile(),
       StorageService.getDailyGoalConfig(),
       StorageService.getAttemptLogs(),
+      StorageService.getGeneratedImages(),
+      StorageService.getUserPlanTier(),
+      StorageService.getClubsWorkspace(),
     ]);
     setProfile(prof);
     setGoalConfig(cfg);
     setLogs(attemptLogs);
+    setSavedImages(imgs);
+    setPlanTier(tier);
+    setJoinedClubsCount(clubsWs.joinedClubIds.length);
     setDraftName(prof.name);
     setDraftClass(prof.classGrade);
     setDraftStream(prof.stream);
@@ -99,6 +124,9 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
     profile.studyStreakDays
   );
   const historySummary = computeHistorySummary(logs, historyRange, 'all', new Date());
+  const badges = evaluateAchievementBadges(logs, profile, goalConfig.targetQuestions, joinedClubsCount);
+  const quotaSnap = computeStorageQuotaUsage(savedImages, planTier);
+  const boardName = BOARD_DISPLAY_NAMES[profile.board || 'JEE_MAIN'] || 'Curriculum';
 
   const handleSaveProfile = async () => {
     const parsedYear = parseInt(draftYear, 10) || 2027;
@@ -127,13 +155,30 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
         {/* Identity Header Card */}
         <Card style={[styles.profileCard, { borderColor: colors.border }]}>
           <View style={styles.profileRow}>
-            <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
-              <Text style={styles.avatarLetter}>{profile.name.charAt(0).toUpperCase()}</Text>
+            <View
+              style={[
+                styles.avatar,
+                { backgroundColor: profile.avatarColor || colors.primary, overflow: 'hidden' },
+              ]}
+            >
+              {profile.avatarUri ? (
+                <Image
+                  source={{ uri: profile.avatarUri }}
+                  style={{ width: 50, height: 50 }}
+                  resizeMode="cover"
+                />
+              ) : (
+                <Text style={styles.avatarLetter}>{profile.name.charAt(0).toUpperCase()}</Text>
+              )}
             </View>
             <View style={{ flex: 1 }}>
               <Text style={[styles.profileName, { color: colors.text }]}>{profile.name}</Text>
               <Text style={[styles.profileMeta, { color: colors.textSecondary }]}>
-                {profile.classGrade} · {profile.stream} · Target {profile.targetYear || 2027}
+                {profile.classGrade} · {profile.stream} · {boardName} ({profile.country || 'India'})
+              </Text>
+              <Text style={[styles.profileMeta, { color: colors.textSecondary }]}>
+                {profile.language || 'English'} · Mode: {profile.preferredMode || 'Normal'} · Auth:{' '}
+                {(profile.authProvider || 'guest').toUpperCase()}
               </Text>
               <View style={styles.badgeRow}>
                 <Badge label={profile.ioId} variant="primary" size="sm" />
@@ -150,11 +195,28 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
               <Pencil size={14} color={colors.primary} />
             </TouchableOpacity>
           </View>
+          {onOpenOnboarding && (
+            <Button
+              title="Global Curriculum, Language & Account SSO Setup"
+              variant="outline"
+              size="sm"
+              onPress={onOpenOnboarding}
+              icon={<Globe size={14} color={colors.primary} />}
+              style={{ marginTop: 12 }}
+            />
+          )}
         </Card>
 
         {/* Quick Hub Links */}
         <View style={styles.quickNavCard}>
           {[
+            {
+              tab: 'clubs' as const,
+              title: 'Study Clubs & Teacher Platform',
+              sub: `${joinedClubsCount} joined cohorts · Channels, assignments & attendance`,
+              Icon: Users,
+              tint: colors.success,
+            },
             {
               tab: 'dailyGoal' as const,
               title: 'Daily Goal & Contribution Heatmap',
@@ -321,6 +383,67 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
               </Text>
               <Text style={[styles.kpiLbl, { color: colors.textSecondary }]}>Accuracy</Text>
             </View>
+          </View>
+        </Card>
+
+        {/* Achievement Badges & Visual Storage Tier */}
+        <Card style={styles.historyCard}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+            <Text style={[styles.cardHeading, { color: colors.text }]}>
+              Achievements ({badges.filter((b) => b.unlocked).length}/{badges.length})
+            </Text>
+            <TouchableOpacity onPress={() => onNavigate('leaderboard')}>
+              <Text style={[styles.linkText, { color: colors.primary }]}>Challenges →</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+            {badges.map((b) => (
+              <View
+                key={b.id}
+                style={{
+                  width: '48%',
+                  padding: 9,
+                  borderRadius: 12,
+                  borderWidth: 1,
+                  backgroundColor: colors.surface,
+                  borderColor: b.unlocked ? b.color : colors.borderSubtle,
+                  opacity: b.unlocked ? 1 : 0.65,
+                }}
+              >
+                <Text style={{ fontSize: 12, fontWeight: '800', color: b.unlocked ? b.color : colors.textSecondary }}>
+                  {b.unlocked ? '★ ' : '○ '}{b.title}
+                </Text>
+                <Text style={{ fontSize: 10.5, color: colors.textSecondary, marginTop: 2 }}>
+                  {b.progressLabel}
+                </Text>
+              </View>
+            ))}
+          </View>
+
+          <View
+            style={{
+              marginTop: 12,
+              padding: 10,
+              borderRadius: 12,
+              borderWidth: 1,
+              backgroundColor: colors.surface,
+              borderColor: colors.borderSubtle,
+              gap: 4,
+            }}
+          >
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <Shield size={14} color={colors.primary} />
+                <Text style={{ fontSize: 12.5, fontWeight: '800', color: colors.text }}>
+                  {PLAN_CONFIGS[planTier].label} · AI Visual Vault
+                </Text>
+              </View>
+              <Badge label={PLAN_CONFIGS[planTier].priceLabel} variant="neutral" size="sm" />
+            </View>
+            <Text style={{ fontSize: 11, color: colors.textSecondary }}>
+              {quotaSnap.imageCount} / {quotaSnap.maxImages} visuals saved · {formatByteSize(quotaSnap.usedBytes)} /{' '}
+              {formatByteSize(quotaSnap.maxBytes)}
+            </Text>
           </View>
         </Card>
 

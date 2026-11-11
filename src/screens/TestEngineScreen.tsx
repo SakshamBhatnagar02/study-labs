@@ -70,6 +70,7 @@ import {
   FileEdit,
   Filter,
   FunctionSquare,
+  History,
   Lightbulb,
   ListChecks,
   Move,
@@ -259,6 +260,8 @@ export const TestEngineScreen: React.FC<TestEngineScreenProps> = ({
   const [builderOpen, setBuilderOpen] = useState(false);
   const [notebookPickerOpen, setNotebookPickerOpen] = useState(false);
   const [questionManagerOpen, setQuestionManagerOpen] = useState(false);
+  const [historyModalOpen, setHistoryModalOpen] = useState(false);
+  const [testAttempts, setTestAttempts] = useState<TestAttempt[]>([]);
 
   const [isSubmittingTest, setIsSubmittingTest] = useState(false);
   const [isGeneratingCustom, setIsGeneratingCustom] = useState(false);
@@ -344,7 +347,7 @@ export const TestEngineScreen: React.FC<TestEngineScreenProps> = ({
   const fontSizes = TEXT_SIZE_MAP[viewSettings.textSize] || TEXT_SIZE_MAP.medium;
 
   const loadPersistedState = useCallback(async () => {
-    const [bms, nbs, notes, qSettings, logs, cTests, localCustomQs, cloudRes, savedSession] =
+    const [bms, nbs, notes, qSettings, logs, cTests, localCustomQs, cloudRes, savedSession, pastAttempts] =
       await Promise.all([
         StorageService.getBookmarkedIds(),
         StorageService.getNotebooks(),
@@ -355,6 +358,7 @@ export const TestEngineScreen: React.FC<TestEngineScreenProps> = ({
         StorageService.getCustomQuestions(),
         SupabaseService.fetchQuestionsWithStatus(),
         StorageService.getActiveTestSession(),
+        StorageService.getTestAttempts(),
       ]);
 
     const cloudQs = cloudRes.questions || [];
@@ -369,6 +373,7 @@ export const TestEngineScreen: React.FC<TestEngineScreenProps> = ({
     setPriorStatusMap(getLatestQuestionStatusMap(logs));
     setSavedCustomTests(cTests);
     setExtraQuestions(combinedExtra);
+    setTestAttempts(pastAttempts);
 
     // Hydrate last active test session once on initial mount (unless externally launched)
     if (!hasHydratedWorkspaceRef.current) {
@@ -1434,6 +1439,18 @@ export const TestEngineScreen: React.FC<TestEngineScreenProps> = ({
             accessibilityLabel="Create custom test"
           >
             <PlusCircle size={15} color={colors.primary} />
+          </TouchableOpacity>
+
+          {/* Past Attempts History Button */}
+          <TouchableOpacity
+            onPress={() => setHistoryModalOpen(true)}
+            style={[
+              styles.headerIconBtn,
+              { backgroundColor: colors.surface, borderColor: colors.border },
+            ]}
+            accessibilityLabel="Past test attempts history"
+          >
+            <History size={15} color={colors.text} />
           </TouchableOpacity>
 
           {/* Play/Pause Per-Question Timer Pill */}
@@ -3477,6 +3494,132 @@ export const TestEngineScreen: React.FC<TestEngineScreenProps> = ({
         title={panOptionTarget ? `Question ${safeIdx + 1} · ${panOptionTarget.label}` : 'Option Canvas'}
       />
 
+      {/* MODAL 6: PAST TEST ATTEMPTS & RESULTS HISTORY */}
+      <Modal
+        visible={historyModalOpen}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setHistoryModalOpen(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalSheet, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={[styles.modalHeader, { borderBottomColor: colors.border }]}>
+              <View style={styles.hintTitleGroup}>
+                <History size={18} color={colors.primary} />
+                <Text style={[styles.modalTitle, { color: colors.text }]}>
+                  Past Test Attempts ({testAttempts.length})
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => setHistoryModalOpen(false)}
+                accessibilityLabel="Close attempt history"
+              >
+                <X size={18} color={colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.modalScroll} contentContainerStyle={{ gap: 10, paddingVertical: 14 }}>
+              {testAttempts.length === 0 ? (
+                <EmptyResourceCard
+                  title="No Completed Test Attempts Yet"
+                  message="Finish and submit a Practice Drill or Timed Exam simulation to record your score breakdown and estimated rank here."
+                  actionLabel="Back to Test"
+                  onAction={() => setHistoryModalOpen(false)}
+                />
+              ) : (
+                testAttempts.map((att) => {
+                  const formattedDate = new Date(att.date).toLocaleDateString(undefined, {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  });
+                  const handleRetakeAttempt = () => {
+                    const availableIds = new Set(allQuestions.map((q) => q.id));
+                    const customMatch = savedCustomTests.find((ct) => ct.title === att.testTitle);
+                    const answerIds = Object.keys(att.answers || {}).filter((id) =>
+                      availableIds.has(id)
+                    );
+                    const retakeIds =
+                      customMatch && customMatch.questionIds.length > 0
+                        ? customMatch.questionIds
+                        : answerIds.length > 0
+                        ? answerIds
+                        : SAMPLE_QUESTIONS.slice(0, Math.max(1, att.totalQuestions)).map((q) => q.id);
+
+                    applySessionLaunch({
+                      title: att.testTitle,
+                      questionIds: retakeIds,
+                      practice: att.mode === 'untimed',
+                      marksPos: att.marksPerCorrect || marksPerCorrect,
+                      marksNeg: att.negativeMarks ?? negativeMarks,
+                    });
+                    setHistoryModalOpen(false);
+                  };
+
+                  return (
+                    <View
+                      key={att.id}
+                      style={[
+                        styles.qmCard,
+                        { backgroundColor: colors.surface, borderColor: colors.border },
+                      ]}
+                    >
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+                        <Text style={{ fontSize: 13.5, fontWeight: '800', color: colors.text, flex: 1 }} numberOfLines={1}>
+                          {att.testTitle}
+                        </Text>
+                        <Badge
+                          label={att.mode === 'timed' ? 'EXAM' : 'PRACTICE'}
+                          variant={att.mode === 'timed' ? 'info' : 'primary'}
+                          size="sm"
+                        />
+                      </View>
+
+                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
+                        <Text style={{ fontSize: 14, fontWeight: '900', color: colors.primary }}>
+                          Score: {att.score}/{att.maxScore}
+                        </Text>
+                        <Badge label={`${att.percentage}% Accuracy`} variant="success" size="sm" />
+                        {typeof att.estimatedRank === 'number' && (
+                          <Badge label={`Est. Rank #${att.estimatedRank}`} variant="warning" size="sm" />
+                        )}
+                      </View>
+
+                      <Text style={{ fontSize: 11.5, color: colors.textSecondary }}>
+                        {att.correctAnswers} Correct · {att.incorrectAnswers} Wrong · {att.unattempted} Skipped · {formatSecs(att.timeSpentSeconds)}
+                      </Text>
+
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 2 }}>
+                        <Text style={{ fontSize: 11, color: colors.textSecondary }}>
+                          {formattedDate}
+                          {typeof att.estimatedPercentile === 'number'
+                            ? ` · ${att.estimatedPercentile}%ile`
+                            : ''}
+                        </Text>
+                        <TouchableOpacity
+                          focusable={false}
+                          onPress={handleRetakeAttempt}
+                          style={[
+                            styles.qmActionBtn,
+                            { borderColor: colors.primary, backgroundColor: colors.card },
+                          ]}
+                        >
+                          <RotateCcw size={12} color={colors.primary} />
+                          <Text style={{ fontSize: 11.5, fontWeight: '800', color: colors.primary }}>
+                            Retake Session
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  );
+                })
+              )}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
       {/* Signature Study Labs Cyber Celebration Overlay */}
       <CelebrationOverlay
         event={celebrationEvent}
@@ -3501,14 +3644,15 @@ const styles = StyleSheet.create({
   },
   testHeading: { fontSize: 15, fontWeight: '800' },
   testSubheading: { fontSize: 11, marginTop: 1 },
-  headerRight: { flexDirection: 'row', alignItems: 'center', gap: 5, flexShrink: 0 },
+  headerRight: { flexDirection: 'row', alignItems: 'center', gap: 4, flexShrink: 0 },
   headerIconBtn: {
-    width: 31,
-    height: 31,
+    width: 29,
+    height: 29,
     borderRadius: 9,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
   },
   modePill: {
     paddingHorizontal: 10,
