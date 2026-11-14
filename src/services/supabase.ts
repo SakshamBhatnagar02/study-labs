@@ -1,12 +1,16 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import type { AppErrorInfo, OfflineTestRecord, Question } from '../types';
 import { buildApiErrorInfo } from '../utils/errorHandling';
 
-const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
+const DEFAULT_SUPABASE_URL = 'https://whodvfipxsyuydnkvqib.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_U9-VjsXdX-slZL1UdjEOcA_BHN6mTMH';
+
+const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL || DEFAULT_SUPABASE_URL;
 const SUPABASE_ANON_KEY =
   process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ||
   process.env.EXPO_PUBLIC_SUPABASE_KEY ||
-  '';
+  DEFAULT_SUPABASE_ANON_KEY;
 
 const isConfigured =
   Boolean(SUPABASE_URL) &&
@@ -21,8 +25,10 @@ if (isConfigured) {
   try {
     client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: {
+        storage: AsyncStorage,
         persistSession: true,
         autoRefreshToken: true,
+        detectSessionInUrl: false,
       },
     });
   } catch (err) {
