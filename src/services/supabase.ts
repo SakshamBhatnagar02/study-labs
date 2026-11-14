@@ -164,4 +164,36 @@ export const SupabaseService = {
       };
     }
   },
+
+  /**
+   * Initiate OAuth sign-in with Google, GitHub, or Azure (Microsoft Entra)
+   */
+  async signInWithOAuth(provider: 'google' | 'github' | 'azure', redirectTo = 'studylabs://auth/callback') {
+    if (!client) {
+      return { data: null, error: new Error('Supabase client is not configured') };
+    }
+    return client.auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo,
+      },
+    });
+  },
+
+  /**
+   * Get active Supabase session
+   */
+  async getSession() {
+    if (!client) return null;
+    const { data } = await client.auth.getSession();
+    return data.session;
+  },
+
+  /**
+   * Sign out from active cloud session
+   */
+  async signOut() {
+    if (!client) return { error: null };
+    return client.auth.signOut();
+  },
 };

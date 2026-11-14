@@ -19,6 +19,9 @@ import { DailyGoalScreen } from './src/screens/DailyGoalScreen';
 import { NotebooksScreen } from './src/screens/NotebooksScreen';
 import { ProfileScreen } from './src/screens/ProfileScreen';
 import { ClubsScreen } from './src/screens/ClubsScreen';
+import { EBooksScreen } from './src/screens/EBooksScreen';
+import { CommunityScreen } from './src/screens/CommunityScreen';
+import { AdminConsoleScreen } from './src/screens/AdminConsoleScreen';
 import { QuickCalculatorModal } from './src/components/common/QuickCalculatorModal';
 import { OnboardingAuthModal } from './src/components/auth/OnboardingAuthModal';
 import { DEFAULT_USER, StorageService } from './src/services/storage';
@@ -98,6 +101,9 @@ function MainApp() {
     'notebooks',
     'clubs',
     'profile',
+    'ebooks',
+    'community',
+    'admin',
   ].includes(activeTab);
 
   const getSubScreenTitle = () => {
@@ -118,6 +124,12 @@ function MainApp() {
         return 'Study Clubs & Institutes';
       case 'profile':
         return 'My Profile & Alerts';
+      case 'ebooks':
+        return 'Digital E-Books & Reader';
+      case 'community':
+        return 'Community & Doubt Exchange';
+      case 'admin':
+        return 'Admin Console & Telemetry';
       default:
         return '';
     }
@@ -169,6 +181,8 @@ function MainApp() {
             initialSubject={curriculumSubject}
             onLaunchSession={launchTestSession}
             onOpenNotebooks={() => setActiveTab('notebooks')}
+            onOpenEBooks={() => setActiveTab('ebooks')}
+            onOpenCommunity={() => setActiveTab('community')}
             onAskAITopic={(topicTitle, subjectId) => {
               setAiPrefillPrompt({
                 prompt: `Give concise revision notes, key formulas, and common pitfalls for: ${topicTitle}`,
@@ -218,6 +232,12 @@ function MainApp() {
             onProfileUpdated={(updated) => setUserProfile(updated)}
           />
         );
+      case 'ebooks':
+        return <EBooksScreen onNavigate={setActiveTab} />;
+      case 'community':
+        return <CommunityScreen onNavigate={setActiveTab} />;
+      case 'admin':
+        return <AdminConsoleScreen onNavigate={setActiveTab} />;
       default:
         return <DashboardScreen onNavigate={setActiveTab} />;
     }

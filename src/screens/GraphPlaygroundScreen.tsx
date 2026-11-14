@@ -28,6 +28,7 @@ import {
 } from '../utils/aiImageLibrary';
 import { GeneratedStemImage, StemVisualSubject } from '../types';
 import {
+  Atom,
   BookmarkPlus,
   CheckCircle2,
   Compass,
@@ -35,7 +36,10 @@ import {
   Dna,
   FlaskConical,
   Info,
+  Layers,
+  Rocket,
   RotateCcw,
+  Zap,
 } from 'lucide-react-native';
 
 const GRAPH_HEIGHT = 232;
@@ -234,10 +238,33 @@ export const GraphPlaygroundScreen: React.FC = () => {
   const [bioPreset, setBioPreset] = useState<'cell' | 'dna'>('cell');
   const [selectedBioHotspot, setSelectedBioHotspot] = useState<string>('nucleus');
 
-  // 3D Preview state
-  const [meshPreset, setMeshPreset] = useState<'tetrahedron' | 'cube'>('tetrahedron');
+  // 3D STEM Lab state
+  const [lab3dMode, setLab3dMode] = useState<'molecule' | 'lorentz' | 'projectile' | 'lattice'>('molecule');
   const [azAngle, setAzAngle] = useState<number>(35);
   const [elAngle, setElAngle] = useState<number>(22);
+
+  // 1. Molecular 3D Lab
+  const [molPreset, setMolPreset] = useState<'ch4' | 'h2o' | 'co2' | 'nh3' | 'c6h6'>('ch4');
+  const [molBondLength, setMolBondLength] = useState<number>(1.09); // Angstroms (0.8 - 2.0)
+  const [molBondAngle, setMolBondAngle] = useState<number>(109.5); // degrees (90 - 180)
+  const [molTempK, setMolTempK] = useState<number>(298); // Kelvin (0 - 500)
+
+  // 2. Lorentz Force 3D Lab
+  const [lorentzCharge, setLorentzCharge] = useState<number>(1); // e (-2 to +2)
+  const [lorentzVelocity, setLorentzVelocity] = useState<number>(4); // x 10^5 m/s (1 to 10)
+  const [lorentzBField, setLorentzBField] = useState<number>(0.8); // Tesla (0.2 to 2.0)
+  const [lorentzEField, setLorentzEField] = useState<number>(12); // kV/m (0 to 40)
+
+  // 3. Projectile Kinematics 3D Lab
+  const [projAngle, setProjAngle] = useState<number>(45); // deg (15 to 75)
+  const [projAzimuth, setProjAzimuth] = useState<number>(20); // deg (-40 to +40)
+  const [projSpeed, setProjSpeed] = useState<number>(40); // m/s (15 to 70)
+  const [projGravity, setProjGravity] = useState<number>(9.8); // m/s^2 (1.6 Moon, 3.7 Mars, 9.8 Earth)
+  const [projDrag, setProjDrag] = useState<number>(0.04); // drag k (0 to 0.12)
+
+  // 4. Solid-State Crystal Lattice 3D Lab
+  const [latticeType, setLatticeType] = useState<'sc' | 'bcc' | 'fcc'>('fcc');
+  const [latticeConstA, setLatticeConstA] = useState<number>(361); // pm (250 to 560)
 
   // Save to AI Library feedback
   const [saveNotice, setSaveNotice] = useState<{ ok: boolean; msg: string } | null>(null);
@@ -372,56 +399,352 @@ export const GraphPlaygroundScreen: React.FC = () => {
     };
   }, [coordPreset, paramA, paramB, canvasWidth]);
 
-  // 3D wireframe projection vertices & edges
+  // 3D wireframe projection & interactive STEM models
   const projected3D = useMemo(() => {
     const cx = canvasWidth / 2;
-    const cy = GRAPH_HEIGHT / 2 + 4;
-    if (meshPreset === 'tetrahedron') {
-      const verts: [number, number, number][] = [
-        [0, 1.15, 0], // H top
-        [1.08, -0.45, 0.55], // H front-right
-        [-0.95, -0.45, 0.72], // H front-left
-        [-0.12, -0.45, -1.15], // H back
-        [0, 0.08, 0], // Center C
-      ];
-      const labels = ['H', 'H', 'H', 'H', 'C (sp³)'];
-      const pVerts = verts.map((v) => project3DPoint(v, azAngle, elAngle, cx, cy, 56));
-      const edges: [number, number][] = [
-        [4, 0],
-        [4, 1],
-        [4, 2],
-        [4, 3],
-        [0, 1],
-        [1, 2],
-        [2, 3],
-        [3, 0],
-      ];
-      return { pVerts, labels, edges, bondEdgesCount: 4 };
+    const cy = GRAPH_HEIGHT / 2 + 6;
+
+    if (lab3dMode === 'molecule') {
+      const scale = 52;
+      const thermalJitter = Math.sqrt(molTempK / 298) * 0.05;
+      
+      let verts: [number, number, number][] = [];
+      let labels: string[] = [];
+      let colorsList: string[] = [];
+      let radii: number[] = [];
+      let edges: [number, number][] = [];
+      let formula = '';
+      let geometry = '';
+      let dipole = '';
+      let hybridization = '';
+
+      if (molPreset === 'ch4') {
+        formula = 'CH₄';
+        geometry = 'Tetrahedral (Td)';
+        dipole = '0.00 Debye (Non-polar)';
+        hybridization = 'sp³';
+        const L = molBondLength;
+        verts = [
+          [0, L, 0],
+          [L * 0.943, -L * 0.333, 0],
+          [-L * 0.471, -L * 0.333, L * 0.816],
+          [-L * 0.471, -L * 0.333, -L * 0.816],
+          [0, 0, 0],
+        ];
+        labels = ['H', 'H', 'H', 'H', 'C (sp³)'];
+        colorsList = ['#38BDF8', '#38BDF8', '#38BDF8', '#38BDF8', '#F97316'];
+        radii = [6.5, 6.5, 6.5, 6.5, 10];
+        edges = [[4, 0], [4, 1], [4, 2], [4, 3], [0, 1], [1, 2], [2, 3], [3, 0]];
+      } else if (molPreset === 'h2o') {
+        formula = 'H₂O';
+        geometry = 'Bent (C2v)';
+        dipole = '1.85 Debye (Strongly Polar)';
+        hybridization = 'sp³ (2 lone pairs)';
+        const rad = (molBondAngle * Math.PI) / 360;
+        const L = molBondLength;
+        verts = [
+          [-L * Math.sin(rad), L * Math.cos(rad), 0],
+          [L * Math.sin(rad), L * Math.cos(rad), 0],
+          [0, 0, 0],
+        ];
+        labels = ['H', 'H', 'O (104.5°)'];
+        colorsList = ['#38BDF8', '#38BDF8', '#EF4444'];
+        radii = [6.5, 6.5, 11];
+        edges = [[2, 0], [2, 1], [0, 1]];
+      } else if (molPreset === 'co2') {
+        formula = 'CO₂';
+        geometry = 'Linear (D∞h)';
+        dipole = '0.00 Debye (Centrosymmetric)';
+        hybridization = 'sp';
+        const L = molBondLength * 1.05;
+        verts = [
+          [-L, 0, 0],
+          [L, 0, 0],
+          [0, 0, 0],
+        ];
+        labels = ['O', 'O', 'C (180°)'];
+        colorsList = ['#EF4444', '#EF4444', '#F97316'];
+        radii = [10, 10, 9];
+        edges = [[2, 0], [2, 1]];
+      } else if (molPreset === 'nh3') {
+        formula = 'NH₃';
+        geometry = 'Trigonal Pyramidal (C3v)';
+        dipole = '1.47 Debye (Polar)';
+        hybridization = 'sp³ (1 lone pair)';
+        const L = molBondLength;
+        verts = [
+          [L * 0.9, -0.4, 0],
+          [-L * 0.45, -0.4, L * 0.78],
+          [-L * 0.45, -0.4, -L * 0.78],
+          [0, 0.45, 0],
+        ];
+        labels = ['H', 'H', 'H', 'N (107°)'];
+        colorsList = ['#38BDF8', '#38BDF8', '#38BDF8', '#3B82F6'];
+        radii = [6.5, 6.5, 6.5, 10];
+        edges = [[3, 0], [3, 1], [3, 2], [0, 1], [1, 2], [2, 0]];
+      } else {
+        formula = 'C₆H₆';
+        geometry = 'Planar Hexagonal (D6h)';
+        dipole = '0.00 Debye (Aromatic)';
+        hybridization = 'sp² (Aromatic 6π)';
+        const Rc = molBondLength * 1.05;
+        const Rh = Rc + 0.85;
+        verts = [];
+        labels = [];
+        colorsList = [];
+        radii = [];
+        edges = [];
+        for (let i = 0; i < 6; i++) {
+          const th = (i * Math.PI) / 3;
+          verts.push([Rc * Math.cos(th), Rc * Math.sin(th), 0]);
+          labels.push(`C${i + 1}`);
+          colorsList.push('#F97316');
+          radii.push(7.5);
+          edges.push([i, (i + 1) % 6]);
+        }
+        for (let i = 0; i < 6; i++) {
+          const th = (i * Math.PI) / 3;
+          verts.push([Rh * Math.cos(th), Rh * Math.sin(th), 0]);
+          labels.push('H');
+          colorsList.push('#38BDF8');
+          radii.push(5.5);
+          edges.push([i, 6 + i]);
+        }
+      }
+
+      const jitteredVerts: [number, number, number][] = verts.map(([x, y, z], idx) => [
+        x + Math.sin(idx * 2.1) * thermalJitter,
+        y + Math.cos(idx * 2.7) * thermalJitter,
+        z + Math.sin(idx * 1.4) * thermalJitter,
+      ]);
+
+      const pVerts = jitteredVerts.map((v) => project3DPoint(v, azAngle, elAngle, cx, cy, scale));
+      return {
+        mode: 'molecule' as const,
+        pVerts,
+        labels,
+        colorsList,
+        radii,
+        edges,
+        formula,
+        geometry,
+        dipole,
+        hybridization,
+        statsText: `${formula} · ${geometry} · ${hybridization} · Bond: ${molBondLength.toFixed(2)} Å · T: ${molTempK} K`,
+      };
     }
-    // Cube
-    const verts: [number, number, number][] = [
-      [-1, -1, -1],
-      [1, -1, -1],
-      [1, 1, -1],
-      [-1, 1, -1],
-      [-1, -1, 1],
-      [1, -1, 1],
-      [1, 1, 1],
-      [-1, 1, 1],
+
+    if (lab3dMode === 'lorentz') {
+      const scale = 44;
+      const qSign = lorentzCharge >= 0 ? 1 : -1;
+      const rGyro = (0.55 * (lorentzVelocity / 4)) / Math.max(0.2, lorentzBField);
+      const vZ = 0.08 * (lorentzEField / 12 + 0.5);
+
+      const pathVerts: [number, number, number][] = [];
+      const totalTurns = 4;
+      const steps = 64;
+      for (let i = 0; i <= steps; i++) {
+        const phi = (i / steps) * (totalTurns * 2 * Math.PI);
+        const z = -1.4 + (i / steps) * 2.8;
+        const x = rGyro * Math.cos(qSign * phi);
+        const y = rGyro * Math.sin(qSign * phi) + (lorentzEField > 0 ? (i / steps) * 0.4 - 0.2 : 0);
+        pathVerts.push([x, y, z]);
+      }
+
+      const pPath = pathVerts.map((v) => project3DPoint(v, azAngle, elAngle, cx, cy, scale));
+      const currPt = pPath[pPath.length - 1];
+
+      const bLines: [[number, number, number], [number, number, number]][] = [
+        [[-1.2, 0, -1.5], [-1.2, 0, 1.5]],
+        [[0, -1.0, -1.5], [0, -1.0, 1.5]],
+        [[1.2, 0, -1.5], [1.2, 0, 1.5]],
+      ];
+      const pBLines = bLines.map(([p1, p2]) => [
+        project3DPoint(p1, azAngle, elAngle, cx, cy, scale),
+        project3DPoint(p2, azAngle, elAngle, cx, cy, scale),
+      ]);
+
+      const omegaC = (Math.abs(lorentzCharge) * lorentzBField * 17.6).toFixed(1);
+      const r_nm = (rGyro * 12.4).toFixed(1);
+      const pitch_nm = (vZ * 24.2).toFixed(1);
+
+      return {
+        mode: 'lorentz' as const,
+        pPath,
+        currPt,
+        pBLines,
+        omegaC,
+        r_nm,
+        pitch_nm,
+        statsText: `q = ${lorentzCharge > 0 ? '+' : ''}${lorentzCharge}e · v = ${lorentzVelocity}×10⁵ m/s · B = ${lorentzBField.toFixed(1)} T · E = ${lorentzEField} kV/m · r_c = ${r_nm} nm · f_c = ${omegaC} MHz`,
+      };
+    }
+
+    if (lab3dMode === 'projectile') {
+      const scale = 40;
+      const alphaRad = (projAngle * Math.PI) / 180;
+      const betaRad = (projAzimuth * Math.PI) / 180;
+      const v0 = projSpeed;
+      const g = projGravity;
+      const k = projDrag;
+
+      const v0x = v0 * Math.cos(alphaRad) * Math.cos(betaRad);
+      const v0y = v0 * Math.cos(alphaRad) * Math.sin(betaRad);
+      const v0z = v0 * Math.sin(alphaRad);
+
+      const tFlight = (2 * v0z) / (g * (1 + 0.45 * k));
+      const maxH = (v0z * v0z) / (2 * g * (1 + 0.3 * k));
+      const rangeX = v0x * tFlight * (1 - 0.25 * k);
+      const rangeY = v0y * tFlight * (1 - 0.25 * k);
+      const totalRange = Math.sqrt(rangeX * rangeX + rangeY * rangeY);
+
+      const normX = 2.4 / Math.max(1, rangeX);
+      const normY = 2.4 / Math.max(1, Math.abs(rangeY) || 1);
+      const normZ = 1.8 / Math.max(1, maxH);
+
+      const trajPts: [number, number, number][] = [];
+      const shadowPts: [number, number, number][] = [];
+      const steps = 36;
+      for (let i = 0; i <= steps; i++) {
+        const t = (i / steps) * tFlight;
+        const xRaw = (v0x / Math.max(0.001, k)) * (1 - Math.exp(-k * t));
+        const yRaw = (v0y / Math.max(0.001, k)) * (1 - Math.exp(-k * t));
+        const zRaw = Math.max(0, ((v0z + g / Math.max(0.001, k)) / Math.max(0.001, k)) * (1 - Math.exp(-k * t)) - (g / Math.max(0.001, k)) * t);
+
+        const xNorm = xRaw * normX - 1.2;
+        const yNorm = yRaw * normY;
+        const zNorm = zRaw * normZ - 0.9;
+        trajPts.push([xNorm, yNorm, zNorm]);
+        shadowPts.push([xNorm, yNorm, -0.9]);
+      }
+
+      const pTraj = trajPts.map((p) => project3DPoint(p, azAngle, elAngle, cx, cy, scale));
+      const pShadow = shadowPts.map((p) => project3DPoint(p, azAngle, elAngle, cx, cy, scale));
+
+      const gridEdges: [[number, number, number], [number, number, number]][] = [];
+      for (let gX = -1.4; gX <= 1.4; gX += 0.7) {
+        gridEdges.push([[gX, -1.2, -0.9], [gX, 1.2, -0.9]]);
+      }
+      for (let gY = -1.2; gY <= 1.2; gY += 0.6) {
+        gridEdges.push([[-1.4, gY, -0.9], [1.4, gY, -0.9]]);
+      }
+      const pGrid = gridEdges.map(([p1, p2]) => [
+        project3DPoint(p1, azAngle, elAngle, cx, cy, scale),
+        project3DPoint(p2, azAngle, elAngle, cx, cy, scale),
+      ]);
+
+      return {
+        mode: 'projectile' as const,
+        pTraj,
+        pShadow,
+        pGrid,
+        tFlight: tFlight.toFixed(2),
+        maxH: maxH.toFixed(1),
+        totalRange: totalRange.toFixed(1),
+        statsText: `α = ${projAngle}° · β = ${projAzimuth}° · v₀ = ${v0} m/s · g = ${g} m/s² · k = ${k.toFixed(2)} · R = ${totalRange.toFixed(1)} m · H = ${maxH.toFixed(1)} m · T = ${tFlight.toFixed(2)} s`,
+      };
+    }
+
+    // Solid-State Crystal Lattice
+    const scale = 50;
+    const a = 1.0;
+    const corners: [number, number, number][] = [
+      [-a, -a, -a], [a, -a, -a], [a, a, -a], [-a, a, -a],
+      [-a, -a, a], [a, -a, a], [a, a, a], [-a, a, a],
     ];
-    const pVerts = verts.map((v) => project3DPoint(v, azAngle, elAngle, cx, cy, 48));
-    const edges: [number, number][] = [
+    const cubeEdges: [number, number][] = [
       [0, 1], [1, 2], [2, 3], [3, 0],
       [4, 5], [5, 6], [6, 7], [7, 4],
       [0, 4], [1, 5], [2, 6], [3, 7],
     ];
+
+    let allVerts: [number, number, number][] = [...corners];
+    let allLabels: string[] = ['1', '2', '3', '4', '5', '6', '7', '8'];
+    let allColors: string[] = Array(8).fill('#38BDF8');
+    let allRadii: number[] = Array(8).fill(7);
+    let extraEdges: [number, number][] = [];
+    let zEffective = 1;
+    let coordinationNum = 6;
+    let packEfficiency = '52.4%';
+    let atomRadiusPm = (latticeConstA / 2).toFixed(1);
+    let densityGcm3 = '9.2';
+
+    if (latticeType === 'sc') {
+      zEffective = 1;
+      coordinationNum = 6;
+      packEfficiency = '52.4% (π/6)';
+      atomRadiusPm = (latticeConstA / 2).toFixed(1);
+      densityGcm3 = ((1 * 209) / (0.6022 * Math.pow(latticeConstA / 100, 3))).toFixed(2);
+    } else if (latticeType === 'bcc') {
+      zEffective = 2;
+      coordinationNum = 8;
+      packEfficiency = '68.0% (√3π/8)';
+      atomRadiusPm = ((Math.sqrt(3) / 4) * latticeConstA).toFixed(1);
+      densityGcm3 = ((2 * 55.85) / (0.6022 * Math.pow(latticeConstA / 100, 3))).toFixed(2);
+      allVerts.push([0, 0, 0]);
+      allLabels.push('Body');
+      allColors.push('#F97316');
+      allRadii.push(9.5);
+      for (let i = 0; i < 8; i++) {
+        extraEdges.push([8, i]);
+      }
+    } else {
+      zEffective = 4;
+      coordinationNum = 12;
+      packEfficiency = '74.0% (√2π/6)';
+      atomRadiusPm = ((Math.sqrt(2) / 4) * latticeConstA).toFixed(1);
+      densityGcm3 = ((4 * 63.55) / (0.6022 * Math.pow(latticeConstA / 100, 3))).toFixed(2);
+      const faceCenters: [number, number, number][] = [
+        [0, 0, -a], [0, 0, a],
+        [0, -a, 0], [0, a, 0],
+        [-a, 0, 0], [a, 0, 0],
+      ];
+      faceCenters.forEach((fc, idx) => {
+        allVerts.push(fc);
+        allLabels.push(`F${idx + 1}`);
+        allColors.push('#10B981');
+        allRadii.push(8.5);
+      });
+      extraEdges.push([0, 2], [1, 3], [4, 6], [5, 7]);
+    }
+
+    const pVerts = allVerts.map((v) => project3DPoint(v, azAngle, elAngle, cx, cy, scale));
     return {
+      mode: 'lattice' as const,
       pVerts,
-      labels: ['1', '2', '3', '4', '5', '6', '7', '8'],
-      edges,
-      bondEdgesCount: 12,
+      labels: allLabels,
+      colorsList: allColors,
+      radii: allRadii,
+      edges: cubeEdges,
+      extraEdges,
+      zEffective,
+      coordinationNum,
+      packEfficiency,
+      atomRadiusPm,
+      densityGcm3,
+      statsText: `${latticeType.toUpperCase()} Unit Cell · Z = ${zEffective} atoms · Coord = ${coordinationNum} · Packing = ${packEfficiency} · a = ${latticeConstA} pm · r = ${atomRadiusPm} pm · ρ = ${densityGcm3} g/cm³`,
     };
-  }, [meshPreset, azAngle, elAngle, canvasWidth]);
+  }, [
+    lab3dMode,
+    azAngle,
+    elAngle,
+    canvasWidth,
+    molPreset,
+    molBondLength,
+    molBondAngle,
+    molTempK,
+    lorentzCharge,
+    lorentzVelocity,
+    lorentzBField,
+    lorentzEField,
+    projAngle,
+    projAzimuth,
+    projSpeed,
+    projGravity,
+    projDrag,
+    latticeType,
+    latticeConstA,
+  ]);
 
   const axisColor = themeMode === 'dark' ? '#475569' : '#CBD5E1';
   const gridColor = themeMode === 'dark' ? '#1E293B' : '#E2E8F0';
@@ -507,19 +830,82 @@ export const GraphPlaygroundScreen: React.FC = () => {
     }
 
     // preview3d
+    if (projected3D.mode === 'molecule') {
+      const edgeTags = projected3D.edges
+        .map(([a, b]) => {
+          const pa = projected3D.pVerts[a];
+          const pb = projected3D.pVerts[b];
+          if (!pa || !pb) return '';
+          return `<line x1="${pa.x.toFixed(1)}" y1="${pa.y.toFixed(1)}" x2="${pb.x.toFixed(1)}" y2="${pb.y.toFixed(1)}" stroke="#F97316" stroke-width="2.5"/>`;
+        })
+        .join('');
+      const atomTags = projected3D.pVerts
+        .map((p, idx) => {
+          const c = projected3D.colorsList[idx] || '#38BDF8';
+          const r = projected3D.radii[idx] || 7;
+          return `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r}" fill="${c}" stroke="#0F172A" stroke-width="1.5"/><text x="${(p.x + 8).toFixed(1)}" y="${(p.y - 4).toFixed(1)}" fill="${textColorSvg}" font-size="10" font-weight="700">${escapeXml(projected3D.labels[idx])}</text>`;
+        })
+        .join('');
+      return {
+        title: `3D Molecular Lab: ${projected3D.formula} (${projected3D.geometry})`,
+        subject: 'chemistry',
+        caption: projected3D.statsText,
+        svgInner: `<rect width="${W}" height="${H}" rx="14" fill="${canvasBg}"/>${edgeTags}${atomTags}<text x="16" y="24" fill="${strokeColor}" font-size="13" font-weight="700" font-family="Arial">3D ${escapeXml(projected3D.formula)} · ${escapeXml(projected3D.geometry)}</text>`,
+      };
+    }
+
+    if (projected3D.mode === 'lorentz') {
+      const pathPts = projected3D.pPath.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+      const bTags = projected3D.pBLines
+        .map(([p1, p2]) => `<line x1="${p1.x.toFixed(1)}" y1="${p1.y.toFixed(1)}" x2="${p2.x.toFixed(1)}" y2="${p2.y.toFixed(1)}" stroke="#38BDF8" stroke-width="1" stroke-dasharray="3,3"/>`)
+        .join('');
+      return {
+        title: `3D Lorentz Force Trajectory (B = ${lorentzBField.toFixed(1)}T, E = ${lorentzEField}kV/m)`,
+        subject: 'physics',
+        caption: projected3D.statsText,
+        svgInner: `<rect width="${W}" height="${H}" rx="14" fill="${canvasBg}"/>${bTags}<polyline points="${pathPts}" fill="none" stroke="#F97316" stroke-width="2.8"/><circle cx="${projected3D.currPt.x.toFixed(1)}" cy="${projected3D.currPt.y.toFixed(1)}" r="7" fill="#EF4444"/><text x="16" y="24" fill="${strokeColor}" font-size="13" font-weight="700" font-family="Arial">Lorentz Force Helical Trajectory</text>`,
+      };
+    }
+
+    if (projected3D.mode === 'projectile') {
+      const gridTags = projected3D.pGrid
+        .map(([p1, p2]) => `<line x1="${p1.x.toFixed(1)}" y1="${p1.y.toFixed(1)}" x2="${p2.x.toFixed(1)}" y2="${p2.y.toFixed(1)}" stroke="#334155" stroke-width="1"/>`)
+        .join('');
+      const shadowPts = projected3D.pShadow.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+      const trajPts = projected3D.pTraj.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+      return {
+        title: `3D Projectile Kinematics (Range: ${projected3D.totalRange}m, Drag: ${projDrag})`,
+        subject: 'physics',
+        caption: projected3D.statsText,
+        svgInner: `<rect width="${W}" height="${H}" rx="14" fill="${canvasBg}"/>${gridTags}<polyline points="${shadowPts}" fill="none" stroke="#64748B" stroke-width="1.8" stroke-dasharray="3,3"/><polyline points="${trajPts}" fill="none" stroke="#10B981" stroke-width="2.8"/><text x="16" y="24" fill="${strokeColor}" font-size="13" font-weight="700" font-family="Arial">3D Projectile Arc with Aerodynamic Drag</text>`,
+      };
+    }
+
+    // lattice
     const edgeTags = projected3D.edges
       .map(([a, b]) => {
         const pa = projected3D.pVerts[a];
         const pb = projected3D.pVerts[b];
         if (!pa || !pb) return '';
-        return `<line x1="${pa.x.toFixed(1)}" y1="${pa.y.toFixed(1)}" x2="${pb.x.toFixed(1)}" y2="${pb.y.toFixed(1)}" stroke="${strokeColor}" stroke-width="2.4"/>`;
+        return `<line x1="${pa.x.toFixed(1)}" y1="${pa.y.toFixed(1)}" x2="${pb.x.toFixed(1)}" y2="${pb.y.toFixed(1)}" stroke="#38BDF8" stroke-width="2"/>`;
       })
       .join('');
+    const extraTags = projected3D.extraEdges
+      .map(([a, b]) => {
+        const pa = projected3D.pVerts[a];
+        const pb = projected3D.pVerts[b];
+        if (!pa || !pb) return '';
+        return `<line x1="${pa.x.toFixed(1)}" y1="${pa.y.toFixed(1)}" x2="${pb.x.toFixed(1)}" y2="${pb.y.toFixed(1)}" stroke="#F97316" stroke-width="1.2" stroke-dasharray="3,3"/>`;
+      })
+      .join('');
+    const atomTags = projected3D.pVerts
+      .map((p, idx) => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${projected3D.radii[idx]}" fill="${projected3D.colorsList[idx]}" stroke="#0F172A" stroke-width="1.2"/>`)
+      .join('');
     return {
-      title: `3D Wireframe (${meshPreset === 'tetrahedron' ? 'Tetrahedral sp3' : 'Unit Cube'})`,
-      subject: 'math',
-      caption: `Azimuth ${azAngle} deg, Elevation ${elAngle} deg`,
-      svgInner: `<rect width="${W}" height="${H}" rx="14" fill="${canvasBg}"/>${edgeTags}<text x="16" y="24" fill="${strokeColor}" font-size="13" font-weight="700" font-family="Arial">3D ${escapeXml(meshPreset)} (${azAngle}deg, ${elAngle}deg)</text>`,
+      title: `3D Solid-State Lattice: ${latticeType.toUpperCase()} (Packing: ${projected3D.packEfficiency})`,
+      subject: 'chemistry',
+      caption: projected3D.statsText,
+      svgInner: `<rect width="${W}" height="${H}" rx="14" fill="${canvasBg}"/>${edgeTags}${extraTags}${atomTags}<text x="16" y="24" fill="${strokeColor}" font-size="13" font-weight="700" font-family="Arial">3D ${escapeXml(latticeType.toUpperCase())} Unit Cell</text>`,
     };
   };
 
@@ -1511,21 +1897,79 @@ export const GraphPlaygroundScreen: React.FC = () => {
         </Card>
       )}
 
-      {/* MODE 6: 3D GEOMETRY & MOLECULAR WIREFRAME LAB (PREVIEW) */}
+      {/* MODE 6: INTERACTIVE 3D STEM LAB WITH WORKING PARAMETER MODELS */}
       {activeMode === 'preview3d' && (
         <Card style={styles.canvasCard}>
           <View style={styles.canvasMeta}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 }}>
-              <Cuboid size={16} color={colors.primary} />
+              {lab3dMode === 'molecule' ? (
+                <Atom size={16} color={colors.primary} />
+              ) : lab3dMode === 'lorentz' ? (
+                <Zap size={16} color={colors.primary} />
+              ) : lab3dMode === 'projectile' ? (
+                <Rocket size={16} color={colors.primary} />
+              ) : (
+                <Layers size={16} color={colors.primary} />
+              )}
               <Text style={[styles.equationLabel, { color: colors.primary }]} numberOfLines={1}>
-                {meshPreset === 'tetrahedron'
-                  ? 'sp³ Tetrahedral CH₄ (109.5°)'
-                  : '3D Unit Cubic Lattice'}
+                {lab3dMode === 'molecule'
+                  ? `3D Molecule: ${projected3D.formula || 'CH₄'} (${projected3D.geometry || 'sp³'})`
+                  : lab3dMode === 'lorentz'
+                  ? `Lorentz Helical Motion (B = ${lorentzBField.toFixed(1)} T)`
+                  : lab3dMode === 'projectile'
+                  ? `3D Projectile Arc (v₀ = ${projSpeed} m/s, ${projGravity} m/s²)`
+                  : `3D Crystal Lattice (${latticeType.toUpperCase()} Unit Cell)`}
               </Text>
             </View>
-            <Badge label="Phase 5 WebGL Upgrade Preview" variant="warning" size="sm" />
+            <Badge label="Interactive 3D Working Lab" variant="success" size="sm" />
           </View>
 
+          {/* 3D Lab Category Tabs */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: 6, paddingVertical: 4 }}
+          >
+            {[
+              { id: 'molecule' as const, label: '3D Molecules', Icon: Atom },
+              { id: 'lorentz' as const, label: 'Lorentz Force', Icon: Zap },
+              { id: 'projectile' as const, label: '3D Kinematics', Icon: Rocket },
+              { id: 'lattice' as const, label: 'Crystal Lattice', Icon: Layers },
+            ].map(({ id, label, Icon }) => {
+              const active = lab3dMode === id;
+              return (
+                <TouchableOpacity
+                  key={id}
+                  onPress={() => setLab3dMode(id)}
+                  style={[
+                    styles.presetBtn,
+                    {
+                      backgroundColor: active ? colors.primary : colors.surface,
+                      borderColor: active ? colors.primary : colors.borderSubtle,
+                      borderWidth: 1,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      gap: 5,
+                      paddingHorizontal: 10,
+                    },
+                  ]}
+                >
+                  <Icon size={12} color={active ? '#FFFFFF' : colors.textPrimary} />
+                  <Text
+                    style={{
+                      color: active ? '#FFFFFF' : colors.textPrimary,
+                      fontSize: 11.5,
+                      fontWeight: '700',
+                    }}
+                  >
+                    {label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+
+          {/* 3D SVG Projection Viewport */}
           <View
             style={[
               styles.canvasFrame,
@@ -1534,54 +1978,522 @@ export const GraphPlaygroundScreen: React.FC = () => {
           >
             <Svg width={canvasWidth} height={GRAPH_HEIGHT}>
               <Rect x={0} y={0} width={canvasWidth} height={GRAPH_HEIGHT} fill="transparent" />
-              {projected3D.edges.map(([a, b], idx) => {
-                const pa = projected3D.pVerts[a];
-                const pb = projected3D.pVerts[b];
-                if (!pa || !pb) return null;
-                const isPrimaryEdge = idx < projected3D.bondEdgesCount;
-                return (
-                  <Line
-                    key={`e3d_${idx}`}
-                    x1={pa.x}
-                    y1={pa.y}
-                    x2={pb.x}
-                    y2={pb.y}
-                    stroke={isPrimaryEdge ? colors.primary : colors.cyan}
-                    strokeWidth={isPrimaryEdge ? 2.8 : 1.4}
-                    strokeDasharray={isPrimaryEdge ? undefined : '4 4'}
-                  />
-                );
-              })}
-              {projected3D.pVerts.map((pt, idx) => (
-                <React.Fragment key={`v3d_${idx}`}>
-                  <Circle
-                    cx={pt.x}
-                    cy={pt.y}
-                    r={meshPreset === 'tetrahedron' && idx === 4 ? 9 : 6}
-                    fill={
-                      meshPreset === 'tetrahedron' && idx === 4
-                        ? colors.primary
-                        : colors.cyan
-                    }
-                  />
-                  <SvgText
-                    x={pt.x + 8}
-                    y={pt.y - 6}
-                    fill={textColorSvg}
-                    fontSize={10.5}
-                    fontWeight="700"
-                  >
-                    {projected3D.labels[idx]}
-                  </SvgText>
-                </React.Fragment>
-              ))}
+
+              {/* Lab 1: Molecular Rendering */}
+              {projected3D.mode === 'molecule' && (
+                <>
+                  {projected3D.edges.map(([a, b], idx) => {
+                    const pa = projected3D.pVerts[a];
+                    const pb = projected3D.pVerts[b];
+                    if (!pa || !pb) return null;
+                    return (
+                      <Line
+                        key={`m_e_${idx}`}
+                        x1={pa.x}
+                        y1={pa.y}
+                        x2={pb.x}
+                        y2={pb.y}
+                        stroke="#F97316"
+                        strokeWidth={2.4}
+                      />
+                    );
+                  })}
+                  {projected3D.pVerts.map((pt, idx) => (
+                    <React.Fragment key={`m_v_${idx}`}>
+                      <Circle
+                        cx={pt.x}
+                        cy={pt.y}
+                        r={projected3D.radii[idx] || 7}
+                        fill={projected3D.colorsList[idx] || '#38BDF8'}
+                        stroke="#0F172A"
+                        strokeWidth={1.4}
+                      />
+                      <SvgText
+                        x={pt.x + 8}
+                        y={pt.y - 5}
+                        fill={textColorSvg}
+                        fontSize={10}
+                        fontWeight="700"
+                      >
+                        {projected3D.labels[idx]}
+                      </SvgText>
+                    </React.Fragment>
+                  ))}
+                </>
+              )}
+
+              {/* Lab 2: Lorentz Force Rendering */}
+              {projected3D.mode === 'lorentz' && (
+                <>
+                  {projected3D.pBLines.map(([p1, p2], idx) => (
+                    <Line
+                      key={`b_${idx}`}
+                      x1={p1.x}
+                      y1={p1.y}
+                      x2={p2.x}
+                      y2={p2.y}
+                      stroke="#38BDF8"
+                      strokeWidth={1}
+                      strokeDasharray="4 4"
+                    />
+                  ))}
+                  {projected3D.pPath.length > 1 && (
+                    <Polyline
+                      points={projected3D.pPath.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}
+                      fill="none"
+                      stroke="#F97316"
+                      strokeWidth={2.8}
+                    />
+                  )}
+                  {projected3D.currPt && (
+                    <>
+                      <Circle
+                        cx={projected3D.currPt.x}
+                        cy={projected3D.currPt.y}
+                        r={7.5}
+                        fill={lorentzCharge > 0 ? '#EF4444' : '#38BDF8'}
+                        stroke="#FFFFFF"
+                        strokeWidth={1.5}
+                      />
+                      <SvgText
+                        x={projected3D.currPt.x + 10}
+                        y={projected3D.currPt.y - 4}
+                        fill={textColorSvg}
+                        fontSize={10.5}
+                        fontWeight="700"
+                      >
+                        q ({lorentzCharge > 0 ? '+' : ''}{lorentzCharge}e)
+                      </SvgText>
+                    </>
+                  )}
+                </>
+              )}
+
+              {/* Lab 3: Projectile Kinematics Rendering */}
+              {projected3D.mode === 'projectile' && (
+                <>
+                  {projected3D.pGrid.map(([p1, p2], idx) => (
+                    <Line
+                      key={`g_${idx}`}
+                      x1={p1.x}
+                      y1={p1.y}
+                      x2={p2.x}
+                      y2={p2.y}
+                      stroke={themeMode === 'dark' ? '#334155' : '#E2E8F0'}
+                      strokeWidth={1}
+                    />
+                  ))}
+                  {projected3D.pShadow.length > 1 && (
+                    <Polyline
+                      points={projected3D.pShadow.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}
+                      fill="none"
+                      stroke="#64748B"
+                      strokeWidth={1.8}
+                      strokeDasharray="3 3"
+                    />
+                  )}
+                  {projected3D.pTraj.length > 1 && (
+                    <Polyline
+                      points={projected3D.pTraj.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}
+                      fill="none"
+                      stroke="#10B981"
+                      strokeWidth={2.8}
+                    />
+                  )}
+                  {projected3D.pTraj.length > 0 && (
+                    <Circle
+                      cx={projected3D.pTraj[projected3D.pTraj.length - 1].x}
+                      cy={projected3D.pTraj[projected3D.pTraj.length - 1].y}
+                      r={6}
+                      fill="#EF4444"
+                    />
+                  )}
+                </>
+              )}
+
+              {/* Lab 4: Solid-State Crystal Lattice Rendering */}
+              {projected3D.mode === 'lattice' && (
+                <>
+                  {projected3D.edges.map(([a, b], idx) => {
+                    const pa = projected3D.pVerts[a];
+                    const pb = projected3D.pVerts[b];
+                    if (!pa || !pb) return null;
+                    return (
+                      <Line
+                        key={`c_e_${idx}`}
+                        x1={pa.x}
+                        y1={pa.y}
+                        x2={pb.x}
+                        y2={pb.y}
+                        stroke="#38BDF8"
+                        strokeWidth={2}
+                      />
+                    );
+                  })}
+                  {projected3D.extraEdges.map(([a, b], idx) => {
+                    const pa = projected3D.pVerts[a];
+                    const pb = projected3D.pVerts[b];
+                    if (!pa || !pb) return null;
+                    return (
+                      <Line
+                        key={`c_ex_${idx}`}
+                        x1={pa.x}
+                        y1={pa.y}
+                        x2={pb.x}
+                        y2={pb.y}
+                        stroke="#F97316"
+                        strokeWidth={1.2}
+                        strokeDasharray="4 4"
+                      />
+                    );
+                  })}
+                  {projected3D.pVerts.map((pt, idx) => (
+                    <React.Fragment key={`c_v_${idx}`}>
+                      <Circle
+                        cx={pt.x}
+                        cy={pt.y}
+                        r={projected3D.radii[idx]}
+                        fill={projected3D.colorsList[idx]}
+                        stroke="#0F172A"
+                        strokeWidth={1.2}
+                      />
+                      <SvgText
+                        x={pt.x + 8}
+                        y={pt.y - 4}
+                        fill={textColorSvg}
+                        fontSize={9.5}
+                        fontWeight="700"
+                      >
+                        {projected3D.labels[idx]}
+                      </SvgText>
+                    </React.Fragment>
+                  ))}
+                </>
+              )}
             </Svg>
           </View>
 
-          <View style={styles.controlsRow}>
+          {/* Live STEM Formula & Property Readout Strip */}
+          <View
+            style={{
+              padding: 9,
+              borderRadius: 8,
+              backgroundColor: colors.surface,
+              borderWidth: 1,
+              borderColor: colors.border,
+              marginVertical: 4,
+            }}
+          >
+            <Text style={{ fontSize: 11.5, fontWeight: '700', color: colors.primary }}>
+              {projected3D.statsText}
+            </Text>
+          </View>
+
+          {/* Interactive Numerical Value Controls */}
+          {lab3dMode === 'molecule' && (
+            <View style={{ gap: 8 }}>
+              {/* Molecule Presets */}
+              <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
+                {(
+                  [
+                    { id: 'ch4' as const, label: 'CH₄ (Methane)' },
+                    { id: 'h2o' as const, label: 'H₂O (Water)' },
+                    { id: 'co2' as const, label: 'CO₂ (Linear)' },
+                    { id: 'nh3' as const, label: 'NH₃ (Ammonia)' },
+                    { id: 'c6h6' as const, label: 'C₆H₆ (Benzene)' },
+                  ] as const
+                ).map((m) => (
+                  <TouchableOpacity
+                    key={m.id}
+                    onPress={() => setMolPreset(m.id)}
+                    style={[
+                      styles.presetBtn,
+                      {
+                        backgroundColor: molPreset === m.id ? colors.primary : colors.surface,
+                        borderColor: molPreset === m.id ? colors.primary : colors.borderSubtle,
+                        borderWidth: 1,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={{
+                        color: molPreset === m.id ? '#FFFFFF' : colors.textPrimary,
+                        fontSize: 11,
+                        fontWeight: '700',
+                      }}
+                    >
+                      {m.label}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {/* Numerical Steppers */}
+              <View style={styles.controlsRow}>
+                <View style={styles.controlGroup}>
+                  <Text style={[styles.controlLabel, { color: colors.textSecondary }]}>
+                    Bond Length: {molBondLength.toFixed(2)} Å
+                  </Text>
+                  <View style={styles.btnRow}>
+                    <TouchableOpacity
+                      onPress={() => setMolBondLength((l) => Math.max(0.8, Number((l - 0.1).toFixed(2))))}
+                      style={[styles.paramBtn, { backgroundColor: colors.surface }]}
+                    >
+                      <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>- 0.1 Å</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => setMolBondLength((l) => Math.min(2.0, Number((l + 0.1).toFixed(2))))}
+                      style={[styles.paramBtn, { backgroundColor: colors.surface }]}
+                    >
+                      <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>+ 0.1 Å</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                <View style={styles.controlGroup}>
+                  <Text style={[styles.controlLabel, { color: colors.textSecondary }]}>
+                    Thermal Temp: {molTempK} K
+                  </Text>
+                  <View style={styles.btnRow}>
+                    <TouchableOpacity
+                      onPress={() => setMolTempK((t) => Math.max(0, t - 50))}
+                      style={[styles.paramBtn, { backgroundColor: colors.surface }]}
+                    >
+                      <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>- 50 K</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => setMolTempK((t) => Math.min(500, t + 50))}
+                      style={[styles.paramBtn, { backgroundColor: colors.surface }]}
+                    >
+                      <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>+ 50 K</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </View>
+          )}
+
+          {lab3dMode === 'lorentz' && (
+            <View style={{ gap: 8 }}>
+              {/* Charge Selector */}
+              <View style={{ flexDirection: 'row', gap: 6 }}>
+                {[-2, -1, 1, 2].map((q) => (
+                  <TouchableOpacity
+                    key={q}
+                    onPress={() => setLorentzCharge(q)}
+                    style={[
+                      styles.presetBtn,
+                      {
+                        backgroundColor: lorentzCharge === q ? colors.primary : colors.surface,
+                        borderColor: lorentzCharge === q ? colors.primary : colors.borderSubtle,
+                        borderWidth: 1,
+                        flex: 1,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={{
+                        color: lorentzCharge === q ? '#FFFFFF' : colors.textPrimary,
+                        fontSize: 11,
+                        fontWeight: '700',
+                        textAlign: 'center',
+                      }}
+                    >
+                      {q > 0 ? `+${q}e` : `${q}e`}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <View style={styles.controlsRow}>
+                <View style={styles.controlGroup}>
+                  <Text style={[styles.controlLabel, { color: colors.textSecondary }]}>
+                    Magnetic B: {lorentzBField.toFixed(1)} T
+                  </Text>
+                  <View style={styles.btnRow}>
+                    <TouchableOpacity
+                      onPress={() => setLorentzBField((b) => Math.max(0.2, Number((b - 0.2).toFixed(1))))}
+                      style={[styles.paramBtn, { backgroundColor: colors.surface }]}
+                    >
+                      <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>- 0.2 T</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => setLorentzBField((b) => Math.min(2.0, Number((b + 0.2).toFixed(1))))}
+                      style={[styles.paramBtn, { backgroundColor: colors.surface }]}
+                    >
+                      <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>+ 0.2 T</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                <View style={styles.controlGroup}>
+                  <Text style={[styles.controlLabel, { color: colors.textSecondary }]}>
+                    Speed v: {lorentzVelocity}×10⁵ m/s
+                  </Text>
+                  <View style={styles.btnRow}>
+                    <TouchableOpacity
+                      onPress={() => setLorentzVelocity((v) => Math.max(1, v - 1))}
+                      style={[styles.paramBtn, { backgroundColor: colors.surface }]}
+                    >
+                      <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>- 1</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => setLorentzVelocity((v) => Math.min(10, v + 1))}
+                      style={[styles.paramBtn, { backgroundColor: colors.surface }]}
+                    >
+                      <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>+ 1</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </View>
+          )}
+
+          {lab3dMode === 'projectile' && (
+            <View style={{ gap: 8 }}>
+              {/* Celestial Gravity presets */}
+              <View style={{ flexDirection: 'row', gap: 6 }}>
+                {[
+                  { g: 9.8, label: 'Earth (9.8 m/s²)' },
+                  { g: 3.7, label: 'Mars (3.7 m/s²)' },
+                  { g: 1.6, label: 'Moon (1.6 m/s²)' },
+                ].map((item) => (
+                  <TouchableOpacity
+                    key={item.g}
+                    onPress={() => setProjGravity(item.g)}
+                    style={[
+                      styles.presetBtn,
+                      {
+                        backgroundColor: projGravity === item.g ? colors.primary : colors.surface,
+                        borderColor: projGravity === item.g ? colors.primary : colors.borderSubtle,
+                        borderWidth: 1,
+                        flex: 1,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={{
+                        color: projGravity === item.g ? '#FFFFFF' : colors.textPrimary,
+                        fontSize: 10.5,
+                        fontWeight: '700',
+                        textAlign: 'center',
+                      }}
+                    >
+                      {item.label}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <View style={styles.controlsRow}>
+                <View style={styles.controlGroup}>
+                  <Text style={[styles.controlLabel, { color: colors.textSecondary }]}>
+                    Elevation Angle α: {projAngle}°
+                  </Text>
+                  <View style={styles.btnRow}>
+                    <TouchableOpacity
+                      onPress={() => setProjAngle((a) => Math.max(15, a - 5))}
+                      style={[styles.paramBtn, { backgroundColor: colors.surface }]}
+                    >
+                      <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>- 5°</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => setProjAngle((a) => Math.min(75, a + 5))}
+                      style={[styles.paramBtn, { backgroundColor: colors.surface }]}
+                    >
+                      <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>+ 5°</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                <View style={styles.controlGroup}>
+                  <Text style={[styles.controlLabel, { color: colors.textSecondary }]}>
+                    Initial Speed v₀: {projSpeed} m/s
+                  </Text>
+                  <View style={styles.btnRow}>
+                    <TouchableOpacity
+                      onPress={() => setProjSpeed((v) => Math.max(15, v - 5))}
+                      style={[styles.paramBtn, { backgroundColor: colors.surface }]}
+                    >
+                      <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>- 5</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => setProjSpeed((v) => Math.min(70, v + 5))}
+                      style={[styles.paramBtn, { backgroundColor: colors.surface }]}
+                    >
+                      <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>+ 5</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </View>
+          )}
+
+          {lab3dMode === 'lattice' && (
+            <View style={{ gap: 8 }}>
+              {/* Unit Cell Types */}
+              <View style={{ flexDirection: 'row', gap: 6 }}>
+                {[
+                  { id: 'sc' as const, label: 'Simple Cubic (SC)' },
+                  { id: 'bcc' as const, label: 'Body-Centered (BCC)' },
+                  { id: 'fcc' as const, label: 'Face-Centered (FCC)' },
+                ].map((item) => (
+                  <TouchableOpacity
+                    key={item.id}
+                    onPress={() => setLatticeType(item.id)}
+                    style={[
+                      styles.presetBtn,
+                      {
+                        backgroundColor: latticeType === item.id ? colors.primary : colors.surface,
+                        borderColor: latticeType === item.id ? colors.primary : colors.borderSubtle,
+                        borderWidth: 1,
+                        flex: 1,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={{
+                        color: latticeType === item.id ? '#FFFFFF' : colors.textPrimary,
+                        fontSize: 10.5,
+                        fontWeight: '700',
+                        textAlign: 'center',
+                      }}
+                    >
+                      {item.label}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <View style={styles.controlsRow}>
+                <View style={[styles.controlGroup, { flex: 1 }]}>
+                  <Text style={[styles.controlLabel, { color: colors.textSecondary }]}>
+                    Lattice Constant a: {latticeConstA} pm
+                  </Text>
+                  <View style={styles.btnRow}>
+                    <TouchableOpacity
+                      onPress={() => setLatticeConstA((a) => Math.max(250, a - 20))}
+                      style={[styles.paramBtn, { backgroundColor: colors.surface }]}
+                    >
+                      <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>- 20 pm</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => setLatticeConstA((a) => Math.min(560, a + 20))}
+                      style={[styles.paramBtn, { backgroundColor: colors.surface }]}
+                    >
+                      <Text style={{ color: colors.textPrimary, fontWeight: '700' }}>+ 20 pm</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </View>
+          )}
+
+          {/* 3D Camera Rotation Controls */}
+          <View style={[styles.controlsRow, { marginTop: 6 }]}>
             <View style={styles.controlGroup}>
               <Text style={[styles.controlLabel, { color: colors.textSecondary }]}>
-                Azimuth θ: {azAngle}°
+                Camera Azimuth θ: {azAngle}°
               </Text>
               <View style={styles.btnRow}>
                 <TouchableOpacity
@@ -1600,7 +2512,7 @@ export const GraphPlaygroundScreen: React.FC = () => {
             </View>
             <View style={styles.controlGroup}>
               <Text style={[styles.controlLabel, { color: colors.textSecondary }]}>
-                Elevation φ: {elAngle}°
+                Camera Elevation φ: {elAngle}°
               </Text>
               <View style={styles.btnRow}>
                 <TouchableOpacity
@@ -1617,38 +2529,6 @@ export const GraphPlaygroundScreen: React.FC = () => {
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
-
-          <View style={styles.presetRow}>
-            {(
-              [
-                { id: 'tetrahedron', label: 'Tetrahedron (109.5°)' },
-                { id: 'cube', label: 'Unit Cube Lattice' },
-              ] as const
-            ).map((m) => (
-              <TouchableOpacity
-                key={m.id}
-                onPress={() => setMeshPreset(m.id)}
-                style={[
-                  styles.presetBtn,
-                  {
-                    backgroundColor: meshPreset === m.id ? colors.primary : colors.surface,
-                    borderWidth: 1,
-                    borderColor: meshPreset === m.id ? colors.primary : colors.borderSubtle,
-                  },
-                ]}
-              >
-                <Text
-                  style={{
-                    color: meshPreset === m.id ? '#FFF' : colors.textPrimary,
-                    fontSize: 12,
-                    fontWeight: '700',
-                  }}
-                >
-                  {m.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
           </View>
         </Card>
       )}

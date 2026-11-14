@@ -321,7 +321,7 @@ export const ClubsScreen: React.FC<ClubsScreenProps> = ({
     setDraftMsg('');
     setReplySnippet(null);
     setAntiSpamNotice(null);
-    SoundManager.play('notify');
+    SoundManager.playMessageSend();
     HapticManager.triggerSelection();
   };
 
@@ -631,6 +631,7 @@ export const ClubsScreen: React.FC<ClubsScreenProps> = ({
     );
     await persistWorkspace({ ...workspace, dmThreads: nextThreads });
     setDmDraft('');
+    SoundManager.playMessageSend();
   };
 
   const handleSubmitSafetyReport = async () => {

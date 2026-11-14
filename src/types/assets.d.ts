@@ -18,3 +18,12 @@ declare module '*.jpg' {
   export default asset;
 }
 
+declare module '*.jpeg' {
+  const asset: number;
+  export default asset;
+}
+
+declare module '*.pdf' {
+  const asset: number;
+  export default asset;
+}

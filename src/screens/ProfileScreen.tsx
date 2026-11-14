@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { useTheme } from '../theme';
 import { Card } from '../components/common/Card';
 import { Badge } from '../components/common/Badge';
@@ -21,6 +22,9 @@ import { HapticManager } from '../services/hapticManager';
 import { BOARD_DISPLAY_NAMES } from '../data/curriculumData';
 import { evaluateAchievementBadges } from '../utils/gamificationEngine';
 import { computeStorageQuotaUsage, formatByteSize, PLAN_CONFIGS } from '../utils/aiImageLibrary';
+import { GravatarService } from '../utils/gravatarService';
+import { compressImage, formatBytes } from '../utils/imageCompressor';
+import { GravatarLogo } from '../components/common/GravatarLogo';
 import {
   AcademicStream,
   DailyGoalConfig,
@@ -35,20 +39,28 @@ import {
   computeStreakAndWeek,
   formatDurationShort,
 } from '../utils/activityStats';
+import { PRESET_AVATARS, resolveAvatarSource } from '../utils/avatarHelper';
 import {
+  AlertCircle,
   Award,
   Bell,
   BookMarked,
+  BookOpen,
   Check,
+  CheckCircle2,
   ChevronRight,
   Flame,
   Globe,
+  LogOut,
+  MessageSquare,
   Moon,
   Pencil,
   Shield,
+  ShieldCheck,
   Sun,
   Target,
   Trophy,
+  Upload,
   User,
   Users,
   X,
@@ -87,9 +99,18 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
 
   // Edit fields
   const [draftName, setDraftName] = useState(DEFAULT_USER.name);
+  const [draftEmail, setDraftEmail] = useState(DEFAULT_USER.email);
   const [draftClass, setDraftClass] = useState(DEFAULT_USER.classGrade);
   const [draftStream, setDraftStream] = useState<AcademicStream>(DEFAULT_USER.stream);
   const [draftYear, setDraftYear] = useState(String(DEFAULT_USER.targetYear || 2027));
+  const [draftAvatarColor, setDraftAvatarColor] = useState(DEFAULT_USER.avatarColor || '#F97316');
+  const [draftAvatarUri, setDraftAvatarUri] = useState<string | undefined>(DEFAULT_USER.avatarUri);
+
+  // Avatar picker, compression & Gravatar state
+  const [avatarCompressionNotice, setAvatarCompressionNotice] = useState<string | null>(null);
+  const [gravatarChecking, setGravatarChecking] = useState(false);
+  const [gravatarAvailable, setGravatarAvailable] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const loadData = useCallback(async () => {
     const [prof, cfg, attemptLogs, imgs, tier, clubsWs] = await Promise.all([
@@ -107,14 +128,103 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
     setPlanTier(tier);
     setJoinedClubsCount(clubsWs.joinedClubIds.length);
     setDraftName(prof.name);
+    setDraftEmail(prof.email || '');
     setDraftClass(prof.classGrade);
     setDraftStream(prof.stream);
     setDraftYear(String(prof.targetYear || 2027));
+    setDraftAvatarColor(prof.avatarColor || '#F97316');
+    setDraftAvatarUri(prof.avatarUri);
   }, []);
 
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // Check Gravatar availability when draftEmail changes
+  useEffect(() => {
+    if (!draftEmail.trim() || !draftEmail.includes('@')) {
+      setGravatarAvailable(false);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      try {
+        setGravatarChecking(true);
+        const hasGrav = await GravatarService.checkHasGravatar(draftEmail);
+        setGravatarAvailable(hasGrav);
+      } catch {
+        setGravatarAvailable(false);
+      } finally {
+        setGravatarChecking(false);
+      }
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [draftEmail]);
+
+  const handlePickCustomAvatar = async () => {
+    try {
+      const res = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+      if (!res.canceled && res.assets?.[0]?.uri) {
+        const comp = await compressImage(res.assets[0].uri, {
+          maxWidth: 512,
+          maxHeight: 512,
+          quality: 0.8,
+        });
+        setDraftAvatarUri(comp.compressedUri);
+        setAvatarCompressionNotice(
+          `Compressed ${formatBytes(comp.originalSizeBytes)} → ${formatBytes(comp.compressedSizeBytes)} (${comp.savingsPercentage}% space saved)`
+        );
+        HapticManager.triggerSelection();
+        SoundManager.play('click');
+      }
+    } catch {
+      setAvatarCompressionNotice('Gallery picker not available; select a Scholar preset or Gravatar.');
+    }
+  };
+
+  const handleFetchGravatar = () => {
+    if (!draftEmail.trim() || !draftEmail.includes('@')) {
+      setAvatarCompressionNotice('Please enter a valid email above to fetch Gravatar photo.');
+      return;
+    }
+    const gravUri = `gravatar:${draftEmail.trim()}`;
+    setDraftAvatarUri(gravUri);
+    setAvatarCompressionNotice('Linked live Gravatar avatar (SHA-256 resolved).');
+    HapticManager.triggerSuccess();
+    SoundManager.play('click');
+  };
+
+  const handleLogout = async () => {
+    try {
+      const resetProfile: UserProfile = {
+        ...DEFAULT_USER,
+        id: `usr_guest_${Date.now().toString(36)}`,
+        ioId: `STUDY-${Math.floor(1000 + Math.random() * 9000)}-IO`,
+        name: 'Guest Scholar',
+        email: 'guest@study.io',
+        authProvider: 'guest',
+        onboardingCompleted: false,
+      };
+      await StorageService.saveUserProfile(resetProfile);
+      setProfile(resetProfile);
+      setDraftName(resetProfile.name);
+      setDraftEmail(resetProfile.email);
+      setDraftClass(resetProfile.classGrade);
+      setDraftStream(resetProfile.stream);
+      setDraftAvatarColor(resetProfile.avatarColor || '#F97316');
+      setDraftAvatarUri(undefined);
+      setShowLogoutConfirm(false);
+      onProfileUpdated?.(resetProfile);
+      SoundManager.play('notify');
+      HapticManager.triggerSelection();
+    } catch {
+      setShowLogoutConfirm(false);
+    }
+  };
 
   const dailyMap = aggregateDailyActivity(logs);
   const streakInfo = computeStreakAndWeek(
@@ -133,9 +243,12 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
     const updated: UserProfile = {
       ...profile,
       name: draftName.trim() || profile.name,
+      email: draftEmail.trim() || profile.email,
       classGrade: draftClass,
       stream: draftStream,
       targetYear: parsedYear,
+      avatarColor: draftAvatarColor,
+      avatarUri: draftAvatarUri,
     };
     await StorageService.saveUserProfile(updated);
     setProfile(updated);
@@ -161,15 +274,21 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                 { backgroundColor: profile.avatarColor || colors.primary, overflow: 'hidden' },
               ]}
             >
-              {profile.avatarUri ? (
-                <Image
-                  source={{ uri: profile.avatarUri }}
-                  style={{ width: 50, height: 50 }}
-                  resizeMode="cover"
-                />
-              ) : (
-                <Text style={styles.avatarLetter}>{profile.name.charAt(0).toUpperCase()}</Text>
-              )}
+              {(() => {
+                const avatarSrc = resolveAvatarSource(profile.avatarUri);
+                if (avatarSrc) {
+                  return (
+                    <Image
+                      source={avatarSrc}
+                      style={{ width: 50, height: 50 }}
+                      resizeMode="cover"
+                    />
+                  );
+                }
+                return (
+                  <Text style={styles.avatarLetter}>{profile.name.charAt(0).toUpperCase()}</Text>
+                );
+              })()}
             </View>
             <View style={{ flex: 1 }}>
               <Text style={[styles.profileName, { color: colors.text }]}>{profile.name}</Text>
@@ -237,6 +356,27 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
               sub: 'Saved custom notebooks, smart bookmarks & notes',
               Icon: BookMarked,
               tint: colors.cyan,
+            },
+            {
+              tab: 'ebooks' as const,
+              title: 'Digital E-Books & Offline Shelf',
+              sub: 'Read textbooks with KaTeX math, quizzes & AI Book Companion',
+              Icon: BookOpen,
+              tint: colors.primary,
+            },
+            {
+              tab: 'community' as const,
+              title: 'Community Hub & Doubt Exchange',
+              sub: 'Ask STEM questions with LaTeX, answer doubts & share notes',
+              Icon: MessageSquare,
+              tint: colors.success,
+            },
+            {
+              tab: 'admin' as const,
+              title: 'StudyLabs Admin Console',
+              sub: 'Resource moderation queue, security threat center & cloud telemetry',
+              Icon: ShieldCheck,
+              tint: colors.warning,
             },
           ].map(({ tab, title, sub, Icon, tint }) => (
             <TouchableOpacity
@@ -507,8 +647,80 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
             icon={<Bell size={15} color={colors.primary} />}
             style={{ marginTop: 12 }}
           />
+
+          {/* Account Log Out / Switch Scholar Button */}
+          <View style={{ marginTop: 16, borderTopWidth: 1, borderTopColor: colors.borderSubtle, paddingTop: 14 }}>
+            <Button
+              title="Log Out / Switch Account"
+              variant="outline"
+              size="md"
+              onPress={() => setShowLogoutConfirm(true)}
+              icon={<LogOut size={15} color={colors.error || '#EF4444'} />}
+              style={{ borderColor: colors.error || '#EF4444' }}
+            />
+          </View>
         </Card>
       </ScrollView>
+
+      {/* Logout Confirmation Dialog Modal */}
+      <Modal
+        visible={showLogoutConfirm}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowLogoutConfirm(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View
+            style={[
+              styles.logoutDialog,
+              { backgroundColor: colors.card, borderColor: colors.border },
+            ]}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+              <View
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 18,
+                  backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <LogOut size={18} color="#EF4444" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 16, fontWeight: '800', color: colors.text }}>
+                  Log Out of Study Labs?
+                </Text>
+                <Text style={{ fontSize: 11.5, color: colors.textSecondary }}>
+                  Current user: {profile.name} ({profile.ioId})
+                </Text>
+              </View>
+            </View>
+
+            <Text style={{ fontSize: 12.5, color: colors.textSecondary, lineHeight: 18, marginBottom: 16 }}>
+              You will be signed out from your active session. You can re-authenticate anytime via Google, GitHub, Microsoft Entra, Email OTP, or continue as a guest scholar.
+            </Text>
+
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <Button
+                title="Stay Signed In"
+                variant="outline"
+                size="sm"
+                onPress={() => setShowLogoutConfirm(false)}
+                style={{ flex: 1 }}
+              />
+              <Button
+                title="Confirm Log Out"
+                size="sm"
+                onPress={() => void handleLogout()}
+                style={{ flex: 1.2, backgroundColor: '#EF4444' }}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       {/* Edit Profile Modal */}
       <Modal
@@ -529,12 +741,185 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
               </TouchableOpacity>
             </View>
 
-            <ScrollView style={styles.modalBody} contentContainerStyle={{ gap: 12, paddingVertical: 14 }}>
+            <ScrollView style={styles.modalBody} contentContainerStyle={{ gap: 14, paddingVertical: 14 }}>
+              {/* Avatar Live Preview and Controls */}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  gap: 12,
+                  alignItems: 'center',
+                  padding: 12,
+                  borderRadius: 14,
+                  borderWidth: 1,
+                  backgroundColor: colors.surface,
+                  borderColor: colors.border,
+                }}
+              >
+                <View
+                  style={{
+                    width: 58,
+                    height: 58,
+                    borderRadius: 18,
+                    backgroundColor: draftAvatarColor,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {(() => {
+                    const resolved = resolveAvatarSource(draftAvatarUri);
+                    if (resolved) {
+                      return (
+                        <Image
+                          source={resolved}
+                          style={{ width: '100%', height: '100%' }}
+                          resizeMode="cover"
+                        />
+                      );
+                    }
+                    return (
+                      <Text style={{ fontSize: 24, fontWeight: '900', color: '#FFFFFF' }}>
+                        {(draftName.trim() || 'S').charAt(0).toUpperCase()}
+                      </Text>
+                    );
+                  })()}
+                </View>
+
+                <View style={{ flex: 1, gap: 6 }}>
+                  <Text style={{ fontSize: 13, fontWeight: '800', color: colors.text }}>
+                    Avatar Selection & Gravatar
+                  </Text>
+                  {avatarCompressionNotice && (
+                    <Text style={{ fontSize: 10.5, color: colors.primary, fontWeight: '700' }}>
+                      {avatarCompressionNotice}
+                    </Text>
+                  )}
+                  <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
+                    <TouchableOpacity
+                      onPress={handlePickCustomAvatar}
+                      style={[
+                        styles.avatarActionBtn,
+                        { backgroundColor: colors.card, borderColor: colors.border },
+                      ]}
+                    >
+                      <Upload size={12} color={colors.primary} />
+                      <Text style={{ fontSize: 11, fontWeight: '700', color: colors.primary }}>
+                        Upload Photo
+                      </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      onPress={handleFetchGravatar}
+                      style={[
+                        styles.avatarActionBtn,
+                        { backgroundColor: colors.card, borderColor: colors.border },
+                      ]}
+                    >
+                      <GravatarLogo size={13} color="#2563EB" />
+                      <Text style={{ fontSize: 11, fontWeight: '700', color: '#2563EB' }}>
+                        {gravatarChecking ? 'Checking...' : gravatarAvailable ? 'Fetch Gravatar ✓' : 'Fetch Gravatar'}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+
+              {/* Scholar Character Presets Catalogue */}
+              <View>
+                <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>
+                  PRESET SCHOLAR AVATARS
+                </Text>
+                <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
+                  {PRESET_AVATARS.map((av) => {
+                    const isSelected = draftAvatarUri === av.id;
+                    return (
+                      <TouchableOpacity
+                        key={av.id}
+                        onPress={() => {
+                          setDraftAvatarUri(av.id);
+                          setDraftAvatarColor(av.accent);
+                          setAvatarCompressionNotice(`Selected ${av.label}`);
+                          HapticManager.triggerSelection();
+                        }}
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: 6,
+                          paddingHorizontal: 8,
+                          paddingVertical: 5,
+                          borderRadius: 9,
+                          borderWidth: 1.5,
+                          borderColor: isSelected ? colors.primary : colors.border,
+                          backgroundColor: isSelected
+                            ? mode === 'dark'
+                              ? '#431407'
+                              : '#FFEDD5'
+                            : colors.surface,
+                        }}
+                      >
+                        <Image source={av.source} style={{ width: 22, height: 22, borderRadius: 11 }} />
+                        <Text
+                          style={{
+                            fontSize: 11,
+                            fontWeight: '700',
+                            color: isSelected ? colors.primary : colors.text,
+                          }}
+                        >
+                          {av.label}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </View>
+
+              {/* Cyber Badge Accent Colors */}
+              <View>
+                <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>
+                  ACCENT COLOR SWATCH
+                </Text>
+                <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+                  {['#F97316', '#22D3EE', '#10B981', '#8B5CF6', '#EC4899', '#3B82F6'].map((sw) => (
+                    <TouchableOpacity
+                      key={sw}
+                      onPress={() => {
+                        setDraftAvatarColor(sw);
+                        setDraftAvatarUri(undefined);
+                        setAvatarCompressionNotice(null);
+                        HapticManager.triggerSelection();
+                      }}
+                      style={{
+                        width: 28,
+                        height: 28,
+                        borderRadius: 14,
+                        backgroundColor: sw,
+                        borderWidth: 2,
+                        borderColor: draftAvatarColor === sw && !draftAvatarUri ? '#FFFFFF' : 'transparent',
+                      }}
+                    />
+                  ))}
+                </View>
+              </View>
+
               <View>
                 <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Full Name</Text>
                 <TextInput
                   value={draftName}
                   onChangeText={setDraftName}
+                  style={[
+                    styles.input,
+                    { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.border },
+                  ]}
+                />
+              </View>
+
+              <View>
+                <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Study Email (for Gravatar & OTP)</Text>
+                <TextInput
+                  value={draftEmail}
+                  onChangeText={setDraftEmail}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
                   style={[
                     styles.input,
                     { color: colors.text, backgroundColor: colors.inputBg, borderColor: colors.border },
@@ -730,5 +1115,28 @@ const styles = StyleSheet.create({
   chipWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   optionChip: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 10, borderWidth: 1 },
   modalFooter: { flexDirection: 'row', gap: 10, paddingHorizontal: 20, paddingVertical: 14 },
+  logoutDialog: {
+    marginHorizontal: 20,
+    alignSelf: 'center',
+    width: '90%',
+    maxWidth: 420,
+    borderRadius: 20,
+    borderWidth: 1,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  avatarActionBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 9,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
 });
 

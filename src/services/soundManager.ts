@@ -18,7 +18,9 @@ export type SoundEffect =
   | 'achievement'
   | 'hint'
   | 'notify'
-  | 'calling';
+  | 'calling'
+  | 'message_send'
+  | 'message_received';
 
 export const SFX_FILE_NAMES: Record<SoundEffect, string> = {
   click: 'click.mp3',
@@ -27,9 +29,11 @@ export const SFX_FILE_NAMES: Record<SoundEffect, string> = {
   test_complete: 'test-complete.mp3',
   personal_best: 'test-complete.mp3',
   achievement: 'notification.mp3',
-  hint: 'notification.mp3',
+  hint: 'hint.wav',
   notify: 'notification.mp3',
   calling: 'calling.mp3',
+  message_send: 'message-send.mp3',
+  message_received: 'message-received.mp3',
 };
 
 const SFX_SOURCES: Record<SoundEffect, any> = {
@@ -39,9 +43,11 @@ const SFX_SOURCES: Record<SoundEffect, any> = {
   test_complete: require('../../assets/audio/test-complete.mp3'),
   personal_best: require('../../assets/audio/test-complete.mp3'),
   achievement: require('../../assets/audio/notification.mp3'),
-  hint: require('../../assets/audio/notification.mp3'),
+  hint: require('../../assets/audio/hint.wav'),
   notify: require('../../assets/audio/notification.mp3'),
   calling: require('../../assets/audio/calling.mp3'),
+  message_send: require('../../assets/audio/message-send.mp3'),
+  message_received: require('../../assets/audio/message-received.mp3'),
 };
 
 const SFX_VOLUMES: Record<SoundEffect, number> = {
@@ -51,9 +57,11 @@ const SFX_VOLUMES: Record<SoundEffect, number> = {
   test_complete: 0.95,
   personal_best: 1.0,
   achievement: 0.8,
-  hint: 0.65,
+  hint: 0.7,
   notify: 0.7,
   calling: 0.75,
+  message_send: 0.6,
+  message_received: 0.65,
 };
 
 class SoundManagerService {
@@ -225,6 +233,18 @@ class SoundManagerService {
 
   playClick(): void {
     void this.play('click');
+  }
+
+  playHint(): void {
+    void this.play('hint');
+  }
+
+  playMessageSend(): void {
+    void this.play('message_send');
+  }
+
+  playMessageReceived(): void {
+    void this.play('message_received');
   }
 
   disposeAll(): void {

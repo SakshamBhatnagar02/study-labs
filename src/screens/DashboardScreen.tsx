@@ -42,6 +42,7 @@ import {
   ArrowRight,
   Bell,
   BookMarked,
+  BookOpen,
   BrainCircuit,
   Calendar,
   ChevronRight,
@@ -50,6 +51,7 @@ import {
   Flag,
   Layers,
   MapPin,
+  MessageSquare,
   PlusCircle,
   Search,
   Sparkles,
@@ -940,6 +942,30 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         >
           <AppIcon name="flask" color={colors.success} size="md" />
           <Text style={[styles.toolTitle, { color: colors.text }]}>Tools</Text>
+        </Pressable>
+
+        <Pressable
+          focusable={false}
+          style={({ pressed }) => [
+            styles.toolChip,
+            { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.78 : 1 },
+          ]}
+          onPress={() => onNavigate('ebooks')}
+        >
+          <BookOpen color={colors.primary} size={22} />
+          <Text style={[styles.toolTitle, { color: colors.text }]}>E-Books</Text>
+        </Pressable>
+
+        <Pressable
+          focusable={false}
+          style={({ pressed }) => [
+            styles.toolChip,
+            { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.78 : 1 },
+          ]}
+          onPress={() => onNavigate('community')}
+        >
+          <MessageSquare color={colors.success} size={22} />
+          <Text style={[styles.toolTitle, { color: colors.text }]}>Doubts</Text>
         </Pressable>
       </View>
     </ScrollView>

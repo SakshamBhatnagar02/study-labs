@@ -19,12 +19,15 @@ export type NavTab =
   | 'syllabus' 
   | 'playground' 
   | 'tools' 
-  | 'ai'
-  | 'leaderboard'
-  | 'dailyGoal'
-  | 'notebooks'
-  | 'clubs'
-  | 'profile';
+  | 'ai' 
+  | 'leaderboard' 
+  | 'dailyGoal' 
+  | 'notebooks' 
+  | 'clubs' 
+  | 'profile' 
+  | 'ebooks' 
+  | 'community' 
+  | 'admin';
 
 interface BottomNavProps {
   activeTab: NavTab;
@@ -59,9 +62,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) 
         // Highlighting active state including sub-tabs
         const isActive = 
           activeTab === key || 
-          (key === 'dashboard' && (activeTab === 'leaderboard' || activeTab === 'dailyGoal' || activeTab === 'clubs' || activeTab === 'profile')) ||
+          (key === 'dashboard' && (activeTab === 'leaderboard' || activeTab === 'dailyGoal' || activeTab === 'clubs' || activeTab === 'profile' || activeTab === 'admin')) ||
           (key === 'tracker' && activeTab === 'analytics') ||
-          (key === 'study' && (activeTab === 'syllabus' || activeTab === 'notebooks')) ||
+          (key === 'study' && (activeTab === 'syllabus' || activeTab === 'notebooks' || activeTab === 'ebooks' || activeTab === 'community')) ||
           (key === 'tools' && activeTab === 'playground');
 
         const iconColor = isActive ? colors.primary : colors.textSecondary;

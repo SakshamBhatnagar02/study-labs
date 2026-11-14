@@ -48,6 +48,7 @@ import {
   EyeOff,
   FileText,
   Layers,
+  MessageSquare,
   Play,
   Sparkles,
   ThumbsDown,
@@ -59,6 +60,8 @@ interface StudyMaterialScreenProps {
   initialSubject?: SubjectId;
   onLaunchSession?: (session: TestSessionLaunch) => void;
   onOpenNotebooks?: () => void;
+  onOpenEBooks?: () => void;
+  onOpenCommunity?: () => void;
   onAskAITopic?: (topicTitle: string, subjectId: SubjectId) => void;
 }
 
@@ -67,6 +70,8 @@ export const StudyMaterialScreen: React.FC<StudyMaterialScreenProps> = ({
   initialSubject = 'physics',
   onLaunchSession,
   onOpenNotebooks,
+  onOpenEBooks,
+  onOpenCommunity,
   onAskAITopic,
 }) => {
   const { colors, mode } = useTheme();
@@ -151,15 +156,35 @@ export const StudyMaterialScreen: React.FC<StudyMaterialScreenProps> = ({
           <Text style={[styles.hierarchyPath, { color: colors.textSecondary }]} numberOfLines={1}>
             {BOARD_DISPLAY_NAMES[profile.board || 'JEE_MAIN']} ({profile.country || 'India'}) ❯ {profile.classGrade} ❯ {profile.stream}
           </Text>
-          {onOpenNotebooks && (
-            <TouchableOpacity
-              onPress={() => onOpenNotebooks()}
-              style={[styles.notebookShortcut, { backgroundColor: colors.surface, borderColor: colors.border }]}
-            >
-              <BookMarked size={12} color={colors.primary} />
-              <Text style={[styles.notebookShortcutText, { color: colors.primary }]}>Notebooks</Text>
-            </TouchableOpacity>
-          )}
+          <View style={{ flexDirection: 'row', gap: 6, alignItems: 'center' }}>
+            {onOpenEBooks && (
+              <TouchableOpacity
+                onPress={() => onOpenEBooks()}
+                style={[styles.notebookShortcut, { backgroundColor: colors.surface, borderColor: colors.border }]}
+              >
+                <BookOpen size={12} color={colors.primary} />
+                <Text style={[styles.notebookShortcutText, { color: colors.primary }]}>E-Books</Text>
+              </TouchableOpacity>
+            )}
+            {onOpenCommunity && (
+              <TouchableOpacity
+                onPress={() => onOpenCommunity()}
+                style={[styles.notebookShortcut, { backgroundColor: colors.surface, borderColor: colors.border }]}
+              >
+                <MessageSquare size={12} color={colors.success} />
+                <Text style={[styles.notebookShortcutText, { color: colors.success }]}>Doubts</Text>
+              </TouchableOpacity>
+            )}
+            {onOpenNotebooks && (
+              <TouchableOpacity
+                onPress={() => onOpenNotebooks()}
+                style={[styles.notebookShortcut, { backgroundColor: colors.surface, borderColor: colors.border }]}
+              >
+                <BookMarked size={12} color={colors.primary} />
+                <Text style={[styles.notebookShortcutText, { color: colors.primary }]}>Notebooks</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
 
         {/* Chapters & PYQs vs Formula Cards */}

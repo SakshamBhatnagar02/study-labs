@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
+import type {
   ActiveTestWorkspaceState,
   AppSettings,
   CalendarHoliday,
@@ -960,6 +960,22 @@ export const StorageService = {
       // Non-fatal
     }
     return updated;
+  },
+
+  async getRawItem(key: string): Promise<string | null> {
+    try {
+      return await AsyncStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  },
+
+  async setRawItem(key: string, value: string): Promise<void> {
+    try {
+      await AsyncStorage.setItem(key, value);
+    } catch {
+      // Non-fatal
+    }
   },
 };
 

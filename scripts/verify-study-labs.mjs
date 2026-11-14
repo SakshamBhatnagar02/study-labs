@@ -27,6 +27,22 @@ registerHooks({
   },
 });
 
+// Load .env into process.env for Node test runner
+try {
+  const envContent = fs.readFileSync(path.resolve('.env'), 'utf8');
+  for (const line of envContent.split('\n')) {
+    const trimmed = line.trim();
+    if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
+      const idx = trimmed.indexOf('=');
+      const k = trimmed.slice(0, idx).trim();
+      const v = trimmed.slice(idx + 1).trim();
+      if (!process.env[k]) {
+        process.env[k] = v;
+      }
+    }
+  }
+} catch {}
+
 const {
   classifyQuestionDifficulty,
   GeminiAIService,
@@ -119,6 +135,16 @@ const {
   evaluateAchievementBadges,
 } = await import('../src/utils/gamificationEngine.ts');
 const { getThemeColors } = await import('../src/theme/colors.ts');
+const { isDisposableEmail, getEmailDomain, isWhitelistedDomain, checkTempMailApi } = await import('../src/utils/tempMailDetector.ts');
+const { evaluatePasswordBreachRisk } = await import('../src/utils/breachDetector.ts');
+const { SEED_EBOOKS } = await import('../src/data/ebooksData.ts');
+const { SEED_COMMUNITY_QUESTIONS, SEED_COMMUNITY_RESOURCES } = await import('../src/data/communitySeedData.ts');
+const { PRESET_AVATARS, resolveAvatarSource } = await import('../src/utils/avatarHelper.ts');
+const { ResendEmailService } = await import('../src/services/resendService.ts');
+const { CLOUD_STORAGE_CONFIGS, CloudStorageService } = await import('../src/services/cloudStorage.ts');
+const { compressImage, formatBytes, estimateBase64Size } = await import('../src/utils/imageCompressor.ts');
+const { GravatarService } = await import('../src/utils/gravatarService.ts');
+const { NOTO_ANIMATED_EMOJIS, getNotoAnimatedEmojiUrl } = await import('../src/utils/animatedEmojiData.ts');
 
 console.log('🧪 Starting Study Labs Domain, Cyber Celebration, LaTeX, SFX & AI Verification Suite...\n');
 
@@ -1008,11 +1034,16 @@ const uiFilesToAudit = [
   'src/components/clubs/ClubPreviewModal.tsx',
   'src/components/clubs/CreateClubModal.tsx',
   'src/components/auth/OnboardingAuthModal.tsx',
+  'src/components/auth/CaptchaChallenge.tsx',
   'src/components/common/QuickCalculatorModal.tsx',
+  'src/components/ebooks/EBookReaderModal.tsx',
   'src/screens/GraphPlaygroundScreen.tsx',
   'src/screens/LeaderboardScreen.tsx',
   'src/screens/StudyMaterialScreen.tsx',
   'src/screens/SyllabusCalendarScreen.tsx',
+  'src/screens/EBooksScreen.tsx',
+  'src/screens/CommunityScreen.tsx',
+  'src/screens/AdminConsoleScreen.tsx',
 ];
 for (const relPath of uiFilesToAudit) {
   const content = fs.readFileSync(path.resolve(relPath), 'utf8');
@@ -1024,4 +1055,145 @@ const channelModalSrc = fs.readFileSync(path.resolve('src/components/clubs/Chann
 assert.ok(channelModalSrc.includes('activeThumbColor'), 'ChannelSettingsModal Switches must declare explicit activeThumbColor for crisp Cyber Orange styling');
 console.log('✅ 30. Zero Browser Dialogs, Mandatory Attendance Notice & Switch Contrast Invariants: Verified');
 
-console.log('\n🎉 ALL 30 STUDY LABS DOMAIN, CLUBS RBAC, MULTIMODAL, GLOBAL & UI INVARIANT TESTS PASSED!');
+// 31. Verify Disposable/Temp-Mail Detection & Security Guards
+assert.equal(isDisposableEmail('test@mailinator.com').isDisposable, true, 'mailinator.com must be detected as disposable');
+assert.equal(isDisposableEmail('burner@tempmail.com').isDisposable, true, 'tempmail.com must be detected as disposable');
+assert.equal(isDisposableEmail('junk@guerrillamail.com').isDisposable, true, 'guerrillamail.com must be detected as disposable');
+assert.equal(isDisposableEmail('user@10minutemail.com').isDisposable, true, '10minutemail.com must be detected as disposable');
+assert.equal(isDisposableEmail('student@study.io').isDisposable, false, 'study.io should not be flagged as disposable');
+assert.equal(isDisposableEmail('scholar@gmail.com').isDisposable, false, 'gmail.com should not be flagged as disposable');
+assert.equal(getEmailDomain('test@yopmail.com'), 'yopmail.com');
+console.log('✅ 31. Disposable / Temp-Mail Blacklist & Domain Parser: Verified');
+
+// 32. Verify Password Breach & Entropy Risk Evaluator
+const breachedRes1 = evaluatePasswordBreachRisk('123456');
+assert.equal(breachedRes1.isCompromised, true);
+assert.equal(breachedRes1.riskLevel, 'critical');
+const breachedRes2 = evaluatePasswordBreachRisk('password');
+assert.equal(breachedRes2.isCompromised, true);
+assert.equal(breachedRes2.riskLevel, 'critical');
+const strongRes = evaluatePasswordBreachRisk('Quantum#Superposition!9842');
+assert.equal(strongRes.isCompromised, false);
+assert.equal(strongRes.riskLevel, 'safe');
+console.log('✅ 32. Data Breach Risk Analyzer & Password Leak Heuristics: Verified');
+
+// 33. Verify Digital E-Books Catalog & Reader Structure
+assert.ok(SEED_EBOOKS.length >= 7, 'Should provide at least 7 comprehensive e-books/syllabi');
+for (const b of SEED_EBOOKS) {
+  assert.ok(b.id && b.title && b.author && b.chapters.length >= 1, `Book ${b.id} must have complete metadata & chapters`);
+  assert.ok(b.chapters[0].content.length > 50, `Book ${b.id} first chapter must contain study content`);
+}
+console.log('✅ 33. Digital E-Books Catalog & KaTeX Chapter Data: Verified');
+
+// 34. Verify Community Doubt Exchange & Resource Seed Hub
+assert.ok(SEED_COMMUNITY_QUESTIONS.length >= 3, 'Community must seed questions');
+for (const q of SEED_COMMUNITY_QUESTIONS) {
+  assert.ok(q.id && q.title && q.content && q.answers.length >= 1);
+  assert.ok(q.answers.some((a) => a.isVerified), `Question ${q.id} must include at least one verified answer`);
+}
+assert.ok(SEED_COMMUNITY_RESOURCES.length >= 4, 'Community resources must seed books and notes');
+console.log('✅ 34. Community Q&A Doubt Engine, LaTeX Solutions & Verified Answers: Verified');
+
+// 35. Verify Preset Avatar Assets & Resolution
+assert.ok(PRESET_AVATARS.length >= 4, 'Must provide at least 4 preset avatars');
+assert.ok(PRESET_AVATARS.some((a) => a.id === 'preset:boy'));
+assert.ok(PRESET_AVATARS.some((a) => a.id === 'preset:girl'));
+assert.ok(PRESET_AVATARS.some((a) => a.id === 'preset:male-teacher'));
+assert.ok(PRESET_AVATARS.some((a) => a.id === 'preset:female-teacher'));
+const resolvedPreset = resolveAvatarSource('preset:boy');
+assert.ok(resolvedPreset !== null, 'Preset avatar resolution must return valid image source');
+const customUrl = resolveAvatarSource('https://example.com/avatar.png');
+assert.deepEqual(customUrl, { uri: 'https://example.com/avatar.png' });
+console.log('✅ 35. Preset Scholar/Teacher Avatars & Image Resolution: Verified');
+
+// 36. Verify Resend Email Service Configuration & Templates
+assert.equal(ResendEmailService.isConfigured(), true, 'ResendEmailService must detect configured API key');
+const testOtp = '849201';
+const otpDispatch = await ResendEmailService.sendVerificationOtp('scholar@study.io', testOtp, 'Aditya');
+assert.equal(otpDispatch.deliveredTo, 'scholar@study.io', 'Dispatch must record target recipient');
+assert.ok(otpDispatch.timestamp, 'Dispatch must generate valid ISO timestamp');
+console.log('✅ 36. Resend Email Dispatch Engine & Transactional OTP Service: Verified');
+
+// 37. Verify Abstract API & Trusted Domain Whitelist
+assert.equal(isWhitelistedDomain('gmail.com'), true, 'gmail.com must be whitelisted');
+assert.equal(isWhitelistedDomain('outlook.com'), true, 'outlook.com must be whitelisted');
+assert.equal(isWhitelistedDomain('yahoo.com'), true, 'yahoo.com must be whitelisted');
+assert.equal(isWhitelistedDomain('icloud.com'), true, 'icloud.com must be whitelisted');
+assert.equal(isWhitelistedDomain('iitb.ac.in'), true, 'Academic domain (.ac.in) must be whitelisted');
+const fastGmailCheck = isDisposableEmail('student@gmail.com');
+assert.equal(fastGmailCheck.isWhitelisted, true, 'Whitelisted domain must bypass external API');
+assert.equal(fastGmailCheck.isDisposable, false);
+console.log('✅ 37. Abstract API Integration & Trusted Email Domain Whitelist: Verified');
+
+// 38. Verify Backblaze B2 & Multi-Cloud Storage Telemetry
+assert.equal(CLOUD_STORAGE_CONFIGS.b2.isConfigured, true, 'Backblaze B2 must be configured with Master Application Key');
+assert.ok(CLOUD_STORAGE_CONFIGS.b2.label.includes('Backblaze B2'));
+assert.ok(CLOUD_STORAGE_CONFIGS.s3_r2.label.includes('Cloudflare R2'));
+const b2Upload = await CloudStorageService.uploadResource(
+  {
+    fileName: 'quantum_mechanics_notes.jpg',
+    mimeType: 'image/jpeg',
+    sizeBytes: 184000,
+    base64OrUri: 'data:image/jpeg;base64,ABCDEF123456',
+    bucket: 'notes',
+    compressed: true,
+    originalSizeBytes: 1840000,
+  },
+  'b2'
+);
+assert.equal(b2Upload.success, true);
+assert.equal(b2Upload.provider, 'b2');
+assert.ok(b2Upload.publicUrl.includes('backblazeb2.com'));
+assert.ok(b2Upload.savingsBytes > 0);
+console.log('✅ 38. Backblaze B2 & Cloudflare R2 Multi-Cloud Storage Architecture: Verified');
+
+// 39. Verify Client-Side Image Compression & Space Savings
+const estSize = estimateBase64Size('data:image/jpeg;base64,QUJDRA==');
+assert.ok(estSize > 0, 'estimateBase64Size must return byte size');
+assert.equal(formatBytes(1536), '1.5 KB');
+assert.equal(formatBytes(2097152), '2.00 MB');
+const compRes = await compressImage('data:image/jpeg;base64,QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVo=', {
+  maxWidth: 512,
+  maxHeight: 512,
+  quality: 0.8,
+});
+assert.ok(compRes.compressedUri, 'Compressed URI must be defined');
+assert.ok(compRes.savingsPercentage >= 0, 'Savings percentage must be computed');
+console.log('✅ 39. Client-Side Image Compression Engine (Avatars, Notes & Covers): Verified');
+
+// 40. Verify Gravatar Integration & SHA-256 Email Hashing
+assert.equal(GravatarService.normalizeEmail(' Scholar@Study.io '), 'scholar@study.io');
+const gravatarHash = GravatarService.getEmailHash('scholar@study.io');
+assert.equal(gravatarHash.length, 64, 'SHA-256 hash must be 64 hexadecimal characters');
+const gravatarUrl = GravatarService.getAvatarUrl('scholar@study.io', { size: 200 });
+assert.ok(gravatarUrl.includes('https://gravatar.com/avatar/' + gravatarHash));
+const resolvedGravatar = resolveAvatarSource('gravatar:scholar@study.io');
+assert.ok(resolvedGravatar.uri.includes('gravatar.com/avatar/'));
+console.log('✅ 40. Gravatar User Avatar Resolver & SHA-256 Hashing: Verified');
+
+// 41. Verify Google Fonts Noto Animated Emoji Engine
+assert.equal(NOTO_ANIMATED_EMOJIS.fire.codepoint, '1f525');
+assert.equal(NOTO_ANIMATED_EMOJIS.sparkles.codepoint, '2728');
+assert.equal(NOTO_ANIMATED_EMOJIS.heart.codepoint, '2764_fe0f');
+assert.equal(
+  getNotoAnimatedEmojiUrl('fire'),
+  'https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp'
+);
+assert.equal(
+  getNotoAnimatedEmojiUrl('sparkles'),
+  'https://fonts.gstatic.com/s/e/notoemoji/latest/2728/512.webp'
+);
+console.log('✅ 41. Google Fonts Noto Animated Emoji Engine: Verified');
+
+// 42. Verify EAS & Expo Configuration
+const easAppJson = JSON.parse(fs.readFileSync(path.resolve('app.json'), 'utf8'));
+assert.equal(
+  easAppJson.expo?.extra?.eas?.projectId,
+  '1ac12902-be7f-48d1-90e6-7079fcbdf18a',
+  'app.json must specify EAS project ID'
+);
+const easJson = JSON.parse(fs.readFileSync(path.resolve('eas.json'), 'utf8'));
+assert.ok(easJson.build?.development && easJson.build?.preview && easJson.build?.production);
+console.log('✅ 42. EAS CLI 27.10.0 Project Linking & eas.json Build Profiles: Verified');
+
+console.log('\n🎉 ALL 42 STUDY LABS DOMAIN, CLUBS RBAC, 3D STEM LABS, E-BOOKS, RESEND, CLOUDFLARE, B2, COMPRESSION & GRAVATAR INVARIANT TESTS PASSED!');

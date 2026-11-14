@@ -1,5 +1,24 @@
 export type CountryCode = 'IN' | 'US' | 'UK' | 'SG' | 'AE' | 'GLOBAL';
 
+export type NavTab =
+  | 'dashboard'
+  | 'study'
+  | 'test'
+  | 'tracker'
+  | 'analytics'
+  | 'syllabus'
+  | 'playground'
+  | 'tools'
+  | 'ai'
+  | 'leaderboard'
+  | 'dailyGoal'
+  | 'notebooks'
+  | 'clubs'
+  | 'profile'
+  | 'ebooks'
+  | 'community'
+  | 'admin';
+
 export type CurriculumBoard =
   | 'CBSE'
   | 'ICSE'
@@ -29,7 +48,7 @@ export type PreferredLanguage =
   | 'Arabic'
   | 'Mandarin';
 
-export type AuthProviderType = 'guest' | 'email' | 'google' | 'microsoft';
+export type AuthProviderType = 'guest' | 'email' | 'google' | 'microsoft' | 'github';
 
 export type LearningMode = 'Detailed' | 'Normal' | 'Rapid Revision';
 
@@ -854,6 +873,162 @@ export interface ClubsWorkspaceState {
   safetyReports: SafetyReport[];
   roleOverrideByClub: Record<string, SystemStaffRole | 'actual'>;
 }
+
+// =============================================================================
+// E-BOOKS & DIGITAL DOCUMENT VAULT CONTRACTS
+// =============================================================================
+export type EBookCategory = 'jee_neet' | 'board_exams' | 'cyber_security' | 'stem_research' | 'computer_science';
+
+export interface EBookChapter {
+  id: string;
+  chapterNumber: number;
+  title: string;
+  pageStart: number;
+  pageEnd: number;
+  summary: string;
+  content: string; // Formatted study content with KaTeX formulas
+  keyFormulas?: string[];
+  quizQuestions?: Array<{
+    question: string;
+    options: string[];
+    correctIndex: number;
+    explanation: string;
+  }>;
+}
+
+export interface EBook {
+  id: string;
+  title: string;
+  subtitle: string;
+  author: string;
+  publisher: string;
+  category: EBookCategory;
+  subject: string;
+  totalPages: number;
+  fileSizeFormatted: string;
+  rating: number;
+  description: string;
+  tags: string[];
+  coverPreset?: 'default' | 'cyber' | 'jee' | 'neet' | 'science';
+  localPdfFileName?: string;
+  chapters: EBookChapter[];
+  isDownloaded?: boolean;
+}
+
+// =============================================================================
+// COMMUNITY UPLOAD, STUDY NOTES & Q&A DOUBT EXCHANGE
+// =============================================================================
+export type CommunityResourceFormat = 'notes' | 'book' | 'questions' | 'formula_sheet' | 'solved_paper';
+export type CommunityResourceStatus = 'pending' | 'approved' | 'rejected' | 'flagged';
+
+export interface CommunityResource {
+  id: string;
+  title: string;
+  description: string;
+  subject: SubjectId | 'cs_cyber' | 'general';
+  gradeLevel: string;
+  format: CommunityResourceFormat;
+  tags: string[];
+  authorId: string;
+  authorName: string;
+  authorRole: string;
+  status: CommunityResourceStatus;
+  upvotesCount: number;
+  downloadsCount: number;
+  fileSizeFormatted: string;
+  createdAt: string;
+  userVote?: 'up' | 'down' | null;
+  moderationNote?: string;
+}
+
+export interface CommunityAnswer {
+  id: string;
+  questionId: string;
+  content: string; // Markdown & KaTeX
+  authorId: string;
+  authorName: string;
+  authorRole: string;
+  authorAvatarColor?: string;
+  upvotesCount: number;
+  downvotesCount: number;
+  userVote?: 'up' | 'down' | null;
+  isVerified: boolean;
+  createdAt: string;
+  reactions?: Record<string, number>;
+  userReactions?: string[];
+}
+
+export interface CommunityQuestion {
+  id: string;
+  title: string;
+  content: string; // Markdown & KaTeX
+  subject: SubjectId | 'cs_cyber' | 'general';
+  gradeLevel: string;
+  tags: string[];
+  bountyXp: number;
+  authorId: string;
+  authorName: string;
+  authorAvatarColor?: string;
+  createdAt: string;
+  upvotesCount: number;
+  downvotesCount: number;
+  userVote?: 'up' | 'down' | null;
+  isResolved: boolean;
+  verifiedAnswerId?: string;
+  reactions?: Record<string, number>;
+  userReactions?: string[];
+  answers: CommunityAnswer[];
+}
+
+// =============================================================================
+// CAPTCHA, SECURITY GUARDS & ADMIN CONSOLE CONTRACTS
+// =============================================================================
+export interface CaptchaVerificationToken {
+  token: string;
+  solvedAt: number;
+  challengeType: 'math' | 'slider' | 'turnstile';
+}
+
+export interface TempMailCheckResult {
+  isDisposable: boolean;
+  domain: string;
+  reason?: string;
+  providerType?: 'disposable' | 'legitimate' | 'custom';
+  isWhitelisted?: boolean;
+  qualityScore?: number;
+  breachCount?: number;
+  deliverability?: string;
+}
+
+export interface PasswordBreachResult {
+  isCompromised: boolean;
+  riskLevel: 'safe' | 'low' | 'medium' | 'critical';
+  compromisedCount?: number;
+  feedback: string;
+}
+
+export interface AdminSecurityAlert {
+  id: string;
+  type: 'temp_mail' | 'breached_password' | 'spam_flood' | 'flagged_content';
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  details: string;
+  userId?: string;
+  userEmail?: string;
+  timestamp: string;
+  status: 'active' | 'investigating' | 'resolved';
+}
+
+export type CloudStorageProviderType = 'supabase' | 's3_r2' | 'b2' | 'gcs' | 'local';
+
+export interface CloudStorageStatus {
+  provider: CloudStorageProviderType;
+  label: string;
+  isConfigured: boolean;
+  usedBytes: number;
+  maxBytes: number;
+  statusText: string;
+}
+
 
 
 
