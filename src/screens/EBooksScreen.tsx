@@ -7,6 +7,7 @@
 import React, { useState } from 'react';
 import {
   Image,
+  Linking,
   ScrollView,
   StyleSheet,
   Text,
@@ -19,7 +20,7 @@ import { Card } from '../components/common/Card';
 import { Badge } from '../components/common/Badge';
 import { Button } from '../components/common/Button';
 import { EBookReaderModal } from '../components/ebooks/EBookReaderModal';
-import { CURATED_EBOOKS } from '../data/ebooksData';
+import { SEED_EBOOKS } from '../data/ebooksData';
 import { SoundManager } from '../services/soundManager';
 import { HapticManager } from '../services/hapticManager';
 import type { EBook, EBookCategory, NavTab } from '../types';
@@ -28,6 +29,7 @@ import {
   BookOpen,
   CheckCircle2,
   Download,
+  ExternalLink,
   FileText,
   Filter,
   Flame,
@@ -46,7 +48,7 @@ export const EBooksScreen: React.FC<EBooksScreenProps> = () => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<EBookCategory | 'all' | 'offline'>('all');
-  const [books, setBooks] = useState<EBook[]>(CURATED_EBOOKS);
+  const [books, setBooks] = useState<EBook[]>(SEED_EBOOKS);
   const [downloadingIds, setDownloadingIds] = useState<Record<string, number>>({});
   const [activeReadingBook, setActiveReadingBook] = useState<EBook | null>(null);
 
@@ -256,17 +258,22 @@ export const EBooksScreen: React.FC<EBooksScreenProps> = () => {
                     {/* Book Metadata Column */}
                     <View style={{ flex: 1, minWidth: 0, gap: 4 }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 6 }}>
-                        <Badge
-                          label={
-                            book.category === 'cyber_security'
-                              ? 'Cyber Defense'
-                              : book.category === 'jee_neet'
-                              ? 'JEE / NEET'
-                              : 'Computer Science'
-                          }
-                          variant={book.category === 'cyber_security' ? 'success' : 'primary'}
-                          size="sm"
-                        />
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                          <Badge
+                            label={
+                              book.category === 'cyber_security'
+                                ? 'Cyber Defense'
+                                : book.category === 'jee_neet'
+                                ? 'JEE / NEET'
+                                : 'Computer Science'
+                            }
+                            variant={book.category === 'cyber_security' ? 'success' : 'primary'}
+                            size="sm"
+                          />
+                          {Boolean(book.b2Url) && (
+                            <Badge label="B2 Cloud" variant="info" size="sm" />
+                          )}
+                        </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
                           <Star size={12} color="#F59E0B" fill="#F59E0B" />
                           <Text style={{ fontSize: 11, fontWeight: '800', color: colors.text }}>
@@ -339,6 +346,19 @@ export const EBooksScreen: React.FC<EBooksScreenProps> = () => {
                         size="sm"
                         icon={<Download size={14} color={colors.text} />}
                         onPress={() => handleDownload(book.id)}
+                      />
+                    )}
+                    {Boolean(book.b2Url) && (
+                      <Button
+                        title="B2 Cloud"
+                        variant="outline"
+                        size="sm"
+                        icon={<ExternalLink size={13} color={colors.primary} />}
+                        onPress={() => {
+                          SoundManager.play('click');
+                          HapticManager.triggerSelection();
+                          Linking.openURL(book.b2Url!).catch(() => {});
+                        }}
                       />
                     )}
                   </View>

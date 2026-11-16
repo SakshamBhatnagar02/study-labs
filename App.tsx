@@ -22,6 +22,8 @@ import { ClubsScreen } from './src/screens/ClubsScreen';
 import { EBooksScreen } from './src/screens/EBooksScreen';
 import { CommunityScreen } from './src/screens/CommunityScreen';
 import { AdminConsoleScreen } from './src/screens/AdminConsoleScreen';
+import { PYQExplorerScreen } from './src/screens/PYQExplorerScreen';
+import { ExamCalendarScreen } from './src/screens/ExamCalendarScreen';
 import { QuickCalculatorModal } from './src/components/common/QuickCalculatorModal';
 import { OnboardingAuthModal } from './src/components/auth/OnboardingAuthModal';
 import { DEFAULT_USER, StorageService } from './src/services/storage';
@@ -81,6 +83,9 @@ function MainApp() {
       ]);
       SoundManager.setCachedSettings(settings);
       setUserProfile(profile);
+      if (!profile.onboardingCompleted) {
+        setOnboardingOpen(true);
+      }
       const streak = computeStreakAndWeek(
         aggregateDailyActivity(logs),
         goalCfg.targetQuestions,
@@ -203,7 +208,28 @@ function MainApp() {
       case 'playground':
         return <GraphPlaygroundScreen />;
       case 'tools':
-        return <AcademicToolsScreen />;
+        return <AcademicToolsScreen onNavigate={setActiveTab} />;
+      case 'pyqs':
+        return (
+          <PYQExplorerScreen
+            onBack={() => setActiveTab('tools')}
+            onLaunchMockTest={(qs, title) =>
+              launchTestSession({
+                title,
+                questionIds: qs.map((q) => q.id),
+                mode: 'exam',
+                nonce: Date.now(),
+              })
+            }
+          />
+        );
+      case 'calendar':
+        return (
+          <ExamCalendarScreen
+            onBack={() => setActiveTab('tools')}
+            onOpenSyllabus={() => setActiveTab('ebooks')}
+          />
+        );
       case 'ai':
         return <AIAssistantScreen prefillPrompt={aiPrefillPrompt} />;
       case 'leaderboard':

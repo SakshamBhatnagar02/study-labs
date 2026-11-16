@@ -40,6 +40,7 @@ import {
   computeStorageQuotaUsage,
   formatByteSize,
 } from '../utils/aiImageLibrary';
+import { AI_MASCOT_SOURCE } from '../utils/avatarHelper';
 import type {
   AIAttachmentKind,
   AIUploadedAttachment,
@@ -1027,10 +1028,14 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({ prefillPro
           <View
             style={[
               styles.avatarIcon,
-              { backgroundColor: mode === 'dark' ? '#431407' : '#FFEDD5' },
+              { backgroundColor: mode === 'dark' ? '#2A1711' : '#FFEDD5', overflow: 'hidden' },
             ]}
           >
-            <Sparkles size={19} color={colors.primary} />
+            <Image
+              source={AI_MASCOT_SOURCE}
+              style={{ width: 28, height: 28 }}
+              resizeMode="contain"
+            />
           </View>
           <View style={{ minWidth: 0, flexShrink: 1 }}>
             <Text style={[styles.headerTitle, { color: colors.text }]} numberOfLines={1}>

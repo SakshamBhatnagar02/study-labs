@@ -820,12 +820,12 @@ export const ClubsScreen: React.FC<ClubsScreenProps> = ({
           >
             <View style={[styles.miniAvatar, { backgroundColor: profile.avatarColor || colors.primary }]}>
               <Text style={{ color: '#FFFFFF', fontSize: 11, fontWeight: '800' }}>
-                {profile.name.charAt(0).toUpperCase()}
+                {(profile.name || 'S').charAt(0).toUpperCase()}
               </Text>
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: 11.5, fontWeight: '700', color: colors.text }} numberOfLines={1}>
-                {profile.name}
+                {profile.name || 'Scholar'}
               </Text>
               <Text style={{ fontSize: 9.5, color: simulatedRole !== 'actual' ? colors.warning : colors.textSecondary }} numberOfLines={1}>
                 {simulatedRole !== 'actual' ? `Viewing as ${simulatedRole}` : profile.ioId}

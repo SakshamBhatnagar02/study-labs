@@ -85,44 +85,7 @@ export const DEFAULT_PLANNER_STATE: PlannerCalendarState = {
     { id: 'ex_cbse_2027', name: 'CBSE Class 12 Boards', targetDate: '2027-02-18', category: 'Board Exam' },
     { id: 'ex_neet_2027', name: 'NEET UG 2027', targetDate: '2027-05-02', category: 'Medical Entrance' },
   ],
-  goals: [
-    {
-      id: 'g1',
-      title: 'Complete 25 Numerical Questions on Rotational Dynamics',
-      subject: 'Physics',
-      dateKey: new Date().toISOString().split('T')[0],
-      dueToday: true,
-      isCompleted: true,
-      durationMinutes: 60,
-    },
-    {
-      id: 'g2',
-      title: 'Revise Aldehydes, Ketones & Carboxylic Acids Mindmap',
-      subject: 'Chemistry',
-      dateKey: new Date().toISOString().split('T')[0],
-      dueToday: true,
-      isCompleted: false,
-      durationMinutes: 45,
-    },
-    {
-      id: 'g3',
-      title: 'Solve 2024 PYQs for Definite Integrals',
-      subject: 'Mathematics',
-      dateKey: new Date().toISOString().split('T')[0],
-      dueToday: true,
-      isCompleted: false,
-      durationMinutes: 75,
-    },
-    {
-      id: 'g4',
-      title: 'Weekly Full-length Coaching Mock Test Review',
-      subject: 'Full Syllabus',
-      dateKey: new Date(Date.now() + 3 * 86400000).toISOString().split('T')[0],
-      dueToday: false,
-      isCompleted: false,
-      durationMinutes: 90,
-    },
-  ],
+  goals: [],
 };
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -158,39 +121,24 @@ export const DEFAULT_DAILY_GOAL: DailyGoalConfig = {
   emailNotifications: false,
 };
 
-export const SEED_NOTEBOOKS: CustomNotebook[] = [
-  {
-    id: 'nb_high_yield',
-    name: 'High-Yield Must Revise',
-    color: '#F97316',
-    questionIds: ['q_p1', 'q_c1', 'q_m2'],
-    createdAt: '2026-11-01T10:00:00.000Z',
-  },
-  {
-    id: 'nb_tricky_concepts',
-    name: 'Tricky Numerical & Mechanisms',
-    color: '#22D3EE',
-    questionIds: ['q_p2', 'q_m1'],
-    createdAt: '2026-11-03T12:00:00.000Z',
-  },
-];
+export const SEED_NOTEBOOKS: CustomNotebook[] = [];
 
-// Default User Profile for immediate local functionality
+// Default User Profile for immediate local functionality with clean test state
 export const DEFAULT_USER: UserProfile = {
   id: 'usr_local_01',
-  ioId: 'STUDY-7734-IO',
-  name: 'Aarav Sharma',
-  email: 'aarav@study.io',
+  ioId: '',
+  name: '',
+  email: '',
   country: 'India',
   board: 'JEE_MAIN',
   classGrade: 'Class 12',
   stream: 'Science (PCM)',
   targetYear: 2027,
-  targetExams: ['JEE Main', 'JEE Advanced', 'BITSAT'],
+  targetExams: [],
   preferredMode: 'Normal',
-  studyStreakDays: 14,
-  totalXp: 3420,
-  level: 8,
+  studyStreakDays: 0,
+  totalXp: 0,
+  level: 1,
   educationLevel: 'Competitive Prep',
   language: 'English',
   avatarColor: '#F97316',
@@ -203,13 +151,13 @@ export const DEFAULT_CUSTOM_SYLLABUS: CustomSyllabusModule[] = [
     id: 'syl_phy',
     subject: 'Physics',
     color: '#3B82F6',
-    completedChapters: 14,
+    completedChapters: 0,
     totalChapters: 28,
-    recentTopic: 'Electromagnetic Induction & Faraday Laws',
+    recentTopic: '',
     status: 'On Track',
     topics: [
-      { id: 'st_p1', title: 'Rotational Dynamics & Pure Rolling', status: 'revised' },
-      { id: 'st_p2', title: 'Gauss Law & Conducting Shells', status: 'in_progress' },
+      { id: 'st_p1', title: 'Rotational Dynamics & Pure Rolling', status: 'not_started' },
+      { id: 'st_p2', title: 'Gauss Law & Conducting Shells', status: 'not_started' },
       { id: 'st_p3', title: 'Wave Optics & YDSE Fringe Shift', status: 'not_started' },
     ],
   },
@@ -217,26 +165,26 @@ export const DEFAULT_CUSTOM_SYLLABUS: CustomSyllabusModule[] = [
     id: 'syl_chem',
     subject: 'Chemistry',
     color: '#10B981',
-    completedChapters: 21,
+    completedChapters: 0,
     totalChapters: 30,
-    recentTopic: 'Coordination Compounds & Crystal Field Theory',
-    status: 'Ahead',
+    recentTopic: '',
+    status: 'On Track',
     topics: [
-      { id: 'st_c1', title: 'GOC Resonance & Aromaticity', status: 'revised' },
-      { id: 'st_c2', title: 'Chemical Bonding & MOT', status: 'revised' },
-      { id: 'st_c3', title: 'SN1 vs SN2 Stereochemistry', status: 'in_progress' },
+      { id: 'st_c1', title: 'GOC Resonance & Aromaticity', status: 'not_started' },
+      { id: 'st_c2', title: 'Chemical Bonding & MOT', status: 'not_started' },
+      { id: 'st_c3', title: 'SN1 vs SN2 Stereochemistry', status: 'not_started' },
     ],
   },
   {
     id: 'syl_math',
     subject: 'Mathematics',
     color: '#F97316',
-    completedChapters: 11,
+    completedChapters: 0,
     totalChapters: 26,
-    recentTopic: 'Differential Equations & Applications',
-    status: 'Needs Acceleration',
+    recentTopic: '',
+    status: 'On Track',
     topics: [
-      { id: 'st_m1', title: 'Definite Integrals (King Property)', status: 'in_progress' },
+      { id: 'st_m1', title: 'Definite Integrals (King Property)', status: 'not_started' },
       { id: 'st_m2', title: 'Vectors & Skew Line Shortest Distance', status: 'not_started' },
     ],
   },
@@ -244,13 +192,13 @@ export const DEFAULT_CUSTOM_SYLLABUS: CustomSyllabusModule[] = [
     id: 'syl_bio',
     subject: 'Biology',
     color: '#8B5CF6',
-    completedChapters: 24,
+    completedChapters: 0,
     totalChapters: 32,
-    recentTopic: 'Biotechnology & Principles and Processes',
+    recentTopic: '',
     status: 'On Track',
     topics: [
-      { id: 'st_b1', title: 'DNA Replication Enzymes & Lac Operon', status: 'revised' },
-      { id: 'st_b2', title: 'Hardy-Weinberg Equilibrium', status: 'in_progress' },
+      { id: 'st_b1', title: 'DNA Replication Enzymes & Lac Operon', status: 'not_started' },
+      { id: 'st_b2', title: 'Hardy-Weinberg Equilibrium', status: 'not_started' },
     ],
   },
 ];
@@ -351,10 +299,9 @@ export const StorageService = {
     try {
       const data = await AsyncStorage.getItem(KEYS.OFFLINE_TESTS);
       if (data) return JSON.parse(data);
-      await AsyncStorage.setItem(KEYS.OFFLINE_TESTS, JSON.stringify(SEED_OFFLINE_TESTS));
-      return SEED_OFFLINE_TESTS;
+      return [];
     } catch {
-      return SEED_OFFLINE_TESTS;
+      return [];
     }
   },
 
@@ -398,7 +345,7 @@ export const StorageService = {
   async getBookmarkedIds(): Promise<string[]> {
     try {
       const data = await AsyncStorage.getItem(KEYS.BOOKMARKS);
-      return data ? JSON.parse(data) : ['q_p1', 'q_c2', 'q_m3'];
+      return data ? JSON.parse(data) : [];
     } catch {
       return [];
     }
@@ -464,11 +411,9 @@ export const StorageService = {
     try {
       const data = await AsyncStorage.getItem(KEYS.ATTEMPT_LOGS);
       if (data) return JSON.parse(data);
-      const seeded = buildSeedAttemptLogs();
-      await AsyncStorage.setItem(KEYS.ATTEMPT_LOGS, JSON.stringify(seeded));
-      return seeded;
+      return [];
     } catch {
-      return buildSeedAttemptLogs();
+      return [];
     }
   },
 
@@ -499,11 +444,7 @@ export const StorageService = {
     try {
       const data = await AsyncStorage.getItem(KEYS.QUESTION_NOTES);
       if (data) return JSON.parse(data);
-      const initial: Record<string, string> = {
-        q_p1: 'Shortcut: For any rolling body with I = kMR², acceleration down incline is (g sin θ)/(1 + k).',
-      };
-      await AsyncStorage.setItem(KEYS.QUESTION_NOTES, JSON.stringify(initial));
-      return initial;
+      return {};
     } catch {
       return {};
     }
@@ -546,10 +487,9 @@ export const StorageService = {
     try {
       const data = await AsyncStorage.getItem(KEYS.NOTEBOOKS);
       if (data) return JSON.parse(data);
-      await AsyncStorage.setItem(KEYS.NOTEBOOKS, JSON.stringify(SEED_NOTEBOOKS));
-      return SEED_NOTEBOOKS;
+      return [];
     } catch {
-      return SEED_NOTEBOOKS;
+      return [];
     }
   },
 
@@ -594,13 +534,7 @@ export const StorageService = {
     try {
       const data = await AsyncStorage.getItem(KEYS.FORMULA_STATUSES);
       if (data) return JSON.parse(data);
-      const initial: Record<string, FormulaStatus> = {
-        f_p1: 'seen',
-        f_p3: 'need_revision',
-        f_c1: 'seen',
-      };
-      await AsyncStorage.setItem(KEYS.FORMULA_STATUSES, JSON.stringify(initial));
-      return initial;
+      return {};
     } catch {
       return {};
     }
@@ -976,6 +910,21 @@ export const StorageService = {
     } catch {
       // Non-fatal
     }
+  },
+
+  async clearAllData(): Promise<void> {
+    try {
+      const allKeys = Object.values(KEYS);
+      await AsyncStorage.multiRemove(allKeys);
+    } catch {
+      // Non-fatal
+    }
+  },
+
+  async resetToCleanStart(): Promise<UserProfile> {
+    await this.clearAllData();
+    await this.saveUserProfile(DEFAULT_USER);
+    return DEFAULT_USER;
   },
 };
 

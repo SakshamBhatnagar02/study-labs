@@ -154,6 +154,9 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
     setOtpSent(false);
     setUserEnteredOtp('');
     setOtpVerified(false);
+    if (!initialProfile.onboardingCompleted || initialProfile.authProvider === 'guest') {
+      setStep('account');
+    }
   }, [visible, initialProfile]);
 
   // Check Gravatar and Email Reputation when email changes
@@ -331,10 +334,15 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
     }
 
     const parsedYear = parseInt(targetYear, 10) || 2027;
+    const resolvedIoId =
+      initialProfile.ioId && initialProfile.ioId.trim()
+        ? initialProfile.ioId
+        : `STUDY-${Math.floor(1000 + Math.random() * 9000)}-IO`;
     const updated: UserProfile = {
       ...initialProfile,
-      name: name.trim() || initialProfile.name,
-      email: email.trim() || initialProfile.email,
+      ioId: resolvedIoId,
+      name: name.trim() || initialProfile.name || 'Scholar',
+      email: email.trim() || initialProfile.email || '',
       country,
       board,
       educationLevel: eduLevel,

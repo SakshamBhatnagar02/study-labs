@@ -17,6 +17,7 @@ import { Button } from '../components/common/Button';
 import { DailyGoalModal } from '../components/common/DailyGoalModal';
 import { NavTab } from '../components/navigation/BottomNav';
 import { DEFAULT_DAILY_GOAL, DEFAULT_USER, StorageService } from '../services/storage';
+import { SupabaseService } from '../services/supabase';
 import { SoundManager } from '../services/soundManager';
 import { HapticManager } from '../services/hapticManager';
 import { BOARD_DISPLAY_NAMES } from '../data/curriculumData';
@@ -200,6 +201,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
 
   const handleLogout = async () => {
     try {
+      await SupabaseService.signOut();
       const resetProfile: UserProfile = {
         ...DEFAULT_USER,
         id: `usr_guest_${Date.now().toString(36)}`,
@@ -221,8 +223,10 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
       onProfileUpdated?.(resetProfile);
       SoundManager.play('notify');
       HapticManager.triggerSelection();
+      onOpenOnboarding?.();
     } catch {
       setShowLogoutConfirm(false);
+      onOpenOnboarding?.();
     }
   };
 
@@ -286,12 +290,12 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                   );
                 }
                 return (
-                  <Text style={styles.avatarLetter}>{profile.name.charAt(0).toUpperCase()}</Text>
+                  <Text style={styles.avatarLetter}>{(profile.name || 'S').charAt(0).toUpperCase()}</Text>
                 );
               })()}
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={[styles.profileName, { color: colors.text }]}>{profile.name}</Text>
+              <Text style={[styles.profileName, { color: colors.text }]}>{profile.name || 'New Scholar'}</Text>
               <Text style={[styles.profileMeta, { color: colors.textSecondary }]}>
                 {profile.classGrade} · {profile.stream} · {boardName} ({profile.country || 'India'})
               </Text>
@@ -694,7 +698,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                   Log Out of Study Labs?
                 </Text>
                 <Text style={{ fontSize: 11.5, color: colors.textSecondary }}>
-                  Current user: {profile.name} ({profile.ioId})
+                  Current user: {profile.name || 'Guest'} ({profile.ioId || 'Local'})
                 </Text>
               </View>
             </View>

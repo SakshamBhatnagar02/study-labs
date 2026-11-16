@@ -5,6 +5,7 @@
  */
 
 import type { EBook } from '../types';
+import b2Manifest from './b2MaterialsManifest';
 
 export const CURATED_EBOOKS: EBook[] = [
   {
@@ -454,4 +455,15 @@ Traditional perimeter defense assumed internal network traffic was trustworthy. 
   },
 ];
 
-export const SEED_EBOOKS = CURATED_EBOOKS;
+export const SEED_EBOOKS: EBook[] = CURATED_EBOOKS.map((book) => {
+  const manifestFiles = (b2Manifest as any).files || {};
+  if (book.localPdfFileName && manifestFiles[book.localPdfFileName]) {
+    const fileMeta = manifestFiles[book.localPdfFileName];
+    return {
+      ...book,
+      b2Url: fileMeta.b2Url,
+      b2FileId: fileMeta.fileId,
+    };
+  }
+  return book;
+});

@@ -35,6 +35,8 @@ import { AppIcon, IconName } from '../components/common/AppIcon';
 import { EmptyResourceCard } from '../components/common/StateFeedbackCard';
 import {
   ArrowLeftRight,
+  BookOpen,
+  Calendar,
   ChevronLeft,
   ChevronRight,
   Droplets,
@@ -46,8 +48,10 @@ import {
   Search,
   Sparkles,
   TableProperties,
+  Trophy,
   X,
 } from 'lucide-react-native';
+import type { NavTab } from '../components/navigation/BottomNav';
 
 type ToolSection = 'calc' | 'periodic' | 'converter' | 'constants' | 'reactivity' | 'chemtables';
 type ConvCategory =
@@ -139,7 +143,11 @@ function formatSmartNumber(num: number): string {
   return parseFloat(num.toFixed(6)).toString();
 }
 
-export const AcademicToolsScreen: React.FC = () => {
+interface AcademicToolsScreenProps {
+  onNavigate?: (tab: NavTab) => void;
+}
+
+export const AcademicToolsScreen: React.FC<AcademicToolsScreenProps> = ({ onNavigate }) => {
   const { colors, mode } = useTheme();
   const { width: viewportWidth } = useWindowDimensions();
   const [activeSection, setActiveSection] = useState<ToolSection>('calc');
@@ -409,6 +417,64 @@ export const AcademicToolsScreen: React.FC = () => {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
+        {/* Academic High-Yield Tools Hub */}
+        {onNavigate && (
+          <View style={{ flexDirection: 'row', gap: 10, marginBottom: 8 }}>
+            <TouchableOpacity
+              onPress={() => onNavigate('pyqs')}
+              style={{
+                flex: 1,
+                padding: 12,
+                borderRadius: 14,
+                backgroundColor: mode === 'dark' ? '#1E1B4B' : '#EEF2FF',
+                borderWidth: 1.5,
+                borderColor: '#6366F1',
+                gap: 4,
+              }}
+              activeOpacity={0.8}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: '#6366F1', justifyContent: 'center', alignItems: 'center' }}>
+                  <Trophy size={14} color="#FFFFFF" />
+                </View>
+                <ChevronRight size={14} color="#6366F1" />
+              </View>
+              <Text style={{ fontSize: 13, fontWeight: '800', color: colors.text, marginTop: 4 }}>
+                JEE PYQs Vault
+              </Text>
+              <Text style={{ fontSize: 11, color: colors.textSecondary }}>
+                375 Official Shifts
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => onNavigate('calendar')}
+              style={{
+                flex: 1,
+                padding: 12,
+                borderRadius: 14,
+                backgroundColor: mode === 'dark' ? '#064E3B' : '#ECFDF5',
+                borderWidth: 1.5,
+                borderColor: '#10B981',
+                gap: 4,
+              }}
+              activeOpacity={0.8}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: '#10B981', justifyContent: 'center', alignItems: 'center' }}>
+                  <Calendar size={14} color="#FFFFFF" />
+                </View>
+                <ChevronRight size={14} color="#10B981" />
+              </View>
+              <Text style={{ fontSize: 13, fontWeight: '800', color: colors.text, marginTop: 4 }}>
+                Exam Calendar
+              </Text>
+              <Text style={{ fontSize: 11, color: colors.textSecondary }}>
+                NTA & IIT Timelines
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
         {/* SECTION 1: SCIENTIFIC CALCULATOR (with Deg/Rad, 2nd trig, Factorial, History Tape) */}
         {activeSection === 'calc' && (
           <View style={styles.calcContainer}>

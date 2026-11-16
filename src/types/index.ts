@@ -485,7 +485,15 @@ export interface WeekStreakDay {
   isFuture: boolean;
 }
 
-export type LeagueTierId = 'starter' | 'bronze' | 'silver' | 'gold' | 'platinum' | 'diamond';
+export type LeagueTierId =
+  | 'starter'
+  | 'bronze'
+  | 'silver'
+  | 'gold'
+  | 'platinum'
+  | 'diamond'
+  | 'master'
+  | 'grandmaster';
 
 export interface LeaderboardEntry {
   id: string;
@@ -499,6 +507,7 @@ export interface LeaderboardEntry {
   streakDays: number;
   rank?: number;
   isCurrentUser?: boolean;
+  zone?: 'promotion' | 'retention' | 'demotion';
 }
 
 export interface CustomNotebook {
@@ -911,6 +920,8 @@ export interface EBook {
   tags: string[];
   coverPreset?: 'default' | 'cyber' | 'jee' | 'neet' | 'science';
   localPdfFileName?: string;
+  b2Url?: string;
+  b2FileId?: string;
   chapters: EBookChapter[];
   isDownloaded?: boolean;
 }

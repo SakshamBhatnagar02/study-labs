@@ -967,6 +967,30 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           <MessageSquare color={colors.success} size={22} />
           <Text style={[styles.toolTitle, { color: colors.text }]}>Doubts</Text>
         </Pressable>
+
+        <Pressable
+          focusable={false}
+          style={({ pressed }) => [
+            styles.toolChip,
+            { backgroundColor: colors.card, borderColor: '#6366F1', borderWidth: 1.5, opacity: pressed ? 0.78 : 1 },
+          ]}
+          onPress={() => onNavigate('pyqs')}
+        >
+          <Trophy color="#6366F1" size={22} />
+          <Text style={[styles.toolTitle, { color: colors.text }]}>PYQ Vault</Text>
+        </Pressable>
+
+        <Pressable
+          focusable={false}
+          style={({ pressed }) => [
+            styles.toolChip,
+            { backgroundColor: colors.card, borderColor: '#10B981', borderWidth: 1.5, opacity: pressed ? 0.78 : 1 },
+          ]}
+          onPress={() => onNavigate('calendar')}
+        >
+          <Calendar color="#10B981" size={22} />
+          <Text style={[styles.toolTitle, { color: colors.text }]}>Exams</Text>
+        </Pressable>
       </View>
     </ScrollView>
   );

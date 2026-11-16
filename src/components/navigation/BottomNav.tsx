@@ -27,7 +27,9 @@ export type NavTab =
   | 'profile' 
   | 'ebooks' 
   | 'community' 
-  | 'admin';
+  | 'admin'
+  | 'pyqs'
+  | 'calendar';
 
 interface BottomNavProps {
   activeTab: NavTab;

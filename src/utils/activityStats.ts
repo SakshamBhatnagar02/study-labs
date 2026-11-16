@@ -20,12 +20,12 @@ export const LEAGUE_TIERS: {
   color: string;
   accentBg: string;
 }[] = [
-  { id: 'starter', name: 'Starter Circuit', minXp: 0, color: '#94A3B8', accentBg: 'rgba(148,163,184,0.16)' },
-  { id: 'bronze', name: 'Bronze Spark', minXp: 300, color: '#FB923C', accentBg: 'rgba(251,146,60,0.18)' },
-  { id: 'silver', name: 'Silver Pulse', minXp: 700, color: '#38BDF8', accentBg: 'rgba(56,189,248,0.18)' },
-  { id: 'gold', name: 'Gold Vector', minXp: 1200, color: '#FACC15', accentBg: 'rgba(250,204,21,0.18)' },
-  { id: 'platinum', name: 'Quantum Elite', minXp: 2000, color: '#A855F7', accentBg: 'rgba(168,85,247,0.18)' },
-  { id: 'diamond', name: 'Apex Scholar', minXp: 3000, color: '#22D3EE', accentBg: 'rgba(34,211,238,0.18)' },
+  { id: 'starter', name: 'Beginner League', minXp: 0, color: '#94A3B8', accentBg: 'rgba(148,163,184,0.16)' },
+  { id: 'bronze', name: 'Bronze League', minXp: 300, color: '#FB923C', accentBg: 'rgba(251,146,60,0.18)' },
+  { id: 'silver', name: 'Silver League', minXp: 700, color: '#38BDF8', accentBg: 'rgba(56,189,248,0.18)' },
+  { id: 'gold', name: 'Gold League', minXp: 1200, color: '#FACC15', accentBg: 'rgba(250,204,21,0.18)' },
+  { id: 'platinum', name: 'Platinum League', minXp: 2000, color: '#A855F7', accentBg: 'rgba(168,85,247,0.18)' },
+  { id: 'diamond', name: 'Diamond League', minXp: 3000, color: '#22D3EE', accentBg: 'rgba(34,211,238,0.18)' },
 ];
 
 export function formatLocalDateKey(date: Date): string {
@@ -425,6 +425,7 @@ export function build7DayLeaderboard(
   nextTier: (typeof LEAGUE_TIERS)[number] | null;
   xpToNextTier: number;
   daysUntilWeeklyReset: number;
+  cycleCountdown?: string;
 } {
   const todayKey = formatLocalDateKey(referenceDate);
   const weekCutoffKey = shiftDateKey(todayKey, -6); // Rolling 7 days including today
@@ -448,7 +449,7 @@ export function build7DayLeaderboard(
 
   const userEntryBase: LeaderboardEntry = {
     id: profile.id || 'usr_local_01',
-    name: `${profile.name} (You)`,
+    name: profile.name && profile.name.trim() ? `${profile.name} (You)` : 'You',
     ioId: profile.ioId,
     weeklyXp,
     todayXp,
@@ -467,23 +468,51 @@ export function build7DayLeaderboard(
     return a.isCurrentUser ? -1 : 1;
   });
 
-  const entries = combined.map((item, idx) => ({
-    ...item,
-    rank: idx + 1,
-  }));
+  const total = combined.length;
+  const promoThreshold = Math.max(3, Math.ceil(total * 0.25));
+  const demoThreshold = total - Math.max(2, Math.floor(total * 0.2));
 
-  const currentUserEntry = entries.find((e) => e.isCurrentUser) || { ...userEntryBase, rank: entries.length };
+  const entries = combined.map((item, idx) => {
+    const rank = idx + 1;
+    let zone: 'promotion' | 'retention' | 'demotion' = 'retention';
+    if (rank <= promoThreshold) {
+      zone = 'promotion';
+    } else if (rank > demoThreshold && total >= 6) {
+      zone = 'demotion';
+    }
+    return {
+      ...item,
+      rank,
+      zone,
+    };
+  });
+
+  const currentUserEntry = entries.find((e) => e.isCurrentUser) || {
+    ...userEntryBase,
+    rank: entries.length,
+    zone: 'retention' as const,
+  };
   const tierInfo = resolveLeagueTier(weeklyXp);
 
-  // Days until Sunday midnight weekly league summary reset
+  // Sunday 23:59:59 end-of-week cutoff (Weekly League Cycle like MARKS app)
   const dayMonFirst = (referenceDate.getDay() + 6) % 7;
   const daysUntilWeeklyReset = Math.max(1, 7 - dayMonFirst);
+  const daysUntilSunday = (7 - referenceDate.getDay()) % 7;
+  const targetEnd = new Date(referenceDate);
+  targetEnd.setDate(referenceDate.getDate() + daysUntilSunday);
+  targetEnd.setHours(23, 59, 59, 999);
+  const diffMs = Math.max(0, targetEnd.getTime() - referenceDate.getTime());
+  const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffHrs / 24);
+  const remHours = diffHrs % 24;
+  const cycleCountdown = diffDays > 0 ? `${diffDays}D ${remHours}H` : `${remHours}H LEFT`;
 
   return {
     entries,
     currentUserEntry,
     ...tierInfo,
     daysUntilWeeklyReset,
+    cycleCountdown,
   };
 }
 

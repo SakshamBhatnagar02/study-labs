@@ -34,6 +34,7 @@ import {
   Bell,
   BookOpen,
   CheckCircle2,
+  ChevronRight,
   Clock,
   Crown,
   Flame,
@@ -41,10 +42,13 @@ import {
   Shield,
   Sparkles,
   Target,
+  TrendingDown,
+  TrendingUp,
   Trophy,
   Users,
   Zap,
 } from 'lucide-react-native';
+import { WeeklyLeagueCycleModal } from '../components/leaderboard/WeeklyLeagueCycleModal';
 
 interface LeaderboardScreenProps {
   onStartPractice?: () => void;
@@ -67,6 +71,7 @@ export const LeaderboardScreen: React.FC<LeaderboardScreenProps> = ({ onStartPra
   const [claimedIds, setClaimedIds] = useState<string[]>([]);
   const [clubsJoinedCount, setClubsJoinedCount] = useState<number>(1);
   const [reminderModalOpen, setReminderModalOpen] = useState(false);
+  const [weeklyCycleModalOpen, setWeeklyCycleModalOpen] = useState(false);
 
   const todayKey = formatLocalDateKey(new Date());
 
@@ -96,6 +101,7 @@ export const LeaderboardScreen: React.FC<LeaderboardScreenProps> = ({ onStartPra
     nextTier,
     xpToNextTier,
     daysUntilWeeklyReset,
+    cycleCountdown,
   } = build7DayLeaderboard(logs, profile, 'week', new Date());
 
   // Multi-period standings data drives leaderboard rows + pinned footer
@@ -167,7 +173,7 @@ export const LeaderboardScreen: React.FC<LeaderboardScreenProps> = ({ onStartPra
                   {currentTier.name.toUpperCase()}
                 </Text>
                 <Badge
-                  label={`RESETS IN ${daysUntilWeeklyReset}D`}
+                  label={cycleCountdown ? `RESETS IN ${cycleCountdown}` : `RESETS IN ${daysUntilWeeklyReset}D`}
                   variant="primary"
                   size="sm"
                 />
@@ -219,6 +225,40 @@ export const LeaderboardScreen: React.FC<LeaderboardScreenProps> = ({ onStartPra
                 : 'Peak League unlocked! Maintain your 7-day streak to defend Rank #1.'}
             </Text>
           </View>
+
+          {/* Weekly League Cycle Report Trigger (MARKS App Style) */}
+          <TouchableOpacity
+            onPress={() => {
+              HapticManager.triggerSelection();
+              setWeeklyCycleModalOpen(true);
+            }}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingHorizontal: 14,
+              paddingVertical: 10,
+              marginTop: 12,
+              borderRadius: 12,
+              backgroundColor: mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)',
+              borderWidth: 1,
+              borderColor: mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)',
+            }}
+            activeOpacity={0.8}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <Trophy size={16} color={currentTier.color} />
+              <View>
+                <Text style={{ fontSize: 12.5, fontWeight: '800', color: colors.text }}>
+                  Weekly League Cycle Report
+                </Text>
+                <Text style={{ fontSize: 10.5, color: colors.textSecondary }}>
+                  View tier transitions, score recap & promotion status
+                </Text>
+              </View>
+            </View>
+            <ChevronRight size={16} color={colors.textSecondary} />
+          </TouchableOpacity>
         </Card>
 
         {/* Score Reminder & Quick Boost Banner */}
@@ -355,6 +395,42 @@ export const LeaderboardScreen: React.FC<LeaderboardScreenProps> = ({ onStartPra
                         {entry.name}
                       </Text>
                       {isMe && <Badge label="YOU" variant="primary" size="sm" />}
+                      {entry.zone === 'promotion' && (
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            gap: 3,
+                            backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                            paddingHorizontal: 6,
+                            paddingVertical: 2,
+                            borderRadius: 6,
+                          }}
+                        >
+                          <TrendingUp size={10} color="#10B981" />
+                          <Text style={{ fontSize: 9.5, fontWeight: '800', color: '#10B981' }}>
+                            PROMOTION
+                          </Text>
+                        </View>
+                      )}
+                      {entry.zone === 'demotion' && (
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            gap: 3,
+                            backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                            paddingHorizontal: 6,
+                            paddingVertical: 2,
+                            borderRadius: 6,
+                          }}
+                        >
+                          <TrendingDown size={10} color="#EF4444" />
+                          <Text style={{ fontSize: 9.5, fontWeight: '800', color: '#EF4444' }}>
+                            DEMOTION
+                          </Text>
+                        </View>
+                      )}
                     </View>
                     <View style={styles.metaRow}>
                       <Text
@@ -555,6 +631,14 @@ export const LeaderboardScreen: React.FC<LeaderboardScreenProps> = ({ onStartPra
         visible={reminderModalOpen}
         onClose={() => setReminderModalOpen(false)}
         onSaved={(cfg) => setGoalConfig(cfg)}
+      />
+
+      <WeeklyLeagueCycleModal
+        visible={weeklyCycleModalOpen}
+        onClose={() => setWeeklyCycleModalOpen(false)}
+        currentTierId={currentTier.id}
+        previousTierId={currentTier.id}
+        lastWeekScore={leagueUserEntry.weeklyXp}
       />
     </View>
   );

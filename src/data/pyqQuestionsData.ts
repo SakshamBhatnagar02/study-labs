@@ -1,0 +1,15435 @@
+import type { Question } from '../types';
+
+export interface PYQPaperMeta {
+  shiftCode: string;
+  examName: string;
+  year: number;
+  shiftLabel: string;
+  totalQuestions: number;
+  subjects: {
+    math: number;
+    physics: number;
+    chemistry: number;
+  };
+}
+
+export const PYQ_PAPERS_CATALOG: PYQPaperMeta[] = [
+  {
+    shiftCode: '2025_jan22_s1',
+    examName: 'JEE Main 2025 Jan 22 Shift 1',
+    year: 2025,
+    shiftLabel: '22 Jan Shift 1',
+    totalQuestions: 75,
+    subjects: { math: 25, physics: 25, chemistry: 25 },
+  },
+  {
+    shiftCode: '2025_jan22_s2',
+    examName: 'JEE Main 2025 Jan 22 Shift 2',
+    year: 2025,
+    shiftLabel: '22 Jan Shift 2',
+    totalQuestions: 75,
+    subjects: { math: 25, physics: 25, chemistry: 25 },
+  },
+  {
+    shiftCode: '2026_apr02_s1',
+    examName: 'JEE Main 2026 Apr 02 Shift 1',
+    year: 2026,
+    shiftLabel: '02 Apr Shift 1',
+    totalQuestions: 75,
+    subjects: { math: 25, physics: 25, chemistry: 25 },
+  },
+  {
+    shiftCode: '2026_apr02_s2',
+    examName: 'JEE Main 2026 Apr 02 Shift 2',
+    year: 2026,
+    shiftLabel: '02 Apr Shift 2',
+    totalQuestions: 75,
+    subjects: { math: 25, physics: 25, chemistry: 25 },
+  },
+  {
+    shiftCode: '2026_apr04_s1',
+    examName: 'JEE Main 2026 Apr 04 Shift 1',
+    year: 2026,
+    shiftLabel: '04 Apr Shift 1',
+    totalQuestions: 75,
+    subjects: { math: 25, physics: 25, chemistry: 25 },
+  },
+];
+
+export const PYQ_JEE_QUESTIONS: Question[] = [
+  {
+    "id": "pyq_2025_jan22_s1_q1",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $a_1, a_2, a_3, \\dots$ be a G.P. of increasing positive terms. If $a_1 a_5 = 28$ and $a_2 + a_4 = 29$, then $a_6$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q1. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "628",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "812",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "526",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "784",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q2",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $x = x(y)$ be the solution of the differential equation $y^2 dx + (x - \\frac{1}{y}) dy = 0$. If $x(1) = 1$, then $x (\\frac{1}{e})$ is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q2. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{1}{e^3} + e$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$3 + e$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$3 - e$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{3}{e^3} + e$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q3",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Two balls are selected at random one by one without replacement from a bag containing 4 white and 6 black balls. If the probability that the first selected ball is black, given that the second selected ball is also black, is $\\frac{m}{n}$, where gcd(m, n) = 1, then m + n is equal to :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q3. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "4",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "14",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "13",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "11",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q4",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "The product of all solutions of the equation $e^{5(\\log_e x)^2+3} = x^8, x > 0$, is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q4. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$e^{8/5}$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$e^{6/5}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$e^2$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$e\u200b$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q5",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let the triangle PQR be the image of the triangle with vertices (1, 3), (3, 1) and (2, 4) in the line $x + 2y = 2$. If the centroid of $\\triangle PQR$ is the point $(\\alpha, \\beta)$, then $15(\\alpha - \\beta)$ is equal to :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q5. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "19",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "24",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "32",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "22",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q6",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let for $f(x) = 7 \\tan^8 x + 7 \\tan^6 x - 3 \\tan^4 x - 3 \\tan^2 x$, $I_1 = \\int_0^{\\pi/4} f(x)dx$ and $I_2 = \\int_0^{\\pi/4} x f(x)dx$. Then $7I_1 + 12I_2$ is equal to :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q6. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "2",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "1",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$2\\pi$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\pi$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q7",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let the parabola $y = x^2 + px - 3$, meet the coordinate axes at the points P, Q and R . If the circle C with centre at $(-1,-1)$ passes through the points P, Q and R, then the area of $\\triangle PQR$ is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q7. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "7",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "4",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "6",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "5",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q8",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $L_1 : \\frac{x+1}{2} = \\frac{y-2}{3} = \\frac{z+3}{4}$ and $L_2 : \\frac{x-2}{3} = \\frac{y+4}{4} = \\frac{z-5}{5}$ be two lines. Then which of the following points lies on the line of the shortest distance between $L_1$ and $L_2$?",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q8. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$(\\frac{1}{3}, -3, \\frac{2}{3})$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$(-\\frac{5}{3}, -7, 1)$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$(2, 3, \\frac{4}{5})$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$(\\frac{5}{3}, -1, \\frac{1}{3})$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q9",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let f(x) be a real differentiable function such that f(0) = 1 and $f(x + y) = f(x)f'(y) + f'(x)f(y)$ for all $x, y \\in R$. Then $\\sum_{n=1}^{100} \\log_e f(n)$ is equal to :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q9. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "2525",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "5220",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "2384",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "2406",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q10",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "From all the English alphabets, five letters are chosen and are arranged in alphabetical order. The total number of ways, in which the middle letter is ' M', is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q10. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "5148",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "6084",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "4356",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "14950",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q11",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Using the principal values of the inverse trigonometric functions, the sum of the maximum and the minimum values of $16 ((\\sec^{-1}x)^2 + (\\csc^{-1}x)^2)$ is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q11. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$24\\pi^2$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$22\\pi^2$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$31\\pi^2$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$18\\pi^2$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q12",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $f : R \\rightarrow R$ be a twice differentiable function such that $f(x + y) = f(x)f(y)$ for all $x, y \\in R$. If $f'(0) = 4a$ and $f\u200b$ satisfies $f''(x) - 3af'(x) - f(x) = 0, a > 0$, then the area of the region $R = \\{(x, y) | 0 \\leq y \\leq f(ax), 0 \\leq x \\leq 2\\}$ is:",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q12. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$e^2 - 1$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$e^8 + 1$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$e^4 + 1$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$e^4 - 1$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q13",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "The area of the region, inside the circle $(x - 2\\sqrt{3})^2 + y^2 = 12$ and outside the parabola $y^2 = 2\\sqrt{3}x$ is:",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q13. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$3\\pi + 8$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$6\\pi - 16$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$3\\pi - 8$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$6\\pi - 8$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q14",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let the foci of a hyperbola be (1, 14) and (1, -12). If it passes through the point (1, 6), then the length of its latus-rectum is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q14. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "25/6",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "25/3",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "144/7",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "288/7",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q15",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "If $\\sum_{r=1}^{n} T_r = \\frac{(2n-1)(2n+1)(2n+3)(2n+5)}{6}$, then $\\lim_{n\\to\\infty} \\sum_{r=1}^{n} \\frac{1}{T_r}$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q15. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "0",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "1/5",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "1",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "1/4",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q16",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "A coin is tossed three times. Let X denote the number of times a tail follows a head. If $\\mu$ and $\\sigma^2$ denote the mean and variance of X, then the value of $64 (\\mu + \\sigma^2)$ is:",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q16. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "51",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "64",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "32",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "48",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q17",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "The number of non-empty equivalence relations on the set {1, 2, 3} is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q17. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "6",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "5",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "7",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "4",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q18",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "A circle C of radius 2 lies in the second quadrant and touches both the coordinate axes. Let r be the radius of a circle that has centre at the point (2,5) and intersects the circle C at exactly two points. If the set of all possible values of r is the interval $(\\alpha, \\beta)$, then $3\\beta - 2\\alpha$ is equal to :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q18. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "10",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "15",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "12",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "14",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q19",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $A = \\{1, 2, 3, \\dots, 10\\}$ and $B = \\{ \\frac{m}{n} : m, n \\in A, m < n \\text{ and gcd}(m, n) = 1\\}$. Then n(B) is equal to :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q19. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "36",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "31",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "37",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "29",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q20",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $z_1, z_2$ and $z_3$ be three complex numbers on the circle $|z| = 1$ with $\\arg (z_1) = \\frac{\\pi}{12}$, $\\arg (z_2) = 0$ and $\\arg (z_3) = \\frac{7\\pi}{4}$. If $|z_1z_2 + z_2z_3 + z_3z_1|^2 = \\alpha + \\beta\\sqrt{2}$, $\\alpha, \\beta \\in Z$, then the value of $\\alpha^2 + \\beta^2$ is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q20. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "24",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "29",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "41",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "31",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q21",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let A be a square matrix of order 3 such that det(A) = -2 and det(3adj(-6 adj(3A))) = $2^{m+n} \\cdot 3^{mn}$, m > n. Then 4 m + 2n is equal to ____",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q21. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "30",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "32",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "34",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "36",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q22",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "If $\\sum_{r=0}^{50} \\frac{^{50}C_r}{r+2} = \\frac{m}{n}$, gcd(m, n) = 1, then m - n is equal to ____",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q22. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "2030",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "2035",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "2040",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "2045",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q23",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $\\vec{c}$ be the projection vector of $\\vec{b} = \\lambda \\hat{i} + 4\\hat{k}$, $\\lambda > 0$, on the vector $\\vec{a} = \\hat{i} + 2\\hat{j} + 2\\hat{k}$. If $|\\vec{a} + \\vec{c}| = 7$, then the area of the parallelogram formed by the vectors $\\vec{b}$ and $\\vec{c}$ is ____",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q23. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "12",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "14",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "16",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "18",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q24",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let the function, $f(x) = \\begin{cases} -3ax^2-2, & x<1 \\\\ a^2 + bx, & x \\ge 1 \\end{cases}$ be differentiable for all $x \\in R$, where $a > 1, b \\in R$. If the area of the region enclosed by $y = f(x)$ and the line $y = -20$ is $\\alpha + \\beta\\sqrt{3}$, $\\alpha, \\beta \\in Z$, then the value of $\\alpha + \\beta$ is ____",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q24. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "32",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "33",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "34",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "35",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q25",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $L_1 : \\frac{x-1}{3} = \\frac{y-1}{2} = \\frac{z+1}{1}$ and $L_2 : \\frac{x-1}{3} = \\frac{y}{6} = \\frac{z+4}{\\alpha}$, $\\alpha \\in R$, be two lines, which intersect at the point B. If P is the foot of perpendicular from the point A(1, 1, -1) on $L_2$, then the value of $26\\alpha(PB)^2$ is ____",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q25. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "210",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "216",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "220",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "224",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q26",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "An electron is made to enter symmetrically between two parallel and equally but oppositely charged metal plates, each of 10 cm length. The electron emerges out of the electric field region with a horizontal component of velocity $10^6$ m/s. If the magnitude of the electric field between the plates is 9.1 V/cm, then the vertical component of velocity of electron is (mass of electron $= 9.1 \\times 10^{-31}$ kg and charge of electron $= 1.6 \\times 10^{-19}$ C)",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q26. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "0",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$1 \\times 10^6$ m/s",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$1.6 \\times 10^6$ m/s",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$1.6 \\times 10^4$ m/s",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q27",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements : Statement-I : The equivalent emf of two nonideal batteries connected in parallel is smaller than either of the two emfs. Statement-II : The equivalent internal resistance of two nonideal batteries connected in parallel is smaller than the internal resistance of either of the two batteries. In the light of the above statements, choose the correct answer from the options given below.",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q27. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both Statement-I and Statement-II are false",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Statement-I is false but Statement-II is true",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "Both Statement-I and Statement-II are true",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Statement-I is true but Statement-II is false",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q28",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A uniform circular disc of radius 'R' and mass 'M' is rotating about an axis perpendicular to its plane and passing through its centre. A small circular part of radius R/2 is removed from the original disc as shown in the figure. Find the moment of inertia of the remaining part of the original disc about the axis as given above. (Figure shows a large disc of radius R with a smaller disc of radius R/2 removed, the smaller disc's center is R/2 from the center of the larger disc, along a radius).",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q28. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{1}{2} MR^2$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{3}{8} MR^2$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{13}{32} MR^2$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{15}{32} MR^2$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q29",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "An amount of ice of mass $10^{-3}$ kg and temperature -10\u00b0C is transformed to vapour of temperature 110\u00b0C by applying heat. The total amount of work required for this conversion is, (Take, specific heat of ice = $2100 Jkg^{-1} K^{-1}$, specific heat of water = $4180 Jkg^{-1} K^{-1}$, specific heat of steam = $1920 Jkg^{-1} K^{-1}$, Latent heat of ice = $3.35 \\times 10^5 Jkg^{-1}$ and Latent heat of steam = $2.25 \\times 10^6 Jkg^{-1}$)",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q29. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "3043 J",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "3024 J",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "3003 J",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "3022 J",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q30",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "An electron in the ground state of the hydrogen atom has the orbital radius of $5.3 \\times 10^{-11}$ m while that for the electron in third excited state is $8.48 \\times 10^{-10}$ m. The ratio of the de Broglie wavelengths of electron in the excited state to that in the ground state is",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q30. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "3",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "16",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "9",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "4",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q31",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A bob of mass m is suspended at a point O by a light string of length l and left to perform vertical motion (circular) as shown in figure. Initially, by applying horizontal velocity $v_0$ at the point 'A', the string becomes slack when, the bob reaches at the point 'D'. The ratio of the kinetic energy of the bob at the points B and C is (Figure shows points A, B, C, D on a vertical circle. A is the lowest point. B and C are at 60 degrees from vertical below the center O. D is the highest point)",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q31. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "1",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "2",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "4",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "3",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q32",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Given is a thin convex lens of glass (refractive index $\\mu$) and each side having radius of curvature R. One side is polished for complete reflection. At what distance from the lens, an object be placed on the optic axis so that the image gets formed on the object itself?",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q32. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "R/$\\mu$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "R/(2$\\mu$ - 3)",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\mu R$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "R/(2$\\mu$ - 1)",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q33",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Which of the following circuits represents a forward biased diode? (Options refer to circuit diagrams A, B, C, D, E which are not shown)",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q33. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "(A) and (D) only",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "(B), (D) and (E) only",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "(C) and (E) only",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "(B), (C) and (E) only",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q34",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Sliding contact of a potentiometer is in the middle of the potentiometer wire having resistance $R_p = 1\\Omega$ as shown in the figure. An external resistance of $R_e = 2\\Omega$ is connected via the sliding contact. The electric current in the circuit is : (Figure shows a 0.9V source connected across a 1 Ohm potentiometer wire Rp. A 2 Ohm resistor Re is connected from one end of Rp to the sliding contact at the midpoint).",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q34. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "0.9 A",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "1.35 A",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "0.3 A",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "1.0 A",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q35",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A small point of mass m is placed at a distance 2R from the centre 'O' of a big uniform solid sphere of mass M and radius R. The gravitational force on 'm' due to M is $F_1$. A spherical part of radius R/3 is removed from the big sphere as shown in the figure and the gravitational force on m due to remaining part of M is found to be $F_2$. The value of ratio $F_1 : F_2$ is (Figure shows mass m at point P, distance 2R from center O of sphere M. A cavity of radius R/3 centered at R/2 from O along OP is removed).",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q35. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "12 : 11",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "11 : 10",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "12 : 9",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "16 : 9",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q36",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A closed organ and an open organ tube are filled by two different gases having same bulk modulus but different densities $\\rho_1$ and $\\rho_2$, respectively. The frequency of $9^{th}$ harmonic of closed tube is identical with $4^{th}$ harmonic of open tube. If the length of the closed tube is 10 cm and the density ratio of the gases is $\\rho_1 : \\rho_2 = 1 : 16$, then the length of the open tube is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q36. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{40}{9}$ cm",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{80}{9}$ cm",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{45}{8}$ cm",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{20}{9}$ cm",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q37",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "If B is magnetic field and $\\mu_0$ is permeability of free space, then the dimensions of $(B/\\mu_0)$ is",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q37. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$ML^2T^{-2}A^{-1}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$MT^{-2}A^{-1}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$L^{-1}A$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$LT^{-2}A^{-1}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q38",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A line charge of length $a/\\sqrt{2}$ is kept at the center of an edge BC of a cube ABCDEFGH having edge length 'a' as shown in the figure. If the density of line charge is $\\lambda$ C per unit length, then the total electric flux through all the faces of the cube will be (Take, $\\epsilon_0$ as the free space permittivity)",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q38. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{\\lambda a}{2\\epsilon_0}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{\\lambda a}{8\\epsilon_0}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{\\lambda a}{16\\epsilon_0}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{\\lambda a}{4\\epsilon_0}$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q39",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements : Statement I : In a vernier callipers, one vernier scale division is always smaller than one main scale division. Statement II : The vernier constant is given by one main scale division multiplied by the number of vernier scale divisions. In the light of the above statements, choose the correct answer from the options given below.",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q39. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Statement I is true but Statement II is false",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Statement I is false but Statement II is true",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Both Statement I and Statement II are false",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "Both Statement I and Statement II are true",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q40",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The work functions of cesium (Cs) and lithium (Li) metals are 1.9 eV and 2.5 eV, respectively. If we incident a light of wavelength 550 nm on these two metal surfaces, then photo-electric effect is possible for the case of",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q40. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both Cs and Li",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Neither Cs nor Li",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Cs only",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "Li only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q41",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Two spherical bodies of same materials having radii 0.2 m and 0.8 m are placed in same atmosphere. The temperature of the smaller body is 800 K and temperature of the bigger body is 400 K . If the energy radiated from the smaller body is E, the energy radiated from the bigger body is (assume, effect of the surrounding temperature to be negligible),",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q41. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "16 E",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "E",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "64 E",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "256 E",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q42",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "In the diagram given below, there are three lenses formed. Considering negligible thickness of each of them as compared to $|R_1|$ and $|R_2|$, i.e., the radii of curvature for upper and lower surfaces of the glass lens, the power of the combination is (Diagram shows a container. Top layer is water $\\mu=4/3$, middle layer is glass $\\mu=3/2$, bottom layer is water $\\mu=4/3$. The glass forms a biconvex lens with radii R1 and R2)",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q42. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{1}{6}(\\frac{1}{R_1} - \\frac{1}{R_2})$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{2}{3}(\\frac{1}{R_1} + \\frac{1}{R_2})$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{1}{3}(\\frac{1}{R_1} + \\frac{1}{R_2})$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{1}{6}(\\frac{1}{R_2} - \\frac{1}{R_1})$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q43",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements : one is labelled as Assertion (A) and the other is labelled as Reason (R). Assertion-(A) : If Young's double slit experiment is performed in an optically denser medium than air, then the consecutive fringes come closer. Reason-(R) : The speed of light reduces in an optically denser medium than air while its frequency does not change. In the light of the above statements, choose the most appropriate answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q43. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both (A) and (R) are true but (R) is not the correct explanation of (A)",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Both (A) and (R) are true and (R) is the correct explanation of (A)",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "(A) is true but (R) is false",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "(A) is false but (R) is true",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q44",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A parallel-plate capacitor of capacitance $40\\mu F$ is connected to a 100 V power supply. Now the intermediate space between the plates is filled with a dielectric material of dielectric constant K = 2. Due to the introduction of dielectric material, the extra charge and the change in the electrostatic energy in the capacitor, respectively, are",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q44. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "4 mC and 0.2 J",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "8 mC and 2.0 J",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "2 mC and 0.4 J",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "2 mC and 0.2 J",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q45",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Which of the following resistivity ( $\\rho$ ) v/s temperature (T) curves is most suitable to be used in wire bound standard resistors? (Options show different graphs of $\\rho$ vs T)",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q45. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Graph 1 ($\\rho$ increases non-linearly with T, concave up)",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Graph 2 ($\\rho$ decreases linearly with T)",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Graph 3 ($\\rho$ increases almost linearly with T from a non-zero intercept)",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "Graph 4 ($\\rho$ decreases non-linearly with T, convex up)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q46",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The driver sitting inside a parked car is watching vehicles approaching from behind with the help of his side view mirror, which is a convex mirror with radius of curvature R = 2 m. Another car approaches him from behind with a uniform speed of 90 km/hr. When the car is at a distance of 24 m from him, the magnitude of the acceleration of the image of the car in the side view mirror is ' a '. The value of 100 a is ____ m/s$^2$.",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q46. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "4",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "8",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "12",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "16",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q47",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Two soap bubbles of radius 2 cm and 4 cm , respectively, are in contact with each other. The radius of curvature of the common surface, in cm , is ____.",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q47. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "2",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "3",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "4",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "6",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q48",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The position vectors of two 1 kg particles, (A) and (B), are given by $\\vec{r_A} = (\\alpha_1 t^2 \\hat{i} + \\alpha_2 t \\hat{j} + \\alpha_3 t \\hat{k}) m$ and $\\vec{r_B} = (\\beta_1 t \\hat{i} + \\beta_2 t^2 \\hat{j} + \\beta_3 t \\hat{k}) m$, respectively; ($\\alpha_1 = 1 m/s^2, \\alpha_2 = 3nm/s, \\alpha_3 = 2 m/s, \\beta_1 = 2 m/s, \\beta_2 = -1 m/s^2, \\beta_3 = 4pm/s$), where t is time, n and p are constants. At $t = 1$ s, $|\\vec{V_A}| = |\\vec{V_B}|$ and velocities $\\vec{V_A}$ and $\\vec{V_B}$ of the particles are orthogonal to each other. At $t = 1$ s, the magnitude of angular momentum of particle (A) with respect to the position of particle (B) is $\\sqrt{L} kg m^2 s^{-1}$. The value of L is ____.",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q48. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "81",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "90",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "100",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "121",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q49",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Three conductors of same length having thermal conductivity $k_1, k_2$ and $k_3$ are connected as shown in figure. Area of cross sections of 1st and 2nd conductor are same and for 3rd conductor it is double of the 1st conductor. The temperatures are given in the figure. In steady state condition, the value of $\\theta$ is ____ \u00b0C. (Given : $k_1 = 60 Js^{-1} m^{-1} K^{-1}, k_2 = 120 Js^{-1} m^{-1} K^{-1}, k_3 = 135 Js^{-1} m^{-1} K^{-1}$) (Figure shows conductor 1 from 100C to junction $\\theta$. Conductors 2 and 3 in parallel from junction $\\theta$ to 0C. Area A for 1 and 2, Area 2A for 3)",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q49. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "30",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "40",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "50",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "60",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q50",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A particle is projected at an angle of 30\u00b0 from horizontal at a speed of 60 m/s. The height traversed by the particle in the first second is $h_0$ and height traversed in the last second, before it reaches the maximum height, is $h_1$. The ratio $h_0 : h_1$ is ____. [Take, g = 10 m/s$^2$ ]",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q50. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "1",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "2",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "3",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "5",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q51",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Radius of the first excited state of Helium ion is given as : $a_0 \\rightarrow$ radius of first stationary state of hydrogen atom.",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q51. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$r = 4a_0$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$r = 2a_0$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$r = a_0/2$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$r = a_0/4$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q52",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "The incorrect statements regarding geometrical isomerism are : (A) Propene shows geometrical isomerism. (B) Trans isomer has identical atoms/groups on the opposite sides of the double bond. (C) Cis-but-2-ene has higher dipole moment than trans-but-2-ene. (D) 2-methylbut-2-ene shows two geometrical isomers. (E) Trans-isomer has lower melting point than cis isomer. Choose the correct answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q52. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "(A) and (E) Only",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "(A), (D) and (E) Only",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "(B) and (C) Only",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "(C), (D) and (E) Only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q53",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "A liquid when kept inside a thermally insulated closed vessel at 25\u00b0C was mechanically stirred from outside. What will be the correct option for the following thermodynamic parameters ?",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q53. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\Delta U < 0, q = 0, w > 0$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\Delta U = 0, q = 0, w = 0$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\Delta U > 0, q = 0, w > 0$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$\\Delta U = 0, q < 0, w > 0$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q54",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Which of the following electronegativity order is incorrect?",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q54. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Mg < Be < B < N",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "S < Cl < O < F",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Al < Si < C < N",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Al < Mg < B < N",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q55",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Lanthanoid ions with $4f^7$ configuration are : (A) Eu$^{2+}$ (B) Gd$^{3+}$ (C) Eu$^{3+}$ (D) Tb$^{3+}$ (E) Sm$^{2+}$ Choose the correct answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q55. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "(A) and (D) only",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "(B) and (C) only",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "(A) and (B) only",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "(B) and (E) only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q56",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements : Statement I : One mole of propyne reacts with excess of sodium to liberate half a mole of H$_2$ gas. Statement II : Four g of propyne reacts with NaNH$_2$ to liberate NH$_3$ gas which occupies 224 mL at STP. In the light of the above statements, choose the most appropriate answer from the options given below:",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q56. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Statement I is incorrect but Statement II is correct",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Both Statement I and Statement II are correct",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Statement I is correct but Statement II is incorrect",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "Both Statement I and Statement II are incorrect",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q57",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "The compounds which give positive Fehling's test are : (A) Benzaldehyde (B) Acetophenone (C) Fructose (structure given) (D) Acetaldehyde (structure given) (E) 2-hydroxypropanal (structure given). Choose the correct answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q57. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "(A), (D) and (E) Only",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "(C), (D) and (E) Only",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "(A), (C) and (D) Only",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "(A), (B) and (C) Only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q58",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Which of the following electrolyte can be used to obtain H$_2$S\u200b$_2$O\u200b$_8$ by the process of electrolysis?",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q58. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Dilute solution of sodium sulphate.",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Acidified dilute solution of sodium sulphate.",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Dilute solution of sulphuric acid",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Concentrated solution of sulphuric acid",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q59",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements : Statement I : $CH_3-O-CH_2-Cl$ will undergo $S_N1$ reaction though it is a primary halide. Statement II : $CH_3-C(CH_3)_2-CH_2-Cl$ will not undergo $S_N2$ reaction very easily though it is a primary halide. In the light of the above statements, choose the most appropriate answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q59. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both Statement I and Statement II are incorrect",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Both Statement I and Statement II are correct",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "Statement I is incorrect but Statement II is correct",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Statement I is correct but Statement II is incorrect",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q60",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Which of the following acids is a vitamin?",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q60. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Adipic acid",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Ascorbic acid",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "Saccharic acid",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Aspartic acid",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q61",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Match List-I with List-II. \n List - I \n (A) $Al^{3+} < Mg^{2+} < Na^+ < F^-$ \n (B) $B < C < O < N$ \n (C) $B < Al < Mg < K$ \n (D) $Si < P < S < Cl$ \n List - II \n (I) Ionisation Enthalpy \n (II) Metallic character \n (III) Electronegativity \n (IV) Ionic radii \n Choose the correct answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q61. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "(A)-(IV), (B)-(I), (C)-(II), (D)-(III)",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "(A)-(IV), (B)-(I), (C)-(III), (D)-(II)",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "(A)-(III), (B)-(IV), (C)-(II), (D)-(I)",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "(A)-(II), (B)-(III), (C)-(IV), (D)-(I)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q62",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Which of the following statement is not true for radioactive decay?",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q62. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Decay constant increases with increase in temperature.",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "Amount of radioactive substance remaining after three half lives is 1/8 th of original amount.",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Decay constant does not depend upon temperature.",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Half life is ln 2 times of (1/rate constant).",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q63",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "The products formed in the following reaction sequence are : Nitrobenzene undergoes reactions: (i) Br$_2$, AcOH (ii) Sn, HCl (iii) NaNO$_2$, HCl, 273 K (iv) C$_2$H\u200b$_5$OH, resulting in A + B.",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q63. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Phenol and Bromobenzene",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Ethoxybenzene and Bromobenzene",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "3-Bromophenol and 3-Bromoethoxybenzene",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "3-Bromoethoxybenzene and Benzene",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q64",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "How many different stereoisomers are possible for the given molecule? $CH_3-CH(OH)-CH=CH-CH_3$",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q64. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "2",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "1",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "4",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "3",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q65",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "A vessel at 1000 K contains CO$_2$ with a pressure of 0.5 atm. Some of CO$_2$ is converted into CO on addition of graphite. If total pressure at equilibrium is 0.8 atm, then Kp is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q65. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "1.8 atm",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "0.3 atm",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "3 atm",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "0.18 atm",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q66",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "A solution of aluminium chloride is electrolysed for 30 minutes using a current of 2 A. The amount of the aluminium deposited at the cathode is [Given : molar mass of aluminium and chlorine are 27 g mol$^{-1}$ and 35.5 g mol$^{-1}$ respectively. Faraday constant = $96500 C mol^{-1}$]",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q66. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "1.660 g",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "0.336 g",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "0.441 g",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "1.007 g",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q67",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "The IUPAC name of the following compound is : $CH_3OOC-CH(CH_3)-CH_2-CH_2-CH(CH_3)-COOH$",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q67. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Methyl-6-carboxy-2,5-dimethylhexanoate.",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "2-Carboxy-5-methoxycarbonylhexane.",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "6-Methoxycarbonyl-2,5-dimethylhexanoic acid.",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "Methyl-5-carboxy-2-methylhexanoate.",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q68",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "In which of the following complexes the CFSE, $\\Delta_o$ will be equal to zero?",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q68. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "[Fe(en)$_3$]Cl$_3$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "K$_4$[Fe(CN)$_6$]",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "[Fe(NH$_3$)\u200b$_6$]Br$_2$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "K$_3$[Fe(SCN)$_6$]",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q69",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Arrange the following solutions in order of their increasing boiling points. (i) $10^{-4}$M NaCl (ii) $10^{-4}$M Urea (iii) $10^{-3}$M NaCl (iv) $10^{-2}$M NaCl",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q69. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "(i) < (ii) < (iii) < (iv)",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "(iv) < (iii) < (i) < (ii)",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "(ii) < (i) = (iii) < (iv)",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "(ii) < (i) < (iii) < (iv)",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q70",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "From the magnetic behaviour of [NiCl$_4$]\u200b$^{2-}$ (paramagnetic) and [Ni(CO)$_4$] (diamagnetic), choose the correct geometry and oxidation state.",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q70. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "[NiCl$_4$]\u200b$^{2-}$ : Ni$^{II}$, tetrahedral [Ni(CO)$_4$] : Ni$^{0}$, tetrahedral",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "[NiCl$_4$]\u200b$^{2-}$ : Ni$^{II}$, square planar [Ni(CO)$_4$] : Ni(0) square planar",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "[NiCl$_4$]\u200b$^{2-}$ : Ni$^{II}$, tetrahedral [Ni(CO)$_4$] : Ni(0), square planar",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "[NiCl$_4$]\u200b$^{2-}$ : Ni$^{0}$, tetrahedral [Ni(CO)$_4$] : Ni(0), square planar",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q71",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "The number of molecules/ions that show linear geometry among the following is ____\n SO$_2$, BeCl$_2$, CO$_2$, N$_3^-$, NO$_2^+$, F$_2$O, XeF$_2$, NO$_2^-$, I$_3^-$, O$_3$",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q71. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "4",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "5",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "6",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "7",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q72",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "A $\\rightarrow$ B The molecule A changes into its isomeric form B by following a first order kinetics at a temperature of 1000 K. If the energy barrier with respect to reactant energy for such isomeric transformation is 191.48 kJ mol$^{-1}$ and the frequency factor is $10^{20}$, the time required for 50% molecules of A to become B is ____ picoseconds (nearest integer). [R = 8.314 J K$^{-1}$ mol$^{-1}$]",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q72. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "60",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "65",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "69",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "75",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q73",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Consider the following sequence of reactions: Nitrobenzene undergoes (i) Sn + HCl (ii) NaNO$_2$, HCl, 0\u00b0C (iii) Cu$_2$Cl$_2$ (iv) Na, Ether to yield Product A. Molar mass of the product formed (A) is ____ gmol$^{-1}$.",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q73. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "150",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "154",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "160",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "164",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q74",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Some CO$_2$ gas was kept in a sealed container at a pressure of 1 atm and at 273 K . This entire amount of CO$_2$ gas was later passed through an aqueous solution of Ca(OH)$_2$. The excess unreacted Ca(OH)$_2$ was later neutralized with 0.1 M of 40 mL HCl. If the volume of the sealed container of CO$_2$ was x, then x is ____ cm$^3$ (nearest integer). [Given : The entire amount of CO$_2$(g) reacted with exactly half the initial amount of Ca(OH)$_2$ present in the aqueous solution.]",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q74. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "40",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "45",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "50",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "55",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s1_q75",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2025_jan22_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "In Carius method for estimation of halogens, 180 mg of an organic compound produced 143.5 mg of AgCl. The percentage composition of chlorine in the compound is ____%. (Given : molar mass in gmol$^{-1}$ of Ag : 108, Cl : 35.5 )",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 1 Q75. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 1",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "15",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "20",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "25",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "30",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q1",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Let $\\alpha, \\beta, \\gamma$ and $\\delta$ be the coefficients of $x^7, x^6, x^5$ and x respectively in the expansion of $(x+\\sqrt{x^3-1})^5 + (x-\\sqrt{x^3-1})^5$, x > 1. If u and v satisfy the equations $\\alpha u + \\beta v = 18$, $\\gamma u + \\delta v = 20$, then u + v equals :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q1. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "5",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "4",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "3",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "8",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q2",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "In a group of 3 girls and 4 boys, there are two boys $B_1$ and $B_2$. The number of ways, in which these girls and boys can stand in a queue such that all the girls stand together, all the boys stand together, but $B_1$ and $B_2$ are not adjacent to each other, is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q2. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "144",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "72",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "96",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "120",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q3",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Let P($4,4\\sqrt{3}$) be a point on the parabola $y^2 = 4ax$ and PQ be a focal chord of the parabola. If M and N are the foot of perpendiculars drawn from P and Q respectively on the directrix of the parabola, then the area of the quadrilateral PQMN is equal to:",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q3. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{263\\sqrt{3}}{8}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$17\\sqrt{3}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{343\\sqrt{3}}{8}$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{34\\sqrt{3}}{3}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q4",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "For a 3 x 3 matrix M, let trace (M) denote the sum of all the diagonal elements of M. Let A be a 3 x 3 matrix such that $|A| = \\frac{1}{2}$ and trace (A) = 3. If B = adj(adj(2A)), then the value of |B| + trace (B) equals:",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q4. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "56",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "132",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "174",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "280",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q5",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Suppose that the number of terms in an A.P. is 2k, k\u2208N. If the sum of all odd terms of the A.P. is 40, the sum of all even terms is 55 and the last term of the A.P. exceeds the first term by 27, then k is equal to",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q5. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "5",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "8",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "6",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "4",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q6",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Let a line pass through two distinct points P(-2, -1, 3) and Q, and be parallel to the vector $3\\hat{i} + 2\\hat{j} + 2\\hat{k}$. If the distance of the point Q from the point R(1, 3, 3) is 5, then the square of the area of \u0394PQR is equal to:",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q6. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "136",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "140",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "144",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "148",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q7",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "If $$\\lim_{x \\to 0} \\left( \\left( \\frac{e}{1 - e} \\right) \\left( \\frac{1}{e} - \\frac{x}{1 + x} \\right) \\right)^x = \\alpha$$, then the value of $$\\frac{\\log_e \\alpha}{1 + \\log_e \\alpha}$$ equals:",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q7. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$e$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$e^{2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$e^{3}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$e^{-1}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q8",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Let $f(x) = \\int_0^{x^2} \\frac{t^2-8t+15}{e^t} dt, x \\in \\mathbb{R}$. Then the numbers of local maximum and local minimum points of f, respectively, are :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q8. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "2 and 3",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "3 and 2",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "1 and 3",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "2 and 2",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q9",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The perpendicular distance, of the line $\\frac{x-1}{2} = \\frac{y+2}{-1} = \\frac{z+3}{2}$ from the point P(2, -10, 1), is:",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q9. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "6",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$5\\sqrt{2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$3\\sqrt{5}$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$4\\sqrt{3}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q10",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "If $x = f(y)$ is the solution of the differential equation $$ (1 + y^2) + \\left(x - 2e^{\\tan^{-1} y}\\right) \\frac{dy}{dx} = 0, \\quad y \\in \\left( -\\frac{\\pi}{2}, \\frac{\\pi}{2} \\right) $$ with $f(0) = 1$, then $f\\left( \\frac{1}{\\sqrt{3}} \\right)$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q10. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$e^{\\pi/4}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$e^{\\pi/12}$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$e^{\\pi/3}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$e^{\\pi/6}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q11",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "If $$ \\int e^x \\left( \\frac{x \\sin^{-1} x}{\\sqrt{1 - x^2}} + \\frac{\\sin^{-1} x}{(1 - x^2)^{3/2}} + \\frac{x}{1 - x^2} \\right) dx = g(x) + C, $$ where $C$ is the constant of integration, then $g\\left(\\frac{1}{2}\\right)$ equals:",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q11. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{\\pi}{6} \\sqrt{\\frac{e}{2}}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{\\pi}{4} \\sqrt{\\frac{e}{2}}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{\\pi}{6} \\sqrt{\\frac{e}{3}}$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{\\pi}{4} \\sqrt{\\frac{e}{3}}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q12",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Let $\\alpha_\\theta$ and $\\beta_\\theta$ be the distinct roots of $2x^2 + (\\cos\\theta)x - 1 = 0, \\theta \\in (0, 2\\pi)$. If m and M are the minimum and the maximum values of $\\alpha_\\theta^6 + \\beta_\\theta^6$, then 16(M+m) equals :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q12. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "24",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "25",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "27",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "17",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q13",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Let A = {1, 2, 3, 4} and B = {1, 4, 9, 16}. Then the number of many-one functions f : $A -> B$ such that 1 $\\notin$ f(A) is equal to :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q13. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "127",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "151",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "163",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "139",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q14",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "If the system of linear equations : $x + y + 2z = 6$, $2x + 3y + az = a + 1$, $-x - 3y + bz = 2b$, where a, b $\\in$ R, has infinitely many solutions, then 7a + 3b is equal to :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q14. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "9",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "12",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "16",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "22",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q15",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Let $\\vec{a}$ and $\\vec{b}$ be two unit vectors such that the angle between them is $\\pi/3$. If $\\lambda \\vec{a} + 2\\vec{b}$ and $3\\vec{a} - \\lambda \\vec{b}$ are perpendicular to each other, then the number of values of $\\lambda$ in [-1, 3] is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q15. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "3",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "2",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "1",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "0",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q16",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Let E : $\\frac{x^2}{a^2} + \\frac{y^2}{b^2} = 1$, a > b and H : $\\frac{x^2}{A^2} - \\frac{y^2}{B^2} = 1$. Let the distance between the foci of E and the foci of H be $2\\sqrt{3}$. If a - A = 2, and the ratio of the eccentricities of E and H is 1/3, then the sum of the lengths of their latus rectums is equal to :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q16. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "10",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "7",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "8",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "9",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q17",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "If A and B are two events such that P(A$\\cap$B) = 0.1, and P(A|B) and P(B|A) are the roots of the equation $12x^2 - 7x + 1 = 0$, then the value of $P(\\overline{A} \\cup \\overline{B}) / P(\\overline{A} \\cap \\overline{B})$ is:",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q17. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "5/3",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "4/3",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "9/4",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "7/4",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q18",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The sum of all values of $\\theta \\in [0, 2\\pi]$ satisfying $2\\sin^2\\theta = \\cos2\\theta$ and $2\\cos^2\\theta = 3\\sin\\theta$ is",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q18. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\pi/2$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$4\\pi$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$5\\pi/6$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\pi$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q19",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Let the curve $z(1 + i) + \\bar{z}(1-i) = 4, z \\in C$, divide the region $|z - 3| \\leq 1$ into two parts of areas $\\alpha$ and $\\beta$. Then $|\\alpha - \\beta|$ equals :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q19. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$1 + \\frac{\\pi}{2}$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$1 + \\frac{\\pi}{3}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$1 + \\frac{\\pi}{4}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$1 + \\frac{\\pi}{6}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q20",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The area of the region enclosed by the curves $y = x^2 - 4x + 4$ and $y^2 = 16 - 8x$ is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q20. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "8/3",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "4/3",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "5",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "8",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q21",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Let $y = f(x)$ be the solution of the differential equation $\\frac{dy}{dx} + \\frac{xy}{x^2-1} = \\frac{x^4+4x}{\\sqrt{1-x^2}}, -1 < x < 1$ such that f(0) = 0. If $6 \\int_{-1/2}^{1/2} f(x) dx = 2\\pi - \\alpha$, then $\\alpha^2$ is equal to",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q21. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "25",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "27",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "30",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "36",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q22",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Let A(6, 8), B(10 cos$\\alpha$, -10 sin$\\alpha$) and C(-10 sin$\\alpha$, 10 cos$\\alpha$), be the vertices of a triangle. If L(a, 9) and G(h, k) be its orthocenter and centroid respectively, then (5a \u2013 3h + 6k + 100 sin2$\\alpha$) is equal to",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q22. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "125",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "135",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "145",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "155",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q23",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Let the distance between two parallel lines be 5 units and a point P lie between the lines at a unit distance from one of them. An equilateral triangle PQR is formed such that Q lies on one of the parallel lines, while R lies on the other. Then $(QR)^2$ is equal to",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q23. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "25",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "28",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "30",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "32",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q24",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "If $\\sum_{r=1}^{30} r(31-r) \\cdot {^{29}C_{r-1}} = \\alpha \\times 2^{28}$, then $\\alpha$ is equal to",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q24. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "450",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "460",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "465",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "435",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q25",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Let A = {1, 2, 3}. The number of relations on A, containing (1, 2) and (2, 3), which are reflexive and transitive but not symmetric, is _____",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q25. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "2",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "3",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "4",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "5",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q26",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A symmetric thin biconvex lens is cut into four equal parts by two planes AB and CD as shown in figure. If the power of original lens is 4D then the power of a part of the divided lens is \n <svg width='300' height='400' viewBox='0 0 300 400' xmlns='http://www.w3.org/2000/svg'><path d='M 150 80 Q 120 200 150 320' fill='none' stroke='black' stroke-width='2'/><path d='M 150 80 Q 180 200 150 320' fill='none' stroke='black' stroke-width='2'/><line x1='30' y1='200' x2='270' y2='200' stroke='black' stroke-width='1'/><line x1='150' y1='30' x2='150' y2='370' stroke='black' stroke-width='1'/><defs><marker id='arrowhead' markerWidth='10' markerHeight='7' refX='9' refY='3.5' orient='auto'><polygon points='0 0, 10 3.5, 0 7' fill='black'/></marker></defs><text x='20' y='205' font-family='Arial, sans-serif' font-size='16' text-anchor='middle'>A</text><text x='280' y='205' font-family='Arial, sans-serif' font-size='16' text-anchor='middle'>B</text><text x='150' y='25' font-family='Arial, sans-serif' font-size='16' text-anchor='middle'>C</text><text x='150' y='390' font-family='Arial, sans-serif' font-size='16' text-anchor='middle'>D</text></svg>",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q26. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "8D",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "4D",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "1D",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "2D",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q27",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A small rigid spherical ball of mass M is dropped in a long vertical tube containing glycerine. The velocity of the ball becomes constant after some time. If the density of glycerine is half of the density of the ball, then the viscous force acting on the ball will be (consider g as acceleration due to gravity)",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q27. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{3}{2}Mg$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{Mg}{2}$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "Mg",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "2Mg",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q28",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The maximum percentage error in the measurement of density of a wire is [Given, mass of wire = (0.60 \u00b1 0.003)g, radius of wire = (0.50 \u00b1 0.01)cm, length of wire = (10.00 \u00b1 0.05)cm]",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q28. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "4%",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "5%",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "8%",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "7%",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q29",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A series LCR circuit is connected to an alternating source of emf E. The current amplitude at resonant frequency is $I_0$. If the value of resistance R becomes twice of its initial value then amplitude of current at resonance will be",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q29. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$I_0$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$I_0/2$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$I_0/\\sqrt{2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$2I_0$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q30",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "For a short dipole placed at origin O with dipole moment P along the x-axis, the electric potential and electric field at point A (distance r on x-axis) are $V_0$ and $E_0$. What is the electric potential and electric field at point B (distance 2r on y-axis)? \n <svg width='200' height='220' viewBox='-20 -10 220 230' xmlns='http://www.w3.org/2000/svg'><defs><marker id='arrowhead' markerWidth='8' markerHeight='6' refX='8' refY='3' orient='auto'><polygon points='0 0, 8 3, 0 6' fill='black'/></marker><marker id='arrowhead-reverse' markerWidth='8' markerHeight='6' refX='0' refY='3' orient='auto'><polygon points='8 0, 0 3, 8 6' fill='black'/></marker></defs><line x1='0' y1='200' x2='180' y2='200' stroke='black' stroke-width='1.5' marker-end='url(#arrowhead)'/><line x1='0' y1='200' x2='0' y2='20' stroke='black' stroke-width='1.5' marker-end='url(#arrowhead)'/><line x1='0' y1='200' x2='0' y2='60' stroke='black' stroke-dasharray='3 3' stroke-width='1'/><line x1='0' y1='200' x2='120' y2='200' stroke='black' stroke-dasharray='3 3' stroke-width='1'/><circle cx='-3' cy='200' r='3' fill='red'/><circle cx='3' cy='200' r='3' fill='blue'/><text x='-6' y='195' font-size='10' font-family='Arial, sans-serif' fill='white'>-</text><text x='1' y='195' font-size='10' font-family='Arial, sans-serif' fill='white'>+</text><line x1='15' y1='200' x2='45' y2='200' stroke='red' stroke-width='2' marker-end='url(#arrowhead)'/><text x='52' y='195' font-size='12' font-family='Arial, sans-serif' font-weight='bold' fill='red'>P</text><circle cx='0' cy='200' r='2' fill='black'/><circle cx='120' cy='200' r='2' fill='black'/><circle cx='0' cy='60' r='2' fill='black'/><text x='-8' y='215' font-size='12' font-family='Arial, sans-serif'>O</text><text x='116' y='215' font-size='12' font-family='Arial, sans-serif'>A</text><text x='-8' y='55' font-size='12' font-family='Arial, sans-serif'>B</text><text x='185' y='205' font-size='12' font-family='Arial, sans-serif'>x</text><text x='-12' y='15' font-size='12' font-family='Arial, sans-serif'>y</text><line x1='5' y1='185' x2='115' y2='185' stroke='black' stroke-width='1' marker-start='url(#arrowhead-reverse)' marker-end='url(#arrowhead)'/><text x='60' y='180' font-size='12' text-anchor='middle' font-family='Arial, sans-serif'>r</text><line x1='15' y1='195' x2='15' y2='65' stroke='black' stroke-width='1' marker-start='url(#arrowhead-reverse)' marker-end='url(#arrowhead)'/><text x='25' y='130' font-size='12' font-family='Arial, sans-serif'>2r</text></svg>",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q30. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$V_0/2$ and $E_0/16$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "zero and $E_0/8$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "zero and $E_0/16$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$V_0$ and $E_0/4$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q31",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Which one of the following is the correct dimensional formula for the capacitance in F ? M, L, T and C stand for unit of mass, length, time and charge,",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q31. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "[$C^2 M^2 L^2 T^2$]",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "[$C M^{-2} L^2 T^2$]",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "[$C M^{-1} L^2 T^2$]",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "[$C^2 M^{-1} L^{-2} T^2$]",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q32",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "An electron projected perpendicular to a uniform magnetic field B moves in a circle. If Bohr's quantization is applicable, then the radius of the electronic orbit in the first excited state is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q32. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\sqrt{\\frac{2h}{\\pi eB}}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\sqrt{\\frac{4h}{\\pi eB}}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\sqrt{\\frac{h}{2\\pi eB}}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\sqrt{\\frac{h}{\\pi eB}}$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q33",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "For a diatomic gas, if $\\gamma_1 = C_p/C_v$ for rigid molecules and $\\gamma_2 = C_p/C_v$ for another diatomic molecules, but also having vibrational modes. Then, which one of the following options is correct? (Cp and Cv are specific heats of the gas at constant pressure and volume)",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q33. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\gamma_2 > \\gamma_1$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\gamma_2 = \\gamma_1$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$2\\gamma_2 = \\gamma_1$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\gamma_2 < \\gamma_1$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q34",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A rectangular metallic loop is moving out of a uniform magnetic field region to a field free region with a constant speed. When the loop is partially inside the magnet field, the plot of magnitude of induced emf ($\\epsilon$) with time (t) is given by",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q34. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "<svg width='200' height='150' viewBox='0 0 200 150' xmlns='http://www.w3.org/2000/svg'><defs><marker id='arrow1' markerWidth='10' markerHeight='7' refX='9' refY='3.5' orient='auto'><polygon points='0 0, 10 3.5, 0 7' fill='black'/></marker></defs><line x1='20' y1='130' x2='180' y2='130' stroke='black' stroke-width='2' marker-end='url(#arrow1)'/><line x1='20' y1='130' x2='20' y2='10' stroke='black' stroke-width='2' marker-end='url(#arrow1)'/><path d='M20,130 C80,130 120,80 180,10' fill='none' stroke='black' stroke-width='2'/><text x='185' y='135' font-family='Arial' font-size='14'>t</text><text x='5' y='15' font-family='Arial' font-size='14'>\u03b5</text><text x='5' y='145' font-family='Arial' font-size='12'>(1)</text></svg>",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "<svg width='200' height='150' viewBox='0 0 200 150' xmlns='http://www.w3.org/2000/svg'><defs><marker id='arrow2' markerWidth='10' markerHeight='7' refX='9' refY='3.5' orient='auto'><polygon points='0 0, 10 3.5, 0 7' fill='black'/></marker></defs><line x1='20' y1='130' x2='180' y2='130' stroke='black' stroke-width='2' marker-end='url(#arrow2)'/><line x1='20' y1='130' x2='20' y2='10' stroke='black' stroke-width='2' marker-end='url(#arrow2)'/><line x1='20' y1='130' x2='140' y2='30' stroke='black' stroke-width='2'/><text x='185' y='135' font-family='Arial' font-size='14'>t</text><text x='5' y='15' font-family='Arial' font-size='14'>\u03b5</text><text x='5' y='145' font-family='Arial' font-size='12'>(2)</text></svg>",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "<svg width='200' height='150' viewBox='0 0 200 150' xmlns='http://www.w3.org/2000/svg'><defs><marker id='arrow3' markerWidth='10' markerHeight='7' refX='9' refY='3.5' orient='auto'><polygon points='0 0, 10 3.5, 0 7' fill='black'/></marker></defs><line x1='20' y1='130' x2='180' y2='130' stroke='black' stroke-width='2' marker-end='url(#arrow3)'/><line x1='20' y1='130' x2='20' y2='10' stroke='black' stroke-width='2' marker-end='url(#arrow3)'/><path d='M20,10 C80,10 120,60 180,130' fill='none' stroke='black' stroke-width='2'/><text x='185' y='135' font-family='Arial' font-size='14'>t</text><text x='5' y='15' font-family='Arial' font-size='14'>\u03b5</text><text x='5' y='145' font-family='Arial' font-size='12'>(3)</text></svg>",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "<svg width='200' height='150' viewBox='0 0 200 150' xmlns='http://www.w3.org/2000/svg'><defs><marker id='arrowhead4' markerWidth='10' markerHeight='7' refX='9' refY='3.5' orient='auto'><polygon points='0 0, 10 3.5, 0 7' fill='black'/></marker></defs><line x1='20' y1='130' x2='180' y2='130' stroke='black' stroke-width='2' marker-end='url(#arrowhead4)'/><line x1='20' y1='130' x2='20' y2='10' stroke='black' stroke-width='2' marker-end='url(#arrowhead4)'/><line x1='20' y1='60' x2='160' y2='60' stroke='black' stroke-width='2'/><text x='185' y='135' font-family='Arial' font-size='14'>t</text><text x='10' y='15' font-family='Arial' font-size='14'>\u03b5</text><text x='5' y='145' font-family='Arial' font-size='12'>(4)</text></svg>",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q35",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A light source of wavelength $\\lambda$ illuminates a metal surface and electrons are ejected with maximum kinetic energy of 2 eV. If the same surface is illuminated by a light source of wavelength $\\lambda/2$, then the maximum kinetic energy of ejected electrons will be (The work function of metal is 1 eV)",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q35. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "2 eV",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "6 eV",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "5 eV",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "3 eV",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q36",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements. One is labelled as Assertion (A) and the other is labelled as Reason (R).\nAssertion (A): A simple pendulum is taken to a planet of mass and radius, 4 times and 2 times, respectively, than the Earth. The time period of the pendulum remains same on earth and the planet.\nReason (R) : The mass of the pendulum remains unchanged at Earth and the other planet.\nIn the light of the above statements, choose the correct answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q36. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both (A) and (R) are true but (R) is NOT the correct explanation of (A)",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "(A) is true but (R) is false",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "(A) is false but (R) is true",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Both (A) and (R) are true and (R) is the correct explanation of (A)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q37",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The torque due to the force $(2\\hat{i} + \\hat{j} + 2\\hat{k})$ about the origin, acting on a particle whose position vector is $(\\hat{i} + \\hat{j} + \\hat{k})$, would be",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q37. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\hat{i} - \\hat{j} + \\hat{k}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\hat{i} + \\hat{k}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\hat{i} - \\hat{k}$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$\\hat{j} - \\hat{k}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q38",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "To obtain the given truth table \n <svg width='600' height='350' viewBox='0 0 600 350' xmlns='http://www.w3.org/2000/svg'><circle cx='50' cy='80' r='4'/><circle cx='50' cy='120' r='4'/><text x='30' y='85'>A</text><text x='30' y='125'>B</text><line x1='50' y1='80' x2='120' y2='80' stroke='black' stroke-width='2'/><line x1='50' y1='120' x2='100' y2='120' stroke='black' stroke-width='2'/><line x1='120' y1='80' x2='120' y2='60' stroke='black' stroke-width='2'/><line x1='120' y1='60' x2='180' y2='60' stroke='black' stroke-width='2'/><line x1='120' y1='80' x2='120' y2='240' stroke='black' stroke-width='2'/><line x1='120' y1='240' x2='180' y2='240' stroke='black' stroke-width='2'/><line x1='100' y1='120' x2='100' y2='140' stroke='black' stroke-width='2'/><line x1='100' y1='140' x2='150' y2='140' stroke='black' stroke-width='2'/><line x1='100' y1='120' x2='100' y2='220' stroke='black' stroke-width='2'/><line x1='100' y1='220' x2='150' y2='220' stroke='black' stroke-width='2'/><polygon points='150,130 150,150 170,140' fill='white' stroke='black' stroke-width='2'/><circle cx='173' cy='140' r='3' fill='white' stroke='black' stroke-width='2'/><text x='160' y='125'>B\u0304</text><polygon points='150,210 150,230 170,220' fill='white' stroke='black' stroke-width='2'/><circle cx='173' cy='220' r='3' fill='white' stroke='black' stroke-width='2'/><text x='160' y='205'>B\u0304</text><line x1='176' y1='140' x2='180' y2='140' stroke='black' stroke-width='2'/><line x1='180' y1='140' x2='180' y2='80' stroke='black' stroke-width='2'/><line x1='176' y1='220' x2='180' y2='220' stroke='black' stroke-width='2'/><line x1='180' y1='220' x2='180' y2='260' stroke='black' stroke-width='2'/><path d='M180 50 L180 90 L210 90 A20 20 0 0 0 210 50 Z' fill='white' stroke='black' stroke-width='2'/><text x='250' y='75'>AB\u0304</text><path d='M180 230 L180 270 L210 270 A20 20 0 0 0 210 230 Z' fill='white' stroke='black' stroke-width='2'/><text x='250' y='255'>AB\u0304</text><line x1='180' y1='60' x2='180' y2='70' stroke='black' stroke-width='2'/><line x1='180' y1='140' x2='180' y2='70' stroke='black' stroke-width='2'/><line x1='180' y1='240' x2='180' y2='250' stroke='black' stroke-width='2'/><line x1='180' y1='220' x2='180' y2='250' stroke='black' stroke-width='2'/><line x1='210' y1='70' x2='280' y2='70' stroke='black' stroke-width='2'/><line x1='280' y1='70' x2='280' y2='140' stroke='black' stroke-width='2'/><line x1='280' y1='140' x2='330' y2='140' stroke='black' stroke-width='2'/><line x1='210' y1='250' x2='300' y2='250' stroke='black' stroke-width='2'/><line x1='300' y1='250' x2='300' y2='160' stroke='black' stroke-width='2'/><line x1='300' y1='160' x2='330' y2='160' stroke='black' stroke-width='2'/><circle cx='355' cy='150' r='15' fill='white' stroke='black' stroke-width='2'/><text x='350' y='155'>G</text><line x1='330' y1='140' x2='340' y2='140' stroke='black' stroke-width='2'/><line x1='330' y1='160' x2='340' y2='160' stroke='black' stroke-width='2'/><line x1='340' y1='140' x2='340' y2='160' stroke='black' stroke-width='2'/><line x1='340' y1='150' x2='355' y2='150' stroke='black' stroke-width='2'/><line x1='370' y1='150' x2='450' y2='150' stroke='black' stroke-width='2'/><circle cx='450' cy='150' r='4'/><text x='470' y='155'>Y</text></svg> <table border='1px'><tr><th>A</th><th>B</th><th>Y</th></tr><tr><td>0</td><td>0</td><td>1</td></tr><tr><td>0</td><td>1</td><td>0</td></tr><tr><td>1</td><td>0</td><td>0</td></tr><tr><td>1</td><td>1</td><td>1</td></tr></table>, which logic gate should be placed at G in the given circuit?",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q38. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "NOR Gate",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "AND Gate",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "NAND Gate",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "OR Gate",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q39",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A force $\\vec{F} = 2\\hat{i} + b\\hat{j} + \\hat{k}$ is applied on a particle and it undergoes a displacement $\\hat{i} - 2\\hat{j} - \\hat{k}$. What will be the value of b, if work done on the particle is zero.",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q39. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "0",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "1/2",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "1/3",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "2",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q40",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements. One is labelled as Assertion (A) and the other is labelled as Reason (R).\nAssertion (A) : In Young's double slit experiment, the fringes produced by red light are closer as compared to those produced by blue light.\nReason (R) : The fringe width is directly proportional to the wavelength of light.\nIn the light of above statements, choose the correct answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q40. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both (A) and (R) are true and (R) is the correct explanation of (A)",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "(A) is false but (R) is true.",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "Both (A) and (R) are true but (R) is NOT the correct explanation of (A).",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "(A) is true but (R) is false.",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q41",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A ball of mass 100 g is projected with velocity 20 m/s at 60\u00b0 with horizontal. The decrease in kinetic energy of the ball during the motion from point of projection to highest point is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q41. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "20 J",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "15 J",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "zero",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "5 J",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q42",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A transparent film of refractive index, 2.0 is coated on a glass slab of refractive index, 1.45. What is the minimum thickness of transparent film to be coated for the maximum transmission of Green light of wavelength 550 nm. [Assume that the light is incident nearly perpendicular to the glass surface.]",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q42. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "94.8 nm",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "68.7 nm",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "137.5 nm",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "275 nm",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q43",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The tube of length L is shown in the figure. The radius of cross section at the point (1) is 2 cm and at the point (2) is 1 cm, respectively. If the velocity of water entering at point (1) is 2 m/s, then velocity of water leaving the point (2) will be : \n<svg viewBox='0 0 400 200' xmlns='http://www.w3.org/2000/svg'><ellipse cx='80' cy='100' rx='30' ry='50' fill='none' stroke='black' stroke-width='2'/><ellipse cx='320' cy='100' rx='20' ry='35' fill='none' stroke='black' stroke-width='2'/><line x1='80' y1='50' x2='320' y2='65' stroke='black' stroke-width='2'/><line x1='80' y1='150' x2='320' y2='135' stroke='black' stroke-width='2'/><circle cx='80' cy='40' r='15' fill='white' stroke='black' stroke-width='2'/><text x='80' y='47' text-anchor='middle' font-family='Arial' font-size='14'>1</text><circle cx='320' cy='40' r='15' fill='white' stroke='black' stroke-width='2'/><text x='320' y='47' text-anchor='middle' font-family='Arial' font-size='14'>2</text><g stroke='black' stroke-width='2' fill='none' marker-end='url(#arrowhead)'><line x1='30' y1='80' x2='50' y2='80'/><line x1='30' y1='100' x2='50' y2='100'/><line x1='30' y1='120' x2='50' y2='120'/><line x1='340' y1='80' x2='370' y2='80'/><line x1='340' y1='100' x2='370' y2='100'/><line x1='340' y1='120' x2='370' y2='120'/></g><defs><marker id='arrowhead' markerWidth='10' markerHeight='7' refX='9' refY='3.5' orient='auto'><polygon points='0 0, 10 3.5, 0 7' fill='black'/></marker></defs></svg>",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q43. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "2 m/s",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "4 m/s",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "6 m/s",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "8 m/s",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q44",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Given are statements for certain thermodynamic variables,\n(A) Internal energy, volume (V) and mass (M) are extensive variables.\n(B) Pressure (P), temperature (T) and density ($\\rho$) are intensive variables.\n(C) Volume (V), temperature (T) and density ($\\rho$) are intensive variables.\n(D) Mass (M), temperature (T) and internal energy are extensive variables.\nChoose the correct answer from the points given below :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q44. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "(C) and (D) only",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "(D) and (A) only",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "(A) and (B) only",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "(B) and (C) only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q45",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A body of mass 100 g is moving in circular path of radius 2 m on vertical plane as shown in figure. The velocity of the body at point A is 10 m/s. The ratio of its kinetic energies at point B and C is :\n<svg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'><circle cx='150' cy='150' r='80' fill='none' stroke='black' stroke-width='2'/><line x1='150' y1='70' x2='150' y2='230' stroke='black' stroke-width='1' stroke-dasharray='5,5'/><circle cx='150' cy='70' r='3' fill='black'/><text x='155' y='67' font-family='Arial' font-size='14' font-weight='bold'>D</text><circle cx='150' cy='230' r='3' fill='black'/><text x='155' y='243' font-family='Arial' font-size='14' font-weight='bold'>A</text><circle cx='219.28' cy='110.00' r='3' fill='black'/><text x='225' y='105' font-family='Arial' font-size='14' font-weight='bold'>C</text><circle cx='190.00' cy='219.28' r='3' fill='black'/><text x='195' y='224' font-family='Arial' font-size='14' font-weight='bold'>B</text><circle cx='150' cy='150' r='2' fill='black'/><text x='135' y='165' font-family='Arial' font-size='14' font-weight='bold'>O</text><line x1='150' y1='150' x2='219.28' y2='110.00' stroke='black' stroke-width='1'/><line x1='150' y1='150' x2='190.00' y2='219.28' stroke='black' stroke-width='1'/><path d='M167.32,140.00 A20,20 0 0,1 160.00,167.32' fill='none' stroke='black' stroke-width='1'/><text x='172' y='150' font-family='Arial' font-size='12'>90\u00b0</text><path d='M160.00,167.32 A20,20 0 0,1 150,170' fill='none' stroke='black' stroke-width='1'/><text x='150' y='185' font-family='Arial' font-size='12'>30\u00b0</text></svg>",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q45. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{2+\\sqrt{3}}{3}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{2+\\sqrt{2}}{3}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{3+\\sqrt{3}}{2}$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{3-\\sqrt{2}}{2}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q46",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A proton is moving undeflected in a region of crossed electric and magnetic fields at a constant speed of $2 \\times 10^5$ ms\u207b\u00b9. When the electric field is switched off, the proton moves along a circular path of radius 2 cm. The magnitude of electric field is x \u00d7 10\u2075 N/C. the value of x is _____. Take the mass of the proton = $1.6 \\times 10^{-27}$ kg.",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q46. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "1",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "2",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "4",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "8",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q47",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Two long parallel wires X and Y, separated by a distance of 6 cm, carry currents of 5A and 4A, respectively, in opposite directions as shown in the figure. Magnitude of the resultant magnetic field at point P at a distance of 4 cm from wire Y is x \u00d7 10\u207b\u2075T. The value of x is ____. Take permeability of free space as $\\mu_0 = 4\\pi \\times 10\u207b\u2077$ SI units.\n<svg viewBox='0 0 300 200' xmlns='http://www.w3.org/2000/svg'><line x1='50' y1='40' x2='50' y2='160' stroke='black' stroke-width='3'/><line x1='110' y1='40' x2='110' y2='160' stroke='black' stroke-width='3'/><text x='45' y='35' font-family='Arial' font-size='14' font-weight='bold'>X</text><text x='105' y='35' font-family='Arial' font-size='14' font-weight='bold'>Y</text><polygon points='45,60 55,60 50,45' fill='black'/><text x='25' y='65' font-family='Arial' font-size='12'>5 A</text><polygon points='105,130 115,130 110,145' fill='black'/><text x='85' y='125' font-family='Arial' font-size='12'>4A</text><circle cx='150' cy='100' r='3' fill='black'/><text x='155' y='105' font-family='Arial' font-size='14' font-weight='bold'>P</text><line x1='50' y1='180' x2='110' y2='180' stroke='black' stroke-width='1'/><polygon points='50,175 50,185 45,180' fill='black'/><polygon points='110,175 110,185 115,180' fill='black'/><text x='75' y='195' font-family='Arial' font-size='12'>6 cm</text><line x1='110' y1='100' x2='150' y2='100' stroke='black' stroke-width='1'/><polygon points='110,95 110,105 105,100' fill='black'/><polygon points='150,95 150,105 155,100' fill='black'/><text x='125' y='115' font-family='Arial' font-size='12'>4cm</text></svg>",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q47. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "1",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "2",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "3",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "4",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q48",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A parallel plate capacitor of area A = 16 cm\u00b2 and separation between the plates 10 cm, is charged by a DC current. Consider a hypothetical plane surface of area A' = 3.2 cm\u00b2 inside the capacitor and parallel to the plates. At an instant, the current through the circuit is 6A. At the same instant the displacement current through A' is _____ mA.",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q48. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "600",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "1000",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "1200",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "1600",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q49",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A tube of length 1m is filled completely with an ideal liquid of mass 2M, and closed at both ends. The tube is rotated uniformly in horizontal plane about one of its ends. If the force exerted by the liquid at the other end is F then angular velocity of the tube is $\\sqrt{\\frac{F}{\\alpha M}}$ in SI unit. The value of $\\alpha$ is",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q49. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "1",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "2",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "3",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "4",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q50",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The net current flowing in the given circuit is ___ A.![Resistor Diagram Image](India/undergraduate/JEEMains/assets/jeeMain_2025_22Jan_shift2_q50.png)",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q50. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "0.5",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "1",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "1.5",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "2",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q51",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Arrange the following compounds in increasing order of their dipole moment : HBr, H\u2082S, NF\u2083 and CHCl\u2083",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q51. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$NF_3 < HBr < H_2S < CHCl_3$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$HBr < H_2S < NF_3 < CHCl_3$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$H_2S < HBr < NF_3 < CHCl_3$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$CHCl_3 < NF_3 < HBr < H_2S$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q52",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Identify the number of structure/s from the following which can be correlated to D-glyceraldehyde. <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 150'><path d='M40 14l0 87' stroke='#000' stroke-width='2' fill='none'/><path d='M40 40h20M40 70h20M40 100h20M50' stroke='#000' stroke-width='2' fill='none'/><text x='50' y='10' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='middle'>CHO</text><text x='60' y='40' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='start'>OH</text><text x='60' y='70' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='start'>OH</text><text x='60' y='100' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='start'>OH</text></svg><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 150'><path d='M40 14l0 116' stroke='#000' stroke-width='2' fill='none'/><path d='M40 40h20M40 70h-20M40 100h20M40 130h20' stroke='#000' stroke-width='2' fill='none'/><text x='50' y='10' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='middle'>CHO</text><text x='60' y='40' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='start'>OH</text><text x='1' y='70' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='start'>OH</text><text x='78' y='100' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='end'>HO</text><text x='60' y='130' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='start'>OH</text></svg><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 150'><path d='M50 10l0 121' stroke='#000' stroke-width='2' fill='none'/><path d='M50 40h20M50 70h-20M50 100h-20M50 130h20' stroke='#000' stroke-width='2' fill='none'/><text x='60' y='9' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='middle'>CHO</text><text x='90' y='40' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='end'>HO</text><text x='25' y='70' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='end'>HO</text><text x='25' y='100' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='end'>HO</text><text x='75' y='130' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='start'>OH</text></svg><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 150'><g transform='scale(1,-1) translate(0,-150)'><path d='M60 14l0 116' stroke='#000' stroke-width='2' fill='none'/><path d='M60 40h-20M60 70h20M60 100h-20M60 130h-20' stroke='#000' stroke-width='2' fill='none'/><text x='50' y='10' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='middle'>CHO</text><text x='40' y='40' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='end'>HO</text><text x='99' y='70' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='end'>HO</text><text x='22' y='100' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='start'>OH</text><text x='40' y='130' font-family='Arial' font-size='12' dominant-baseline='middle' text-anchor='end'>HO</text></g></svg>",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q52. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "tree",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "two",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "four",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "one",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q53",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The maximum covalency of a non-metallic group 15 element 'E' with weakest E-E bond is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q53. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "5",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "3",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "6",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "4",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q54",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Consider the given energy profile diagram and choose the correct option. ![Question 54 shift2](India/undergraduate/JEEMains/assets/jeeMain_2025_22Jan_shift2_q54.png)",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q54. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Activation energy of backward reaction is E\u2081 and product is more stable than reactant.",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Activation energy of forward reaction is E\u2081 + E\u2082 and product is more stable than reactant.",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Activation energy of forward reaction is E\u2082 and product is less stable than reactant.",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "Activation energy of both forward and backward reaction is E\u2081 + E\u2082 and reactant is more stable than product.",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q55",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "When sec-butylcyclohexane reacts with bromine in the presence of sunlight, the major product is formed by bromination at the most substituted carbon atom. Which is the major product?",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q55. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "1-bromo-1-sec-butylcyclohexane",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "1-bromo-2-sec-butylcyclohexane",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "1-bromo-4-sec-butylcyclohexane",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "1-(1-bromocyclohexyl)butane",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q56",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The species which does not undergo disproportionation reaction is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q56. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$ClO_2^-$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$ClO_4^-$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$ClO^-$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$ClO_3^-$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q57",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Match the Compounds (List-I) with the appropriate Catalyst/Reagents (List-II) for their reduction into corresponding amines. <table><tr><td>(A) Amide</td><td>(I) NaOH(aq)</td></tr><tr><td>(B) Nitro-compound</td><td>(II) H\u2082/Ni</td></tr><tr><td>(C) Nitrile</td><td>(III) LiAlH\u2084</td></tr><tr><td>(D) N-substituted phthalimide</td><td>(IV) Sn, HCl</td></tr></table>",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q57. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "(A)-(III), (B)-(IV), (C)-(II), (D)-(I)",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "(A)-(II), (B)-(IV), (C)-(III), (D)-(I)",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "(A)-(II), (B)-(I), (C)-(III), (D)-(IV)",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "(A)-(III), (B)-(I), (C)-(II), (D)-(IV)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q58",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The maximum number of structurally isomeric alkyl bromides (RBr) that produce 2-methylbutane upon reaction with Mg in dry ether followed by hydrolysis (H2O) is:",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q58. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "4",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "5",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "3",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "1",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q59",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Match List-I (Partial Derivatives) with List-II(Thermodynamic Quantity). <table><tr><td>(A) $(\\frac{\\partial G}{\\partial T})_P$</td><td>(I) $C_P$</td></tr><tr><td>(B) $(\\frac{\\partial H}{\\partial T})_P$</td><td>(II) -S</td></tr><tr><td>(C) $(\\frac{\\partial G}{\\partial P})_T$</td><td>(III) $C_V$</td></tr><tr><td>(D) $(\\frac{\\partial U}{\\partial T})_V$</td><td>(IV) V</td></tr></table>",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q59. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "(A)-(II), (B)-(I), (C)-(III), (D)-(IV)",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "(A)-(II), (B)-(I), (C)-(IV), (D)-(III)",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "(A)-(I), (B)-(II), (C)-(IV), (D)-(III)",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "(A)-(II), (B)-(III), (C)-(I), (D)-(IV)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q60",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The correct order of the following complexes in terms of their crystal field stabilization energies is : [Co(NH\u2083)\u2084]\u00b2\u207a, [Co(NH\u2083)\u2086]\u00b2\u207a, [Co(en)\u2083]\u00b3\u207a, [Co(NH\u2083)\u2086]\u00b3\u207a",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q60. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$[Co(NH_3)_4]^{2+}<[Co(NH_3)_6]^{2+}<[Co(en)_3]^{3+}<[Co(NH_3)_6]^{3+}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$[Co(NH_3)_4]^{2+}<[Co(NH_3)_6]^{2+}<[Co(NH_3)_6]^{3+}<[Co(en)_3]^{3+}$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$[Co(NH_3)_6]^{2+}<[Co(NH_3)_6]^{3+}<[Co(NH_3)_4]^{2+}<[Co(en)_3]^{3+}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$[Co(en)_3]^{3+}<[Co(NH_3)_6]^{3+}<[Co(NH_3)_6]^{2+}<[Co(NH_3)_4]^{2+}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q61",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Density of 3 M NaCl solution is 1.25 g/mL. The molality of the solution is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q61. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "1.79 m",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "2 m",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "3 m",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "2.79 m",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q62",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The molar solubility(s) of zirconium phosphate with molecular formula $(Zr^{4+})_3 (PO_4^{3-})_4$ is given by relation :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q62. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$(\\frac{K_{sp}}{6912})^{1/7}$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$(\\frac{K_{sp}}{5348})^{1/7}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$(\\frac{K_{sp}}{8435})^{1/7}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$(\\frac{K_{sp}}{9612})^{1/7}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q63",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The most stable carbocation from the following is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q63. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$p-MeO-C_6H_4-CH_2^+$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$p-MeO-C_6H_4-CH_2^+$ where O is OMe",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$p-H_3C-C_6H_4-CH_2^+$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$C_6H_5-CH_2^+$ with $OCH_3$ at meta position",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q64",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements :\nStatement (I) : An element in the extreme left of the periodic table forms acidic oxides.\nStatement (II) : Acid is formed during the reaction between water and oxide of a reactive element present in the extreme right of the periodic table.\nIn the light of the above statements, choose the correct answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q64. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Statement-I is false but Statement-II is true.",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "Both Statement-I and Statement-II are false.",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Statement-I is true but Statement-II is false.",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Both Statement-I and Statement-II are true.",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q65",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements :\nStatement (I) : A spectral line will be observed for a $2p_x \\to 2p_y$ transition.\nStatement (II) : $2p_x$ and $2p_y$ are degenerate orbitals.\nIn the light of the above statements, choose the correct answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q65. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both Statement-I and Statement-II are true.",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Both Statement-I and Statement-II are false.",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Statement-I is true but Statement-II is false.",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Statement-I is false but Statement-II is true.",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q66",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Given below are two statement :\nStatement (I) : Nitrogen, sulphur, halogen and phosphorus present in an organic compound are detected by Lassaigne's Test.\nStatement (II) : The elements present in the compound are converted from covalent form into ionic form by fusing the compound with Magnesium in Lassaigne's test.",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q66. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both Statement I and Statement II are true",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Both Statement I and Statement II are false",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Statement I is true but Statement II is false",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "Statement I is false but Statement II is true",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q67",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Identify the homoleptic complex(es) that is/are low spin.\n(A) [Fe(CN)\u2085NO]\u00b2\u207b\n(B) [CoF\u2086]\u00b3\u207b\n(C) [Fe(CN)\u2086]\u2074\u207a\n(D) [Co(NH\u2083)\u2086]\u00b3\u207a\n(E) [Cr(H\u2082O)\u2086]\u00b2\u207a",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q67. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "(B) and (E) only",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "(A) and (C) only",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "(C) and (D) only",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "(C) only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q68",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The reaction of Toluene with CrO\u2082Cl\u2082 followed by hydrolysis (Etard reaction) gives compound B. What are the intermediate (A) and final product (B)?",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q68. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A: Benzaldehyde, B: Benzoic acid",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "A: Chromium complex $[C_6H_5CH(OCrOHCl_2)_2]$, B: Benzaldehyde",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "A: Benzoic acid, B: Sodium benzoate",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "A: Benzaldehyde-bisulfite adduct, B: Benzaldehyde",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q69",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements :\nStatement (I) : Corrosion is an electrochemical phenomenon in which pure metal acts as an anode and impure metal as a cathode.\nStatement (II) : The rate of corrosion is more in alkaline medium than in acidic medium.\nIn the light of the above statements, choose the correct answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q69. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both Statement I and Statement II are false",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "Statement I is false but Statement II is true",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Both Statement I and Statement II are true",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Statement I is true but Statement II is false",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q70",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The alkane from below having two secondary hydrogens is :",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q70. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "4-Ethyl-3,4-dimethyloctane",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "2,2,4,4-Tetramethylhexane",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "2,2,4,5-Tetramethylheptane",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "2,2,3,3-Tetramethylpentane",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q71",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The compound with molecular formula C\u2086H\u2086, which gives only one monobromo derivative and takes up four moles of hydrogen per mole for complete hydrogenation has ______ $\\pi$ electrons.",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q71. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "4",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "6",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "8",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "10",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q72",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Niobium (Nb) and ruthenium (Ru) have \"x\" and \"y\" number of electrons in their respective 4d orbitals. The value of x + y is",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q72. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "10",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "11",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "12",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "9",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q73",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The complex of Ni\u00b2\u207a ion and dimethyl glyoxime contains ________ number of Hydrogen (H) atoms.",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q73. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "12",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "14",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "16",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "18",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q74",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Consider the following standard enthalpy of reactions ($\\Delta H^\\circ$ in kJ mol\u207b\u00b9)\n$C_2H_6(g) + \\frac{7}{2}O_2(g) \\to 2CO_2(g) + 3H_2O(l) \\quad \\Delta H^\\circ = -1550$\n$C(graphite) + O_2(g) \\to CO_2(g) \\quad \\Delta H^\\circ = -393.5$\n$H_2(g) + \\frac{1}{2}O_2(g) \\to H_2O(l) \\quad \\Delta H^\\circ = -286$\nThe magnitude of standard enthalpy of formation for $C_2H_6(g)$ ($\\Delta H_f^\\circ$) is _____ kJ mol\u207b\u00b9 (Nearest integer).",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q74. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "84",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "95",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "105",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "120",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2025_jan22_s2_q75",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2025_jan22_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "20 mL of 2 M NaOH solution is added to 400 mL of 0.5 M NaOH solution. The final concentration of the solution is _____ \u00d7 10\u207b\u00b2 M. (Nearest integer).",
+    "explanation": "Detailed solution for JEE Main 2025 Jan 22 Shift 2 Q75. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2025 Jan 22 Shift 2",
+    "year": 2025,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2025",
+      "JEE Main 2025 Jan 22 Shift 2",
+      "None"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "50",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "53",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "57",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "60",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q1",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $\\alpha, \\alpha + 2, \\alpha \\in \\mathbb{Z}$, be the roots of the quadratic equation $x(x + 2) + (x + 1)(x + 3) + (x + 2)(x + 4) + \\dots + (x + n - 1)(x + n + 1) = 4n$ for some $n \\in \\mathbb{N}$. Then $n + \\alpha$ is equal to :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q1. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "0",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "1",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "2",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "3",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q2",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $x$ and $y$ be real numbers such that $50 \\left( \\frac{2x}{1 + 3i} - \\frac{y}{1 - 2i} \\right) = 31 + 17i, i = \\sqrt{-1}$. Then the value of $10(x - 3y)$ is :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q2. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "20",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "31",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "35",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "75",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q3",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $\\alpha, \\beta \\in \\mathbb{R}$ be such that the system of linear equations\n$x + 2y + z = 5$\n$2x + y + \\alpha z = 5$\n$8x + 4y + \\beta z = 18$\nhas no solution. Then $\\frac{\\beta}{\\alpha}$ is equal to :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q3. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "-4",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "4",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "8",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "-8",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q4",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $A = \\begin{bmatrix} 1 & 2 \\\\ 1 & \\alpha \\end{bmatrix}$ and $B = \\begin{bmatrix} 3 & 3 \\\\ \\beta & 2 \\end{bmatrix}$. If $A^2 - 4A + I = O$ and $B^2 - 5B - 6I = O$, then among the two statements :\n(S1): $[(B - A)(B + A)]^T = \\begin{bmatrix} 13 & 15 \\\\ 7 & 10 \\end{bmatrix}$\nand\n(S2): $\\det(\\text{adj}(A + B)) = -5$,",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q4. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "only (S1) is correct",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "only (S2) is correct",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "both (S1) and (S2) are correct",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "both (S1) and (S2) are wrong",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q5",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $A$ be the set of first 101 terms of an A.P., whose first term is 1 and the common difference is 5 and let $B$ be the set of first 71 terms of an A.P., whose first term is 9 and the common difference is 7. Then the number of elements in $A \\cap B$, which are divisible by 3, is :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q5. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "4",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "5",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "6",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "7",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q6",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "The number of seven-digit numbers, that can be formed by using the digits 1, 2, 3, 5 and 7 such that each digit is used at least once, is :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q6. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "15400",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "17800",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "16800",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "29400",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q7",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "The number of elements in the set $S = \\left\\{ (r, k) : k \\in \\mathbb{Z} \\text{ and } {}^{36}C_{r+1} = \\frac{6 \\left({}^{35}C_r\\right)}{k^2 - 3} \\right\\}$, is :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q7. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "2",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "4",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "8",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "16",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q8",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "If the mean of the data\n\n| Class | $5 - 10$ | $10 - 15$ | $15 - 20$ | $20 - 25$ | $25 - 30$ | $30 - 35$ |\n|---|---|---|---|---|---|---|\n| Frequency | 2 | $k$ | 28 | 54 | $k + 1$ | 5 |\n\nis $21$, then $k$ is one of the roots of the equation :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q8. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$2x^2 - 23x - 10 = 0$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$4x^2 - 35x + 24 = 0$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$2x^2 - 19x - 10 = 0$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$2x^2 - 35x + 98 = 0$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q9",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let the mid points of the sides of a triangle $ABC$ be $\\left(\\frac{5}{2}, 7\\right)$, $\\left(\\frac{5}{2}, 3\\right)$ and $(4, 5)$. If its incentre is $(h, k)$, then $3h + k$ is equal to :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q9. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "11",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "12",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "13",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "14",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q10",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let an ellipse $\\frac{x^2}{a^2} + \\frac{y^2}{b^2} = 1, a < b$, pass through the point $(4, 3)$ and have eccentricity $\\frac{\\sqrt{5}}{3}$. Then the length of its latus rectum is :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q10. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{4\\sqrt{5}}{3}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$2\\sqrt{5}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{7\\sqrt{5}}{3}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{8\\sqrt{5}}{3}$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q11",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "If $\\sin \\left( \\frac{\\pi}{18} \\right) \\sin \\left( \\frac{5\\pi}{18} \\right) \\sin \\left( \\frac{7\\pi}{18} \\right) = K$, then the value of $\\sin \\left( \\frac{10K\\pi}{3} \\right)$ is :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q11. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{\\sqrt{3} + 1}{2\\sqrt{2}}$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{\\sqrt{3} - 1}{\\sqrt{2}}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{\\sqrt{3}}{2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{1}{2}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q12",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $S = \\{x \\in [-\\pi, \\pi] : \\sin x(\\sin x + \\cos x) = a, a \\in \\mathbb{Z}\\}$. Then $n(S)$ is equal to :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q12. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "3",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "6",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "7",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "9",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q13",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "If the point of intersection of the lines $\\frac{x + 1}{3} = \\frac{y + a}{5} = \\frac{z + b + 1}{7}$ and $\\frac{x - 2}{1} = \\frac{y - b}{4} = \\frac{z - 2a}{7}$ lies on $xy$-plane, then the value of $a + b$ is :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q13. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "2",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "5",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "7",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "9",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q14",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "If $\\vec{a}$ and $\\vec{b}$ are two vectors such that $|\\vec{a}| = 2$ and $|\\vec{b}| = 3$, then the maximum value of $3 \\left| (3\\vec{a} + 2\\vec{b}) \\right| + 4 \\left| (3\\vec{a} - 2\\vec{b}) \\right|$ is :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q14. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "30",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "36",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "60",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "72",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q15",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let a line $L$ passing through the point $(1, 1, 1)$ be perpendicular to both the vectors $2\\hat{i} + 2\\hat{j} + \\hat{k}$ and $\\hat{i} + 2\\hat{j} + 2\\hat{k}$. If $P(a, b, c)$ is the foot of perpendicular from the origin on the line $L$, then the value of $34(a + b + c)$ is :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q15. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "50",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "80",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "100",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "120",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q16",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "If $\\lim_{x \\to 2} \\frac{\\sin(x^3 - 5x^2 + ax + b)}{(\\sqrt{x - 1} - 1)\\log_e(x - 1)} = m$, then $a + b + m$ is equal to :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q16. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "5",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "6",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "8",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "10",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q17",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "If the curve $y = f(x)$ passes through the point $(1, e)$ and satisfies the differential equation $dy = y(2 + \\log_e x) dx$, $x > 0$, then $f(e)$ is equal to :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q17. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$e^e$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$e^{e^2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$e^{2e}$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$e^{3e}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q18",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "The number of critical points of the function $f(x) = \\begin{cases} \\left| \\frac{\\sin x}{x} \\right|, & x \\neq 0 \\\\ 1, & x = 0 \\end{cases}$ in the interval $(-2\\pi, 2\\pi)$ is equal to :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q18. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "1",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "3",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "5",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "7",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q19",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $[\\cdot]$ denote the greatest integer function. Then the value of $\\int_0^3 \\left( \\frac{e^x + e^{-x}}{[x]!} \\right) dx$ is :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q19. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$e^2 + e^3 - \\frac{1}{e^2} - \\frac{1}{e^3}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{1}{2} \\left( e^2 + e^3 - \\frac{1}{e^2} - \\frac{1}{e^3} \\right)$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$e^2 + e^3 - \\frac{1}{2e^2} - \\frac{1}{2e^3}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{1}{2}(e^2 + e^3) - \\frac{1}{e^2} - \\frac{1}{e^3}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q20",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $y = y(x)$ be the solution curve of the differential equation $(1 + \\sin x)\\frac{dy}{dx} + (y + 1)\\cos x = 0, y(0) = 0$. If the curve $y = y(x)$ passes through the point $\\left(\\alpha, \\frac{-1}{2}\\right)$, then a value of $\\alpha$ is :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q20. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{\\pi}{6}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{\\pi}{4}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{\\pi}{3}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{\\pi}{2}$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q21",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "If the domain of the function $f(x) = \\sqrt{\\log_{(0.6)} \\left( \\frac{2x - 5}{x^2 - 4} \\right)}$ is $(-\\infty, a] \\cup \\{b\\} \\cup [c, d) \\cup (e, \\infty)$, then the value of $a + b + c + d + e$ is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q21. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "2",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "4",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "6",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "8",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q22",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "If $\\sum_{k=1}^n a_k = 6n^3$, then $\\sum_{k=1}^6 \\left( \\frac{a_{k+1} - a_k}{36} \\right)^2$ is equal to _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q22. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "91",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "84",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "105",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "112",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q23",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $a, b, c \\in \\{1, 2, 3, 4\\}$. If the probability, that $ax^2 + 2\\sqrt{2}bx + c > 0$ for all $x \\in \\mathbb{R}$, is $\\frac{m}{n}$, $\\gcd(m, n) = 1$, then $m + n$ is equal to _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q23. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "81",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "75",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "64",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "90",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q24",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let a circle $C$ have its centre in the first quadrant, intersect the coordinate axes at exactly three points and cut off equal intercepts from the coordinate axes. If the length of the chord of $C$ on the line $x + y = 1$ is $\\sqrt{14}$, then the square of the radius of $C$ is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q24. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "6",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "8",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "10",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "14",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q25",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "If $\\alpha = \\int_0^{2\\sqrt{3}} \\log_2(x^2 + 4) dx + \\int_2^4 \\sqrt{2^x - 4} dx$, then $\\alpha^2$ is equal to _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q25. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "192",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "128",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "256",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "64",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q26",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The dimensional formula of $\\frac{1}{2}\\epsilon_0 E^2$ ($\\epsilon_0 =$ permittivity of vacuum and $E =$ electric field) is $M^a L^b T^c$. The value of $2a - b + c = $ _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q26. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "0",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "1",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "-1",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "2",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q27",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The diameter of a wire measured by a screw gauge of least count $0.001\\text{ cm}$ is $0.08\\text{ cm}$. The length measured by a scale of least count $0.1\\text{ cm}$ is $150\\text{ cm}$. When a weight of $100\\text{ N}$ is applied to the wire, the extension in length is $0.5\\text{ cm}$, measured by a micrometer of least count $0.001\\text{ cm}$. The error in the measured Young's modulus is $\\alpha \\times 10^9\\text{ N/m}^2$. The value of $\\alpha$ is _______. (Ignore the contribution of the load to Young's modulus error calculation)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q27. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "1.3",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "1.65",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "0.13",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "0.25",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q28",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The velocity of a particle is given as $\\vec{v} = -x\\hat{i} + 2y\\hat{j} - z\\hat{k}\\text{ m/s}$. The magnitude of acceleration at point $(1, 2, 4)$ is _______ $\\text{m/s}^2$.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q28. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\sqrt{6}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "9",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$\\sqrt{33}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "0",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q29",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The position of an object having mass $0.1\\text{ kg}$ as a function of time $t$ is given as $\\vec{r} = (10t^2\\hat{i} + 5t^3\\hat{j})\\text{ m}$. At $t = 1\\text{ s}$, which of the following statements are correct?\nA. The linear momentum $\\vec{p} = (2\\hat{i} + 1.5\\hat{j})\\text{ kg\\cdot m/s}$.\nB. The force acting on the object $\\vec{F} = (2\\hat{i} + 3\\hat{j})\\text{ N}$.\nC. The angular momentum of the object about its origin $\\vec{L} = 15\\hat{k}\\text{ J\\cdot s}$.\nD. The torque acting on the object about its origin $\\vec{\\tau} = 20\\hat{k}\\text{ N\\cdot m}$.\n\nChoose the correct answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q29. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A, B and C only",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "B, C and D only",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "A, C and D only",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "A, B and D only",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q30",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A planet ($P_1$) is moving around the star of mass $2M$ in the orbit of radius $R$. Another planet ($P_2$) is moving around another star of mass $4M$ in a orbit of radius $2R$. Ratio of time periods of revolution of $P_2$ and $P_1$ is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q30. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{1}{2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "2",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "4",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{1}{4}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q31",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A particle is rotating in a circular path and at any instant its motion can be described as $\\theta = \\frac{5t^4}{40} - \\frac{t^3}{3}$. The angular acceleration of the particle after $10\\text{ seconds}$ is _______ $\\text{rad/s}^2$.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q31. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "150",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "120",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "130",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "170",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q32",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "![Capacitor half-filled with dielectric](https://www.sarthaks.com/?qa=blob&qa_blobid=12716304422748890071)\nA parallel plate air capacitor has a capacitance $C$. When it is half filled as show in figure with a dielectric constant $K = 5$, the percentage increase in the capacitance is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q32. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "33.34",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "66.67",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "200",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "400",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q33",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Heat is supplied to a diatomic gas at constant pressure. Then the ratio of $\\Delta Q : \\Delta U : \\Delta W$ is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q33. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$2 : 3 : 5$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$5 : 3 : 2$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$2 : 5 : 7$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$7 : 5 : 2$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q34",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Two charged conducting spheres $S_1$ and $S_2$ of radii $8\\text{ cm}$ and $18\\text{ cm}$ are connected to each other by a wire. After equilibrium is established, the ratio of electric fields on $S_1$ and $S_2$ spheres are $E_{S_1}$ and $E_{S_2}$ respectively. The value of $\\frac{E_{S_1}}{E_{S_2}}$ is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q34. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{3}{2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{2}{3}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{4}{9}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{9}{4}$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q35",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The equation of a plane progressive wave is given by $y = 5 \\cos \\pi \\left(200t - \\frac{x}{150}\\right)$ where $x$ and $y$ are in cm and $t$ is in second. The velocity of the wave is _______ m/s.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q35. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "120",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "150",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "200",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "300",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q36",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "![Two mutually perpendicular dipoles](https://cracku.in/media/uploads/image_ym0nAW9.png)\nTwo short electric dipoles $A$ and $B$ having dipole moment $p_1$ and $p_2$ respectively are placed with their axis mutually perpendicular as shown in the figure. The resultant electric field at a point $x$ is making an angle of $60^\\circ$ with the line joining points $O$ and $x$. The ratio of the dipole moments $p_2/p_1$ is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q36. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{\\sqrt{3}}{2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$2\\sqrt{3}$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{1}{\\sqrt{3}}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\sqrt{3}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q37",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "For a given circuit the time dependent input voltage $v_{in}(t)$ is a sine wave alternating between $20\\text{V}$ and $-20\\text{V}$. The corresponding output $v_o(t)$ is clipped flat at $+5\\text{V}$ and $-5\\text{V}$. Identify the components that are used in the circuit in the parallel branch between points X and Y to produce this clipped output.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q37. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A resistor and a standard p-n junction diode",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Two standard p-n junction diodes connected back-to-back",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "A resistor and a Zener diode",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Two Zener diodes connected back-to-back",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q38",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "When a coil is placed in a time dependent magnetic field the power dissipated in it is $P$. The number of turns, area of the coil and radius of the coil wire are $N$, $A$ and $r$ respectively. For a second coil, number of turns, area of the coil and radius of the coil wire are $2N$, $2A$ and $3r$ respectively. When the first coil is replaced with the second coil the power dissipated in it is $\\sqrt{2} \\alpha P$. The value of $\\alpha$ is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q38. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "36",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$128\\sqrt{2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "16",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "64",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q39",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "![Diagrams of two magnetic wire configurations](https://cracku.in/media/uploads/image_4yvtbH5.png)\nTwo identical long current carrying wires are bent into the shapes shown in figures. Shape (I) consists of a U-turn featuring a semicircle where the current enters, loops, and leaves parallel. Shape (II) consists of a semi-infinite wire leading into a semicircle, ending such that the exiting semi-infinite wire aligns radially outward giving zero contribution at center. If the magnitude of magnetic fields at the centres P and Q of a semicircular arc are $B_1$ and $B_2$ respectively, then the ratio $B_1 / B_2$ is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q39. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{2 + \\pi}{1 + \\pi}$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{1 + \\pi}{1 - \\pi}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{2 + \\pi}{1 - \\pi}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{1 + \\pi}{2 - \\pi}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q40",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "For a thin symmetric prism made of glass (refractive index 1.5), the ratio of incident angle and minimum deviation will be _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q40. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "3 : 4",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "3 : 2",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "2 : 1",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "1 : 2",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q41",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "![Object near a concave spherical refracting surface with marked pole and center of curvature](https://cracku.in/media/uploads/image_STnkdxu.png)\nRefer the figure given. An object of height 2 cm is placed 40 cm from the pole $P$ of a single spherical refracting surface. The center of curvature $C$ is at a distance of 20 cm from $P$, situated between the object and the pole. $\\mu_1 = 1$ and $\\mu_2 = 1.54$ (approximated behavior as 1.5 in intended keys) are refractive indices of air and lens material. The magnitude of the height of image will be _______ cm.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q41. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "1",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "0.5",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "1.2",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "0.25",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q42",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "For a certain metal, when monochromatic light of wavelength $\\lambda$ is incident, the stopping potential for photoelectrons is $3V_0$. When the same metal is illuminated by light of wavelength $2\\lambda$, then the stopping potential becomes $V_0$. The threshold wavelength for photoelectric emission for the given metal is $\\alpha \\lambda$. The value of $\\alpha$ is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q42. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "1",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "4",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "2",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "3",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q43",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "An electromagnetic wave travelling in x-direction is described by field equation $E_y = 300 \\sin \\omega \\left(t - \\frac{x}{c}\\right)$. If the electron is restricted to move in y-direction only with speed of $1.5 \\times 10^6\\text{ m/s}$ then ratio of maximum electric and magnetic forces acting on the electron is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q43. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "200",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "150",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "400",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "300",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q44",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Angular momentum of an electron in a hydrogen atom is $\\frac{3h}{\\pi}$, then the energy of the electron is _______ eV.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q44. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "-1.51",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "-0.85",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "-0.38",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "-0.28",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q45",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A liquid drop of diameter 2 mm breaks into 512 droplets. The change in surface energy is $\\alpha \\times 10^{-6}\\text{ J}$. The value of $\\alpha$ is _______. (Take surface tension of liquid $= 0.08\\text{ N/m}$)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q45. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "10",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "7",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "8",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "11",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q46",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "In single slit diffraction pattern, the wavelength of light used is 628 nm and slit width is 0.2 mm, the angular width of central maximum is $\\alpha \\times 10^{-2}$ degrees. The value of $\\alpha$ is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q46. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "18",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "36",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "72",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "54",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q47",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A vessel contains $0.15\\text{ m}^3$ of a gas at pressure 8 bar and temperature $140^\\circ\\text{C}$ with $c_p = 3R$ and $c_v = 2R$. It is expanded adiabatically till pressure falls to 1 bar. The work done during this process is _______ kJ. ($R$ is gas constant)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q47. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "80",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "100",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "120",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "140",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q48",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "$1\\text{ }\\mu\\text{C}$ charge moving with velocity $\\vec{v} = (\\hat{i} - 2\\hat{j} + 3\\hat{k})\\text{ m/s}$ in the region of magnetic field $\\vec{B} = (2\\hat{i} + 3\\hat{j} - 5\\hat{k})\\text{ T}$. The magnitude of force acting on it is $\\sqrt{\\alpha} \\times 10^{-6}\\text{ N}$. The value of $\\alpha$ is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q48. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "114",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "152",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "171",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "196",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q49",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A uniform wire of length $l$ of weight $w$ is suspended from the roof with a weight of $W$ at the other end. The stress in the wire at $\\frac{l}{3}$ distance from the top is $\\left( \\frac{W}{A} + \\frac{2}{\\gamma}\\frac{w}{A} \\right)$, where, $A$ is the cross sectional area of the wire. The value of $\\gamma$ is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q49. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "2",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "3",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "4",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "5",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q50",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A tub is filled with water and a wooden cube 10 cm $\\times$ 10 cm $\\times$ 10 cm is placed in the water. The wooden cube is found to float on the water with a part of it submerged in water. When a metal coin is placed on the wooden cube, the submerged part is increased by 3.87 cm. The mass of the metal coin is _______ gram. (Take water density as $1\\text{ g/cm}^3$ and density of wood as $0.4\\text{ g/cm}^3$)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q50. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "258",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "387",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "420",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "516",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q51",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "The mass of iron converted into $Fe_3O_4$ by the action of $18\\text{ g}$ of steam is :\n(Given : Molar mass of H, O and Fe are 1, 16 and 56 $\\text{g mol}^{-1}$ respectively)\nAssume iron is present in excess :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q51. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "2.1 g",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "4.2 g",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "21 g",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "42 g",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q52",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "What is the energy (in $\\text{J atom}^{-1}$) required for the following process?\n$Li^{2+}(g) \\rightarrow Li^{3+}(g) + e^-$\n(Take the ionization energy for the H atom in the ground state as $2.18 \\times 10^{-18}\\text{ J atom}^{-1}$)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q52. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$8.72 \\times 10^{-18}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$1.962 \\times 10^{-18}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$1.962 \\times 10^{-17}$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$6.54 \\times 10^{-17}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q53",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements :\nStatement (I) : The correct sequence of bond lengths in the following species is : $O_2^+ < O_2 < O_2^- < O_2^{2-}$\nStatement (II) : The correct sequence of number of unpaired electrons in the following species is : $O_2 > O_2^+ > O_2^- > O_2^{2-}$\nIn the light of the above statements, choose the correct answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q53. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both Statement I and Statement II are true",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Both Statement I and Statement II are false",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Statement I is true but Statement II is false",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "Statement I is false but Statement II is true",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q54",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Consider the following data.\n(i) $2Al(s) + 6HCl(aq) \\rightarrow Al_2Cl_6(aq) + 3H_2(g) \\quad \\Delta H_1 = -1200\\text{ kJ/mol}$\n(ii) $H_2(g) + Cl_2(g) \\rightarrow 2HCl(g) \\quad \\Delta H_2 = -164\\text{ kJ/mol}$\n(iii) $HCl(g) + aq \\rightarrow HCl(aq) \\quad \\Delta H_3 = -83\\text{ kJ/mol}$\n(iv) $Al_2Cl_6(s) + aq \\rightarrow Al_2Cl_6(aq) \\quad \\Delta H_4 = -663\\text{ kJ/mol}$\n(Note: The standard convention used here takes $+ Q$ on the product side as an exothermic process, yielding negative $\\Delta H$ values for the above reactions as given in the raw text).\nThe enthalpy of formation of anhydrous solid $Al_2Cl_6$ is :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q54. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$-648\\text{ kJ mol}^{-1}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$-1350\\text{ kJ mol}^{-1}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$-2002\\text{ kJ mol}^{-1}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$-1527\\text{ kJ mol}^{-1}$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q55",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "$19.5\\text{ g}$ of fluoro acetic acid (molar mass = $78\\text{ g mol}^{-1}$) is dissolved in $500\\text{ g}$ of water at $298\\text{ K}$. The depression in the freezing point of water was $1^\\circ\\text{C}$. What is $K_a$ of fluoro acetic acid? (For water, $K_f = 1.86\\text{ K kg mol}^{-1}$). Assume molarity and molality to have same values.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q55. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$10^{-6}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$4 \\times 10^{-4}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$3 \\times 10^{-5}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$3 \\times 10^{-3}$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q56",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "The solubility product constants of $Ag_2CrO_4$ and $AgBr$ are $32x$ and $4y$ respectively at $298\\text{ K}$. The value of $\\left( \\frac{\\text{molarity of } Ag_2CrO_4}{\\text{molarity of } AgBr} \\right)$ (referring to their molar solubilities) can be expressed as :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q56. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{2\\sqrt{3}x}{y}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$2\\sqrt{\\frac{x}{y}}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\sqrt{\\frac{x}{y}}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{\\sqrt[3]{x}}{\\sqrt{y}}$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q57",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "An electrochemical cell is constructed using half cells in the direction of spontaneous change\n$Fe(OH)_2(s) + 2e^- \\rightarrow Fe(s) + 2OH^-(aq) \\quad E^\\theta = -0.88\\text{ V}$\nand $AgBr(s) + e^- \\rightarrow Ag(s) + Br^-(aq) \\quad E^\\theta = +0.07\\text{ V}$\nWhich of the following option is correct?",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q57. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Overall reaction $Fe(s) + 2OH^-(aq) + 2AgBr(s) \\rightleftharpoons Fe(OH)_2(s) + 2Ag(s) + 2Br^-(aq)$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$E_{cell}^\\theta = -0.95\\text{ V}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Fe is reduced in the electrochemical cell",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$E_{cell}^\\theta$ is an extensive property",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q58",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "$t_{100\\%}$ is the time required for the $100\\%$ completion of the reaction while $t_{1/2}$ is the time required for $50\\%$ of the reaction to be completed. Which of the following option correctly represents the relation between $t_{100\\%}$ and $t_{1/2}$ for zero and first order reactions respectively?",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q58. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$t_{100\\%} = (t_{1/2})^2$ and $t_{100\\%} = (t_{1/2})^{-\\infty}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$t_{100\\%} = 2t_{1/2}$ and $t_{100\\%} = \\infty$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$t_{100\\%} = 2t_{1/2}$ and $t_{100\\%} = (2t_{1/2})^2$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$t_{100\\%} = (t_{1/2})^\\infty$ and $t_{100\\%} = 2t_{1/2}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q59",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements :\nStatement (I) : The first ionisation enthalpy of the elements Na, Mg, Cl and Ar follows the order Na > Mg > Cl > Ar.\nStatement (II) : Among Ca, Al, Fe and B, the third ionisation enthalpy is very high for Ca.\nIn the light of the above statements, choose the correct answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q59. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both Statement I and Statement II are true",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Both Statement I and Statement II are false",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Statement I is true but Statement II is false",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Statement I is false but Statement II is true",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q60",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements :\nStatement (I) : Oxidising power of halogens decreases in the order $F_2 > Cl_2 > Br_2 > I_2$, which is the basis of \"Layer test\".\nStatement (II) : \"Layer test\" to identify $Br_2$ and $I_2$ in aqueous solution involves the oxidation of bromide or iodide into $Br_2$ or $I_2$ respectively with $Cl_2$, which is a type of displacement redox reaction.\nIn the light of the above statements, choose the correct answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q60. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both Statement I and Statement II are true",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "Both Statement I and Statement II are false",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Statement I is true but Statement II is false",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Statement I is false but Statement II is true",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q61",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Which of the following sets includes all the species that will change the orange colour of $K_2Cr_2O_7$ in acidic medium?",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q61. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$Fe^{2+}, Sn^{2+}, I^-, S^{2-}$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$S^{2-}, Fe^{3+}, I^-, C_2O_4^{2-}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$Fe^{2+}, NO_2^-, SO_2, Sn^{4+}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$Fe^{3+}, SO_4^{2-}, S^{2-}, Sn^{4+}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q62",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Match List - I with List - II.\nList - I: Chromium (III) Complexes (en = ethylene diamine)\nA. $[Cr(CN)_6]^{3-}$\nB. $[CrF_6]^{3-}$\nC. $[Cr(H_2O)_6]^{3+}$\nD. $[Cr(en)_3]^{3+}$\n\nList - II: $\\Delta_0 (\\text{cm}^{-1})$\nI. $15,060$\nII. $17,400$\nIII. $22,300$\nIV. $26,600$\nChoose the correct answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q62. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A-I, B-II, C-III, D-IV",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "A-II, B-III, C-IV, D-I",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "A-III, B-IV, C-I, D-II",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "A-IV, B-I, C-II, D-III",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q63",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements :\nStatement (I) : 1,2,3-Trihydroxypropane can be separated from water by simple distillation.\nStatement (II) : An azeotropic mixture cannot be separated by fractional distillation.\nIn the light of the above statements, choose the correct answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q63. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both Statement I and Statement II are true",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Both Statement I and Statement II are false",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Statement I is true but Statement II is false",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Statement I is false but Statement II is true",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q64",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements :\nStatement (I) : Benzyl chloride reacts faster in $S_N1$ mechanism than ethyl chloride.\nStatement (II) : Ethyl carbocation intermediate is less stabilized by hyperconjugation than benzyl carbocation by resonance.\nIn the light of the above statements, choose the correct answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q64. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both Statement I and Statement II are true",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "Both Statement I and Statement II are false",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Statement I is true but Statement II is false",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Statement I is false but Statement II is true",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q65",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "In IUPAC nomenclature, the correct order of decreasing priority of functional group is :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q65. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$-CONH_2 > > C = O > -CHO > -NH_2 > -C \\equiv C-$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$-CONH_2 > -COOCH_3 > -CHO > -NH_2 > -OH$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$-CONH_2 > -CHO > > C = O > -NH_2 > -C \\equiv C-$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$-CONH_2 > -CHO > -CN > -NH_2 > -C \\equiv C-$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q66",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "For the molecule N-phenylpiperidine (in which the phenyl ring is substituted by a cyclic nitrogen containing group), the preferred site for the attack of an electrophile on the phenyl ring is :\n(Let 'p' and 's' denote the ortho positions, 'r' the meta position, and 'u' the para position relative to the nitrogen atom substituent on the phenyl ring)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q66. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Predominantly at \"r\"",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "\"r\" and \"u\"",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "\"p\" and \"s\"",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Predominantly at \"u\"",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q67",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Match List - I with List - II.\nList - I: Mixture of Compounds\nA. Diethyl amine + Ethyl amine\nB. Acetaldehyde + Acetone\nC. Ethanol + Phenol\nD. Benzoic acid + Cinnamic acid\n\nList - II: Reagent used to distinguish\nI. Bromine water\nII. $CHCl_3 + KOH, \\Delta$\nIII. Neutral $FeCl_3$\nIV. Ammonical silver nitrate\n\nChoose the correct answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q67. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A-IV, B-II, C-I, D-III",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "A-IV, B-II, C-III, D-I",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "A-II, B-IV, C-I, D-III",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "A-II, B-IV, C-III, D-I",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q68",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Consider the three aromatic molecules (P, Q and R):\nP is N,N-dimethylaniline; \nQ is N,N-dimethyl-o-toluidine (one methyl group at ortho position); \nand R is N,N-dimethyl-2,6-xylidine (two methyl groups at ortho positions).\nThe correct order regarding the reactivity of these compounds with $Ph - N \\equiv NCl^-$ (benzene diazonium chloride) under optimum but slightly acidic medium is :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q68. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "P > Q > R",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "R > P > Q",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "R > Q > P",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "P > R > Q",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q69",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Match List - I with List - II.\nList - I: Vitamin\nA. Vitamin $B_1$\nB. Vitamin $B_2$\nC. Vitamin $B_6$\nD. Vitamin C\n\nList - II: Name\nI. Pyridoxine\nII. Ascorbic acid\nIII. Thiamine\nIV. Riboflavin\n\nChoose the correct answer from the options given below :",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q69. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A-II, B-I, C-III, D-IV",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "A-IV, B-III, C-II, D-I",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "A-III, B-IV, C-I, D-II",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "A-I, B-III, C-II, D-IV",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q70",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "A salt with few drops of conc. HCl gives apple green colour in flame test. The group precipitate of the salt is dissolved in acetic acid and treated with $K_2CrO_4$ to give yellow precipitate. When the sodium carbonate extract of the salt solution is heated with conc. $HNO_3$ and ammonium molybdate, it resulted a canary yellow precipitate. The cation and anion present in the salt are respectively,",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q70. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$Ca^{2+}$ and $SO_4^{2-}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$Ba^{2+}$ and $PO_4^{3-}$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$Mn^{2+}$ and $PO_4^{3-}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$Ba^{2+}$ and $SO_4^{2-}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q71",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "5.33 g of $CrCl_3 \\cdot 6H_2O$, which is a $1:3$ electrolyte, is dissolved in water and is passed through a cation exchanger. The chloride ions in the eluted solution, on treatment with $AgNO_3$ results in 8.61 g of $AgCl$. The ratio of moles of complex reacted and moles of $AgCl$ formed is _______ $\\times 10^{-2}$. (Nearest integer)\n[Molar mass in $\\text{g mol}^{-1}$ Cr : 52, Ag : 108, Cl : 35.5, H : 1, O : 16]",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q71. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "31",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "32",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "33",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "34",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q72",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Consider the isomers of hydrocarbon with molecular formula $C_5H_{10}$. These isomers do not decolourise $KMnO_4$ solution. These isomers are subjected to chlorination with chlorine in presence of light to give monochloro compounds. The total number of monochloro compounds (structural isomers only) formed is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q72. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "12",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "13",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "14",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "15",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q73",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "One mole of an alkane (x) requires 8 mole oxygen for complete combustion. Sum of number of carbon and hydrogen atoms in the alkane (x) is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q73. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "15",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "16",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "17",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "18",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q74",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "For reaction $A \\rightarrow P$, rate constant $k = 1.5 \\times 10^3\\text{ s}^{-1}$ at $27^\\circ\\text{C}$. If activation energy for the above reaction is $60\\text{ kJ mol}^{-1}$, then the temperature (in $^\\circ\\text{C}$) at which rate constant, $k = 4.5 \\times 10^3\\text{ s}^{-1}$ is _______. (Nearest integer)\nGiven : $\\log 2 = 0.30$, $\\log 3 = 0.48$, $R = 8.3\\text{ J K}^{-1}\\text{ mol}^{-1}$, $\\ln 10 = 2.3$",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q74. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "31",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "41",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "51",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "61",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s1_q75",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "At the transition temperature $T$, $A \\rightleftharpoons B$ and $\\Delta G^0 = 105 - 35 \\log T$ where $A$ and $B$ are two states of substance $X$. The transition temperature in $^\\circ\\text{C}$ when pressure is $1\\text{ atm}$ is _______. (Nearest integer)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 1 Q75. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "727",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "827",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "1000",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "273",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q1",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $\\alpha, \\beta$ be the roots of the equation $x^2 - 3x + r = 0$, and $\\frac{\\alpha}{2}, 2\\beta$ be the roots of the equation $x^2 + 3x + r = 0$. If the roots of the equation $x^2 + 6x = m$ are $2\\alpha + \\beta + 2r$ and $\\alpha - 2\\beta - \\frac{r}{2}$, then $m$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q1. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$-135$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$-567$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$135$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$567$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q2",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let the circles $C_1 : |z| = r$ and $C_2 : |z - 3 - 4i| = 5, z \\in \\mathbb{C}$, be such that $C_2$ lies within $C_1$. If $z_1$ moves on $C_1$, $z_2$ moves on $C_2$ and $\\min |z_1 - z_2| = 2$, then $\\max |z_1 - z_2|$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q2. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$12$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$17$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$22$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$24$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q3",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "If the system of equations\n$x + 5y + 6z = 4$,\n$2x + 3y + 4z = 7$,\n$x + 6y + az = b$\nhas infinitely many solutions, then the point $(a, b)$ lies on the line:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q3. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$y - x = 3$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$x - y = 3$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$x + y = 11$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$x + y = 12$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q4",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $a_1, a_2, a_3, \\dots$ be an A.P. and $g_1 = a_1, g_2, g_3, \\dots$ be an increasing G.P. If $a_1 = a_2 + g_2 = 1$ and $a_3 + g_3 = 4$, then $a_{10} + g_5$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q4. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$81$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$76$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$62$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$55$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q5",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "The sum $\\frac{1^3}{1} + \\frac{1^3 + 2^3}{1 + 3} + \\frac{1^3 + 2^3 + 3^3}{1 + 3 + 5} + \\dots$ up to 8 terms, is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q5. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$70$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$71$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$72$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$73$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q6",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "If for $3 \\leq r \\leq 30$, $\\binom{30}{30-r} + 3\\binom{30}{31-r} + 3\\binom{30}{32-r} + \\binom{30}{33-r} = \\binom{m}{r}$, then $m$ equals:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q6. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$31$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$32$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$33$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$34$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q7",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $p_n$ denote the total number of triangles formed by joining the vertices of an $n$-sided regular polygon. If $p_{n+1} - p_n = 66$, then the sum of all distinct prime divisors of $n$ is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q7. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$7$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$8$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$5$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$6$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q8",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "A man throws a fair coin repeatedly. He gets 10 points for each head he throws and 5 points for each tail he throws. If the probability that he gets exactly 30 points is $\\frac{m}{n}$, $\\gcd(m, n) = 1$, then $m + n$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q8. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$53$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$55$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$107$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$105$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q9",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "The mean and variance of $n$ observations are $8$ and $16$, respectively. If the sum of the first $(n - 1)$ observations is $48$ and the sum of squares of the first $(n - 1)$ observations is $496$, then the value of $n$ is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q9. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$21$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$16$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$13$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$7$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q10",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let a circle pass through the origin and its centre be the point of intersection of two mutually perpendicular lines $x + (k - 1)y + 3 = 0$ and $2x + k^2y - 4 = 0$. If the line $x - y + 2 = 0$ intersects the circle at the points A and B, then $(AB)^2$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q10. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$10$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$27$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$18$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$34$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q11",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let O be the origin, and P and Q be two points on the rectangular hyperbola $xy = 12$ such that the mid point of the line segment PQ is $(\\frac{1}{2}, -\\frac{1}{2})$. Then the area of the triangle OPQ equals:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q11. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{3}{2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{5}{2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{7}{2}$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{9}{2}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q12",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let the parabola $y = x^2 + px + q$ passing through the point $(1, -1)$ be such that the distance between its vertex and the $x$-axis is minimum. Then the value of $p^2 + q^2$ is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q12. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$2$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$4$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$5$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$8$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q13",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $P = \\{\\theta \\in [0, 4\\pi] : \\tan^2 \\theta \\neq 1\\}$ and $S = \\{a \\in \\mathbb{Z} : 2(\\cos^8 \\theta - \\sin^8 \\theta)\\sec 2\\theta = a^2, \\theta \\in P\\}$. Then $n(S)$ is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q13. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$0$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$1$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$2$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$3$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q14",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let the vectors $\\vec{a} = -\\hat{i} + \\hat{j} + 3\\hat{k}$ and $\\vec{b} = \\hat{i} + 3\\hat{j} + \\hat{k}$. For some $\\lambda, \\mu \\in \\mathbb{R}$, let $\\vec{c} = \\lambda\\vec{a} + \\mu\\vec{b}$. If $\\vec{c} \\cdot (3\\hat{i} - 6\\hat{j} + 2\\hat{k}) = 10$ and $\\vec{c} \\cdot (\\hat{i} + \\hat{j} + \\hat{k}) = -2$, then $|\\vec{c}|^2$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q14. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$8$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$12$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$14$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$15$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q15",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let the point A be the foot of perpendicular drawn from the point $P(a, b, 0)$ on the line $\\frac{x - 1}{2} = \\frac{y - 2}{1} = \\frac{z - \\alpha}{3}$. If the midpoint of the line segment PA is $(0, \\frac{3}{4}, -\\frac{1}{4})$, then the value of $a^2 + b^2 + \\alpha^2$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q15. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$1$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$2$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$6$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$9$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q16",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Two adjacent sides of a parallelogram PQRS are given by $\\vec{PQ} = \\hat{j} + \\hat{k}$ and $\\vec{PS} = \\hat{i} - \\hat{j}$. If the side PS is rotated about the point P by an acute angle $\\alpha$ in the plane of the parallelogram so that it becomes perpendicular to the side PQ, then $\\sin^2 \\left(\\frac{5\\alpha}{2}\\right) - \\sin^2 \\left(\\frac{\\alpha}{2}\\right)$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q16. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{1}{2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{\\sqrt{3}}{2}$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{\\sqrt{3}}{4}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{2\\sqrt{3}}{5}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q17",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "The value of $\\int_0^{20\\pi} (\\sin^4 x + \\cos^4 x) dx$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q17. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{15\\pi}{2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$25\\pi$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$15\\pi$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{25\\pi}{2}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q18",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $f(x)$ be a polynomial of degree 5, and have extrema at $x = 1$ and $x = -1$. If $\\lim_{x \\to 0} \\left( \\frac{f(x)}{x^3} \\right) = -5$, then $f(2) - f(-2)$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q18. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$0$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$50$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$92$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$112$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q19",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $f(x) = \\int \\left(\\frac{16x + 24}{x^2 + 2x - 15}\\right) dx$. If $f(4) = 14 \\log_e(3)$ and $f(7) = \\log_e(2^\\alpha \\cdot 3^\\beta), \\alpha, \\beta \\in \\mathbb{N}$, then $\\alpha + \\beta$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q19. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$31$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$37$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$39$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$41$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q20",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $x = x(y)$ be the solution of the differential equation $2y^2 \\frac{dx}{dy} - 2xy + x^2 = 0, y > 1, x(e) = e$. Then $x(e^2)$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q20. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{3}{2}e^2$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{2}{3}e^2$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$e^2$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$2e^2$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q21",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $A = \\{2, 3, 4, 5, 6\\}$. Let $R$ be a relation on the set $A \\times A$ given by $(x, y) R (z, w)$ if and only if $x$ divides $z$ and $y \\leq w$. Then the number of elements in $R$ is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q21. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$60$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$90$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$120$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$150$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q22",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Consider the matrices $A = \\begin{bmatrix} 2 & -2 \\\\ 4 & -2 \\end{bmatrix}$ and $B = \\begin{bmatrix} 3 & 9 \\\\ 1 & 3 \\end{bmatrix}$. If matrices $P$ and $Q$ are such that $PA = B$ and $AQ = B$, then the absolute value of the sum of the diagonal elements of $2(P + Q)$ is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q22. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$17$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$34$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$51$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$68$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q23",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $A$ be the point $(3, 0)$ and circles with variable diameter $AB$ touch the circle $x^2 + y^2 = 36$ internally. Let the curve $C$ be the locus of the point $B$. If the eccentricity of $C$ is $e$, then $72e^2$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q23. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$9$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$12$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$18$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$36$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q24",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "If the area of the region bounded by $16x^2 - 9y^2 = 144$ and $8x - 3y = 24$ is $A$, then $3(A + 6 \\log_e(3))$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q24. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$12$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$16$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$20$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$24$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q25",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "The number of points in the interval $[2, 4]$, at which the function $f(x) = \\left[ x^2 - x - \\frac{1}{2} \\right]$, where $[\\cdot]$ denotes the greatest integer function, is discontinuous, is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q25. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$8$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$9$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$10$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$11$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q26",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Dimensions of universal gravitational constant $(G)$ in terms of Planck's constant $(h)$, distance $(L)$, mass $(M)$ and time $(T)$ are _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q26. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$[h T L M^{-2}]$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$[h T^{-1} L M^{-2}]$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$[h T L^2 M^{-2}]$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$[h^{-1} T^{-1} L M^{-2}]$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q27",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A $0.5\\text{ kg}$ mass is in contact against the inner wall of a cylindrical drum of radius $4\\text{ m}$ rotating about its vertical axis. The minimum rotational speed of the drum to enable the mass to remain stuck to the wall (without falling) is $5\\text{ rad/s}$. The coefficient of friction between the drum's inner wall surface and mass is _______ . (Take $g = 10\\text{ m/s}^2$)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q27. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$0.1$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$0.5$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$0.7$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$0.3$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q28",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "![Pulley system](https://cracku.in/media/uploads/image_VFI4e0y.png) (Two blocks are suspended from a pulley)\nTwo blocks of masses $2\\text{ kg}$ and $1\\text{ kg}$ respectively, are tied to the ends of a string which passes over a light frictionless pulley as shown in the figure below. The masses are held at rest at the same horizontal level and then released. The distance traversed by the centre of mass in $2\\text{ s}$ is _______ m. (Take $g = 10\\text{ m/s}^2$)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q28. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$3.33$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$3.12$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$2.22$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$1.42$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q29",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A particle having charge $10^{-9}\\text{ C}$ moving in $x$-$y$ plane in fields of $0.4\\hat{j}\\text{ N/C}$ and $4 \\times 10^{-3}\\hat{k}\\text{ T}$ experiences a force of $(4\\hat{i} + 2\\hat{j}) \\times 10^{-10}\\text{ N}$. The velocity of the particle at that instant is _______ m/s.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q29. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$50\\hat{i} + 100\\hat{j}$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$100\\hat{i} + 50\\hat{j}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$-50\\hat{i} + 100\\hat{j}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$50\\hat{i} - 100\\hat{j}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q30",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "![Logic Circuit Diagram](https://cracku.in/media/uploads/image_6Neclly.png)\nIf $X$ and $Y$ are the inputs to the circuit shown in the diagram (where inputs $X$ and $Y$ each pass through a NOT gate, and their outputs are then fed into an AND gate), the given circuit works as _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q30. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "OR gate",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "AND gate",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "NAND gate",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "NOR gate",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q31",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "If a body of mass $1\\text{ kg}$ falls on the earth from infinity, it attains velocity $(v)$ and kinetic energy $(k)$ on reaching the surface of earth. The values of $v$ and $k$ respectively are _______. (Take radius of earth to be $6400\\text{ km}$ and $g = 9.8\\text{ m/s}^2$)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q31. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$11.2\\text{ km/s}; 6.27 \\times 10^7\\text{ J}$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$11.2\\text{ km/s}; 12.54 \\times 10^7\\text{ J}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$8.8\\text{ km/s}; 6.27 \\times 10^7\\text{ J}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$8.8\\text{ km/s}; 12.54 \\times 10^7\\text{ J}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q32",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "In a screw gauge the zero of main scale reference line coincides with the fifth division of the circular scale when two studs are in contact. There are 100 divisions in circular scale and pitch of screw gauge is $0.1\\text{ mm}$. When diameter of a sphere is measured, the reading of main scale is $5\\text{ mm}$ and $50^{\\text{th}}$ division of circular scale coincides with the reference line of main scale. The diameter of sphere is _______ mm.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q32. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$5.045$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$5.055$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$5.450$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$5.550$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q33",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The surface tension of a soap bubble is $0.03\\text{ N/m}$. The work done in increasing the diameter of bubble from $2\\text{ cm}$ to $6\\text{ cm}$ is $\\alpha \\pi \\times 10^{-4}\\text{ J}$. The value of $\\alpha$ is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q33. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$0.86$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$0.64$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$1.92$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$7.68$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q34",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A mixture of carbon dioxide and oxygen has volume $8310\\text{ cm}^3$, temperature $300\\text{ K}$, pressure $100\\text{ kPa}$ and mass $13.2\\text{ g}$. The number of moles of carbon dioxide and oxygen gases in the mixture respectively are _______. (Assume both carbon dioxide and oxygen gases behave like ideal gases) [$R = 8.31\\text{ J/mol.K}$]",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q34. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$0.15$ and $0.18$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$0.25$ and $0.08$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$0.21$ and $0.12$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$0.13$ and $0.20$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q35",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "If an air bubble of diameter $2\\text{ mm}$ rises steadily through a liquid of density $2000\\text{ kg/m}^3$ at a rate of $0.5\\text{ cm/s}$, then the coefficient of viscosity of liquid is _______ Poise. (Take $g = 10\\text{ m/s}^2$)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q35. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$0.88$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$8.8$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$88.8$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$0.088$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q36",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A spherical ball of mass $2\\text{ kg}$ falls from a height of $10\\text{ m}$ and is brought to rest after penetrating $10\\text{ cm}$ into sand. The average force exerted by sand on the ball is _______ N. (Take $g = 10\\text{ m/s}^2$)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q36. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$1980$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$2020$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$2000$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$1000$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q37",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "An electromagnetic wave travels in free space along the $x$-direction. At a particular point in space and time, $\\vec{B} = 2 \\times 10^{-7}\\hat{j}\\text{ T}$ is associated with this wave. The value of corresponding electric field $\\vec{E}$ at this point is _______ V/m.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q37. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$60\\hat{k}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$-60\\hat{k}$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$30\\hat{k}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$-600\\hat{k}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q38",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Two resistors of $200\\ \\Omega$ and $400\\ \\Omega$ are connected in series with a battery of $100\\text{ V}$. A bulb rated at $200\\text{ V}, 100\\text{ W}$ is connected across the $400\\ \\Omega$ resistance. The potential drop across the bulb is _______ V.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q38. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$25$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$50$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$66.6$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$100$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q39",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Two metal plates (A, B) are kept horizontally with separation of $\\left(\\frac{12}{\\pi}\\right)\\text{ cm}$, with plate A on the top. An atomizer jet sprays oil (density $1.5\\text{ g/cm}^3$) droplets of radius $1\\text{ mm}$ horizontally. All oil droplets carry a charge $5\\text{ nC}$. The potentials $V_A$ and $V_B$ are required on plates A and B respectively in order to ensure the droplets do not descend. The values of $V_A$ and $V_B$ are _______.\n(Neglect the air resistance to the droplets and take $g = 10\\text{ m/s}^2$)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q39. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$100\\text{ V}$ and $580\\text{ V}$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$580\\text{ V}$ and $100\\text{ V}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$60\\text{ V}$ and $400\\text{ V}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$0\\text{ V}$ and $-200\\text{ V}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q40",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Two point charges $8\\ \\mu\\text{C}$ and $-2\\ \\mu\\text{C}$ are located at $x = 2\\text{ cm}$ and $x = 4\\text{ cm}$, respectively on the $x$-axis. The ratio of electric flux due to these charges through two spheres of radii $3\\text{ cm}$ and $5\\text{ cm}$ with their centers at the origin is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q40. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$4 : 1$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$3 : 4$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$4 : 3$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$4 : 5$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q41",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "One side of an equilateral prism is painted by a transparent material of refractive index $n_2$. The refractive index of prism is $1.6$. The maximum (limit condition originally referred as minimum boundary requirement for total internal reflection in OCR) value of $n_2$ required for total internal reflection from painted face is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q41. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$3\\sqrt{3}/1.6$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\sqrt{3}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$3.2/\\sqrt{3}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$4\\sqrt{3}/5$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q42",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "![LCR Circuit](https://cracku.in/media/uploads/image_B5VnJbN.png)\nThe figure given below shows an $LCR$ series circuit with two switches $S_1$ and $S_2$. When switch $S_1$ is closed keeping $S_2$ open, the phase difference $(\\phi)$ between the current and source voltage is $30^\\circ$ and phase difference is $60^\\circ$ when $S_2$ is closed keeping $S_1$ open. The value of $(3L_1 - L_2)$ is _______ H.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q42. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$9/2$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$2/9$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$1/3$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$3$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q43",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A circular current loop of radius $R$ is placed inside square loop of side length $L$ $(L \\gg R)$ such that they are co-planar and their centers coincide. The permeability of free space is $\\mu_0$. The mutual inductance between circular loop and square loop is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q43. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$2\\sqrt{2} \\frac{\\mu_0 L^2}{R}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\sqrt{2} \\frac{\\mu_0 L^2}{R}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\sqrt{2} \\frac{\\mu_0 R^2}{L}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$2\\sqrt{2} \\frac{\\mu_0 R^2}{L}$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q44",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The binding energy per nucleon of ${}^{209}_{83}\\text{Bi}$ is _______ MeV.\n[Take $m({}^{209}_{83}\\text{Bi}) = 208.980388\\text{ u}, m_p = 1.007825\\text{ u}, m_n = 1.008665\\text{ u}, 1\\text{ u} = 931\\text{ MeV/c}^2$]",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q44. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$7.48$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$7.84$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$8.79$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$6.94$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q45",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The equation of motion of a particle is given by $x = a \\sin\\left(50t + \\frac{\\pi}{3}\\right)\\text{ cm}$. The particle will come to rest at time $t_1$ and it will have zero acceleration at time $t_2$. The $t_1$ and $t_2$ respectively are _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q45. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{\\pi}{300}\\text{ s}, \\frac{\\pi}{75}\\text{ s}$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{\\pi}{75}\\text{ s}, \\frac{\\pi}{300}\\text{ s}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{\\pi}{300}\\text{ s}, \\frac{\\pi}{25}\\text{ s}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{\\pi}{50}\\text{ s}, \\frac{\\pi}{100}\\text{ s}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q46",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "In a Young's double slit experiment, the intensity at some point on the screen is found to be $\\frac{3}{4}$ times of the maximum of the interference pattern. The path difference between the interfering waves at this point is $\\frac{\\lambda}{x}$ where $\\lambda$ is wavelength of the incident light. The value of $x$ is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q46. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$4$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$6$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$8$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$12$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q47",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Using Bohr's model, calculate the ratio of the magnetic fields generated due to the motion of the electrons in the $2^{\\text{nd}}$ and $4^{\\text{th}}$ orbits of hydrogen atom _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q47. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$8$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$16$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$32$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$64$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q48",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "$5$ moles of unknown gas is heated at constant volume from $10^\\circ\\text{C}$ to $20^\\circ\\text{C}$. The molar specific heat of this gas at constant pressure $c_p = 8\\text{ cal/mol.}^\\circ\\text{C}$ and $R = 8.36\\text{ J/mol.}^\\circ\\text{C}$. The change in the internal energy of the gas is _______ calorie.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q48. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$150$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$200$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$300$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$400$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q49",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "If sunlight is focused on a paper using a convex lens, it starts burning the paper in shortest time when the lens is kept at $30\\text{ cm}$ above the paper. If the radius of curvature of the lens is $60\\text{ cm}$ then the refractive index of the lens material is $\\frac{\\alpha}{10}$. The value of $\\alpha$ is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q49. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$10$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$15$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$20$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$25$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q50",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "![Rod and Sphere System](https://cracku.in/media/uploads/image_D5xvXB3.png)\nMoment of inertia about an axis $AB$ for a rod of mass $40\\text{ kg}$ and length $3\\text{ m}$ is same as that of a solid sphere of mass $10\\text{ kg}$ and radius $R$ about an axis parallel to $AB$ axis with separation of $3\\text{ m}$ as shown in figure. The value of $R$ is given as $\\sqrt{\\frac{\\alpha}{2}}$. The value of $\\alpha$ is _______.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q50. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$5$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$10$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$15$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$20$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q51",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "The ratio of mass percentage (w/w) of C : H in a hydrocarbon is $12 : 1$. It has two carbon atoms. The weight (in g) of $\\text{CO}_2(g)$ formed when $3.38\\text{ g}$ of this hydrocarbon is completely burnt in oxygen is : (Given : Molar mass in $\\text{g mol}^{-1}$ C : 12, H : 1, O : 16)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q51. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$5.68$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$11.44$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$22.74$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$17.05$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q52",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "The first and second ionization constants of a weak dibasic acid $\\text{H}_2\\text{A}$ are $8.1 \\times 10^{-8}$ and $1.0 \\times 10^{-13}$ respectively. $0.1\\text{ mol}$ of $\\text{H}_2\\text{A}$ was dissolved in $1\\text{ L}$ of $0.1\\text{ M HCl}$ solution. The concentration of $\\text{HA}^-$ in the resultant solution is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q52. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$0.1\\text{ M}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$9.53 \\times 10^{-6}\\text{ M}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$8.1 \\times 10^{-8}\\text{ M}$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$1.0 \\times 10^{-13}\\text{ M}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q53",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "$\\text{SF}_4$ is isostructural with:\nA. $\\text{BrF}_4^-$\nB. $\\text{CH}_4$\nC. $\\text{IF}_4^+$\nD. $\\text{XeF}_4$\nE. $\\text{XeO}_2\\text{F}_2$\nChoose the correct answer from the options given below:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q53. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "C Only",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "C and E Only",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "A and D Only",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "B and E Only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q54",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Gas 'A' undergoes change from state 'X' to state 'Y'. In this process, the heat absorbed and work done by the gas is $10\\text{ J}$ and $18\\text{ J}$ respectively. Now gas is brought back to state 'X' by another process during which $6\\text{ J}$ of heat is evolved. In the reverse process of 'Y' to 'X',",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q54. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$18\\text{ J}$ of the work is done by the gas 'A'.",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$2\\text{ J}$ of the work is done by the gas 'A'.",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$12\\text{ J}$ of the work is done on the gas 'A' by the surrounding.",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$14\\text{ J}$ of the work is done on the gas 'A' by the surrounding.",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q55",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Solution A is prepared by dissolving $1\\text{ g}$ of a protein (molar mass $= 50000\\text{ g mol}^{-1}$) in $0.5\\text{ L}$ of water at $300\\text{ K}$. Its osmotic pressure is $x\\text{ bar}$. Solution B is made by dissolving $2\\text{ g}$ of same protein in $1\\text{ L}$ of water at $300\\text{ K}$. Osmotic pressure of solution B is $y\\text{ bar}$. Entire solution of A is mixed with entire solution of B at same temperature. The osmotic pressure of resultant solution is $z\\text{ bar}$. $x, y$ and $z$ respectively are:\n($R = 0.083\\text{ L bar mol}^{-1}\\text{ K}^{-1}$)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q55. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$9.96 \\times 10^{-4}; 9.96 \\times 10^{-4}; 9.96 \\times 10^{-4}$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$9.96 \\times 10^{-4}; 9.96 \\times 10^{-4}; 19.92 \\times 10^{-4}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$4.98 \\times 10^{-4}; 4.98 \\times 10^{-4}; 9.96 \\times 10^{-4}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$4.98 \\times 10^{-4}; 4.98 \\times 10^{-4}; 4.98 \\times 10^{-4}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q56",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "At $25^\\circ\\text{C}$, $20.0\\text{ mL}$ of $0.2\\text{ M}$ weak monoprotic acid HX is titrated against $0.2\\text{ M NaOH}$. The pH of the solution (a) at the start of the titration (when NaOH has not been added) and (b) when $10\\text{ mL}$ of NaOH is added respectively, are:\nGiven: $K_a = 5 \\times 10^{-4}, pK_a = 3.3, \\alpha \\ll 1$",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q56. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$0.7$ and $2.0$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$2.0$ and $3.3$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$1.1$ and $2.2$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$3.0$ and $2.2$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q57",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Consider the reaction $aX \\rightarrow bY$, for which the rate constant at $30^\\circ\\text{C}$ is $1 \\times 10^{-3}\\text{ mol}^{-1}\\text{ L s}^{-1}$. Which of the following statements are true?\nA. When concentration of 'X' is increased to four times, the rate of reaction becomes 16 times.\nB. The reaction is a second order reaction.\nC. The half-life period is independent of the concentration of X.\nD. Decomposition of $\\text{N}_2\\text{O}_5$ is an example of the above reaction.\nE. $\\ln \\frac{[R_o]}{[R]}$ vs time is valid for the above reaction.\nChoose the correct answer from the options given below:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q57. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A and B Only",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "A, B and C Only",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "A, B, D and E Only",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "C and D Only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q58",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "The correct set that contains all kinds (basic, acidic, amphoteric and neutral) of oxides is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q58. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\text{Na}_2\\text{O}, \\text{K}_2\\text{O}, \\text{Al}_2\\text{O}_3$ and $\\text{As}_2\\text{O}_3$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\text{Al}_2\\text{O}_3, \\text{As}_2\\text{O}_3, \\text{CO}$ and $\\text{NO}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\text{K}_2\\text{O}, \\text{Cl}_2\\text{O}_7, \\text{As}_2\\text{O}_3$ and $\\text{NO}$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$\\text{Na}_2\\text{O}, \\text{N}_2\\text{O}, \\text{Al}_2\\text{O}_3$ and $\\text{CO}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q59",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements:\nStatement I: The second ionization enthalpy of B, Al and Ga is in the order of $B > Al > Ga$.\nStatement II: The correct order in terms of first ionization enthalpy is $Si < Ge < Pb < Sn$.\nIn the light of the above statements, choose the correct answer from the options given below:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q59. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both Statement I and Statement II are true",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Both Statement I and Statement II are false",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "Statement I is true but Statement II is false",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Statement I is false but Statement II is true",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q60",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements:\nStatement I: Among Zn, Mn, Sc and Cu, the energy required to remove the third valence electron is highest for Zn and lowest for Sc.\nStatement II: The correct order of the following complexes in terms of CFSE is\n$[Co(H_2O)_6]^{2+} < [Co(H_2O)_6]^{3+} < [Co(en)_3]^{3+}$.\nIn the light of the above statements, choose the correct answer from the options given below:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q60. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both Statement I and Statement II are true",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "Both Statement I and Statement II are false",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Statement I is true but Statement II is false",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Statement I is false but Statement II is true",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q61",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Which of the following complexes will show coordination isomerism?\nA. $[Ag(NH_3)_2][Ag(CN)_2]$\nB. $[Co(NH_3)_6][Cr(CN)_6]$\nC. $[Co(NH_3)_6][Co(CN)_6]$\nD. $[Fe(NH_3)_6][Co(CN)_6]$\nE. $[Co(NH_3)_6][Fe(CN)_6]$\nChoose the correct answer from the options given below:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q61. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "B, C and D Only",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "B, D and E Only",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "A, C and D Only",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "C, D and E Only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q62",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Complete combustion of $X\\text{ g}$ of an organic compound gave $0.25\\text{ g}$ of $\\text{CO}_2$ and $0.12\\text{ g}$ of $\\text{H}_2\\text{O}$. If the % of carbon is $25\\%$ and of hydrogen is $4.89\\%$, then X = {_____}$ \\times 10^{-3}\\text{ g}$. (Nearest integer)\n(Molar mass of C, H and O are $12, 1$ and $16\\text{ g mol}^{-1}$ respectively.)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q62. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$273$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$27$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$2730$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$227$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q63",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements:\nStatement I: In $O_2N-C_6H_4-CH^\\oplus-C_6H_4-OCH_3$, the carbocation is stabilised by $+R$ effect of $-OCH_3$ group.\nStatement II: In $O_2N-C_6H_4-CH^\\ominus-C_6H_4-OCH_3$, the carbanion is stabilised by $-R$ effect of $-NO_2$ group.\nIn the light of the above statements, choose the correct answer from the options given below:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q63. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both Statement I and Statement II are true",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "Both Statement I and Statement II are false",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Statement I is true but Statement II is false",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Statement I is false but Statement II is true",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q64",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "The compound (X) on\n(i) heating in the presence of anhydrous $AlCl_3$ and HCl gas gives 2,4-dimethyl pentane\n(ii) aromatization gives toluene and\n(iii) cyclisation gives methyl cyclohexane\nThe correct name of compound (X) is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q64. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Hept-2-ene",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Hept-1,3,5-triene",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Heptane",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "Hept-2,4,6-triene",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q65",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Correct statements regarding alkyl halides $(R - X)$ among the following are:\nA. Alcohol being less polar solvent as compared to water, alcoholic KOH favours elimination reaction with $R - X$.\nB. Order of reactivity towards $S_N1$ mechanism is $C_6H_5 - CH_2 - Cl > C_6H_5 - CHCl - C_6H_5$.\nC. Non substituted aryl halides exhibit properties similar to alkyl halides.\nD. Vinyl chloride is an example of haloalkene and allyl chloride is an example of haloalkyne.\nE. $R - Cl$ can be prepared by reacting $R - OH$ with $SOCl_2$ but $Ar - Cl$ cannot be prepared by reacting $Ar - OH$ with $SOCl_2$.\nChoose the correct answer from the options given below:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q65. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A, B and C Only",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "B and D Only",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "A and E Only",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "D and E Only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q66",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "An organic compound \"x\" where molar ratio of C, O and H are equal, on treatment with 50% KOH under reflux followed by acidification produced \"y\". The most likely structure of \"y\" is:\n[Molar mass of 'x' is $58\\text{ g mol}^{-1}$]",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q66. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$CH_2=CH-C(=O)OH$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$CH_3-CH=CH-CH=O$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$O=C(OH)-CH_2-OH$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$CH_3-C(=O)OH$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q67",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "![Molecule X](https://cracku.in/media/uploads/image_hLkR5nw.png) (A substituted cyclic acetal that upon mild acidic hydrolysis yields propanal and acetone)\nA molecule (X) with following structure under mild acidic condition is hydrolysed to produce (Y) and (Z). Identify the correct statements about (Y) and (Z).\nA. Both (Y) and (Z) have same molar mass.\nB. (Y) and (Z) can be distinguished from each other by $NaHCO_3$.\nC. (Y) and (Z) react with HCN with same rates.\nD. (Y) and (Z) undergo addition reaction with 2,4-DNP.\nChoose the correct answer from the options given below:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q67. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A, B and C Only",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "B and C Only",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "C and D Only",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "A and D Only",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q68",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Identify compounds A and E in the following reaction sequence, starting with 1-ethyl-4-nitrobenzene:\n$\\text{1-ethyl-4-nitrobenzene} \\xrightarrow{Br_2 / AlBr_3} A \\xrightarrow{Sn/HCl} B \\xrightarrow{NaNO_2/HCl, 273-278\\text{ K}} C \\xrightarrow{C_2H_5OH} D \\xrightarrow{KMnO_4/KOH, H_3O^+} E$",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q68. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A is 4-ethyl-2-nitrobromobenzene, E is 4-ethylbenzoic acid",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "A is 2-bromo-1-ethyl-4-nitrobenzene, E is 2-bromobenzoic acid",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "A is 1-(1-bromoethyl)-4-nitrobenzene, E is 4-nitrobenzoic acid",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "A is 2-bromo-1-ethyl-4-nitrobenzene, E is 2-bromo-4-hydroxybenzoic acid",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q69",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Identify the correct pair having amino acid (A) and the hormone (B) that is iodinated derivative of the amino acid (A).\n(T and Y represent one letter code for amino acids)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q69. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A: T, B: Insulin",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "A: T, B: Thyroxine",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "A: Y, B: Thyroxine",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "A: Y, B: Insulin",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q70",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Among $Fe^{2+}$, $Fe^{3+}$, $Cr^{2+}$ and $Zn^{2+}$, the ion that shows positive borax bead test and with highest ionisation enthalpy is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q70. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$Fe^{2+}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$Zn^{2+}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$Cr^{2+}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$Fe^{3+}$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q71",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "The surface of sodium metal is irradiated with radiation of wavelength $x\\text{ nm}$. The kinetic energy of ejected electrons is $2.8 \\times 10^{-20}\\text{ J}$. The work function of sodium is $2.3\\text{ eV}$. If the value of $x$ is $y \\times 10^2$, find the nearest integer value of $y$.\n(Given: $h = 6.6 \\times 10^{-34}\\text{ J s}; 1\\text{ eV} = 1.6 \\times 10^{-19}\\text{ J}; c = 3.0 \\times 10^8\\text{ m s}^{-1}$)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q71. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$3$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$4$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$5$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$6$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q72",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Consider the following gas phase reaction being carried out in a closed vessel at $25^\\circ\\text{C}$.\n$2A(g) \\rightarrow 4B(g) + C(g)$\nAt time $30\\text{ min}$, the total pressure of the system is $300\\text{ mm Hg}$. At time $t = \\infty$, the total pressure is $600\\text{ mm Hg}$. The pressure of $C(g)$ at $30\\text{ minutes}$ time interval would be _______ mm Hg.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q72. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$10$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$20$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$30$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$40$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q73",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Consider the following two half-cell reactions along with the standard reduction potential given:\n$CO_2 + 6H^+ + 6e^- \\rightarrow CH_3OH + H_2O \\quad E^\\circ_{red} = 0.02\\text{ V}$\n$\\frac{1}{2}O_2 + 2H^+ + 2e^- \\rightarrow H_2O \\quad E^\\circ_{red} = 1.23\\text{ V}$\nA fuel cell was set up using the above two reactions such that the cell operates under the standard condition of 1 bar pressure and 298 K temperature. The fuel cell works with 80% efficiency. If the work derived from the cell using 1 mol of $CH_3OH$ is used to compress an ideal gas isothermally against a constant pressure of 1 kPa, then the change in the volume of the gas, $\\Delta V$ is _______ $\\text{m}^3$. (nearest integer)\nGiven: $F = 96500\\text{ C mol}^{-1}$",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q73. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$-280$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$-560$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$+560$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$-840$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q74",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Number of paramagnetic ions among the following d- and f-block metal ions is _______.\n$Mn^{2+}, Cu^{2+}, Zn^{2+}, Yb^{2+}, Sc^{3+}, La^{3+}, Gd^{3+}, Lu^{3+}, Ti^{4+}, Ce^{4+}$\n(Atomic numbers of Mn = 25, Cu = 29, Zn = 30, Yb = 70, Sc = 21, La = 57, Gd = 64, Lu = 71, Ti = 22, Ce = 58)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q74. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$2$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$3$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$4$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$5$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr02_s2_q75",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr02_s2",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Consider the following reactions sequence starting from p-nitrotoluene (1-methyl-4-nitrobenzene):\n(i) $Sn/HCl; OH^-$\n(ii) $(CH_3CO)_2O$\n(iii) $Br_2/AlBr_3$\n(iv) $H_3O^+$\nWhen the product (P) is subjected to Carius analysis using $AgNO_3$, 1.0 g of the product (P) will produce _______ g of the precipitate of AgBr. (Nearest Integer)\n(Given: molar mass in $\\text{g mol}^{-1}$ C : 12, H : 1, O : 16, N : 14, Br : 80, Ag : 108)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 02 Shift 2 Q75. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 02 Shift 2",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 02 Shift 2",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$1$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$2$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$3$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$4$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q1",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $[\\cdot]$ denote the greatest integer function. If the domain of the function $f(x) = \\cos^{-1} \\left( \\frac{4x + 2[x]}{3} \\right)$ is $[\\alpha, \\beta]$, then $12(\\alpha + \\beta)$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q1. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$6$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$8$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$9$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$4$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q2",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "If the set of all solutions of $|x^2 + x - 9| = |x| + |x^2 - 9|$ is $[\\alpha, \\beta] \\cup [\\gamma, \\infty)$, then $(\\alpha^2 + \\beta^2 + \\gamma^2)$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q2. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$9$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$18$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$36$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$72$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q3",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $z$ be a complex number such that $|z + 2| = |z - 2|$ and $\\arg \\left( \\frac{z + 3}{z - i} \\right) = \\frac{\\pi}{4}$. Then $|z|^2$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q3. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$9$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$4$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$5$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$1$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q4",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "The number of functions $f : \\{1, 2, 3, 4\\} \\to \\{a, b, c\\}$, which are not onto, is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q4. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$48$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$45$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$51$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$35$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q5",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $S = \\left\\{ A = \\begin{bmatrix} a & b \\ c & d \\end{bmatrix} : a, b, c, d \\in \\{0, 1, 2, 3, 4\\} \\text{ and } A^2 - 4A + 3I = 0 \\right\\}$ be a set of $2 \\times 2$ matrices. Then the number of matrices in $S$, for which the sum of the diagonal elements is equal to $4$, is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q5. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$20$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$17$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$21$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$19$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q6",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $A = \\begin{bmatrix} 1 & 1 & 2 \\ -2 & 0 & 1 \\ 1 & 3 & 5 \\end{bmatrix}$. Then the sum of all elements of the matrix $\\text{adj}(\\text{adj}(2(\\text{adj} A)^{-1}))$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q6. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$3$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$4$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$-4$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$-3$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q7",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "The first term of an A.P. of $30$ non-negative terms is $\\frac{10}{3}$. If the sum of this A.P. is the cube of its last term, then its common difference is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q7. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{5}{87}$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{25}{83}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{15}{29}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{5}{29}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q8",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "The number of ways of forming a queue of $4$ boys and $3$ girls such that all the girls are not together, is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q8. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$5040$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$3050$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$3410$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$4320$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q9",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let the smallest value of $k \\in \\mathbb{N}$, for which the coefficient of $x^3$ in $(1 + x)^3 + (1 + x)^4 + (1 + x)^5 + \\dots + (1 + x)^{99} + (1 + kx)^{100}$, $x \\neq 0$, is $\\left(43n + \\frac{101}{4}\\right) \\binom{100}{3}$ for some $n \\in \\mathbb{N}$, be $p$. Then the value of $p + n$ is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q9. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$10$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$11$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$12$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$13$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q10",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Suppose that the mean and median of the non-negative numbers $21, 8, 17, a, 51, 103, b, 13, 67, (a > b)$, are $40$ and $21$, respectively. If the mean deviation about the median is $26$, then $2a$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q10. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$109$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$117$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$161$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$131$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q11",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let the line $L_1 : x + 3 = 0$ intersect the lines $L_2 : x - y = 0$ and $L_3 : 3x + y = 0$ at the points $A$ and $B$, respectively. Let the bisector of the obtuse angle between the lines $L_2$ and $L_3$ intersect the line $L_1$ at the point $C$. Then $BC^2 : AC^2$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q11. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$5 : 1$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$1 : 5$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$2 : 3$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$3 : 2$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q12",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let the vertex $A$ of a triangle $ABC$ be $(1, 2)$, and the mid-point of the side $AB$ be $(5, -1)$. If the centroid of this triangle is $(3, 4)$ and its circumcenter is $(\\alpha, \\beta)$, then $21(\\alpha + \\beta)$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q12. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$309$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$403$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$497$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$524$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q13",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Suppose that two chords, drawn from the point $(1, 2)$ on the circle $x^2 + y^2 + x - 3y = 0$ are bisected by the $y$-axis. If the other ends of these chords are $R$ and $S$, and the mid point of the line segment $RS$ is $(\\alpha, \\beta)$, then $6(\\alpha + \\beta)$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q13. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$1$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$3$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$4$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$6$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q14",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "A line with direction ratios $1, -1, 2$ intersects the lines $\\frac{x}{2} = \\frac{y}{3} = \\frac{z+1}{3}$ and $\\frac{x+1}{-1} = \\frac{y-2}{1} = \\frac{z}{4}$ at the points $P$ and $Q$, respectively. If the length of the line segment $PQ$ is $\\alpha$, then $225\\alpha^2$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q14. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$1024$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$1014$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$1104$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$1204$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q15",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "The square of the distance of the point $(-2, -8, 6)$ from the line $\\frac{x - 1}{1} = \\frac{y - 1}{2} = \\frac{z}{-1}$ along the line $\\frac{x + 5}{1} = \\frac{y + 5}{-1} = \\frac{z}{2}$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q15. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$3$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$6$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$8$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$12$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q16",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "If $y = \\tan^{-1} \\left( \\frac{3 \\cos x - 4 \\sin x}{4 \\cos x + 3 \\sin x} \\right) + 2 \\tan^{-1} \\left( \\frac{x}{1 + \\sqrt{1 - x^2}} \\right)$, then $\\frac{dy}{dx}$ at $x = \\frac{\\sqrt{3}}{2}$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q16. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$3$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$-1$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$1$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$2$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q17",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $f$ be a real polynomial of degree $n$ such that $f(x) = f'(x)f''(x)$, for all $x \\in \\mathbb{R}$. If $f(0) = 0$, then $36 \\left( f'(2) + f''(2) + \\int_0^2 f(x) dx \\right)$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q17. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$42$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$46$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$56$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$66$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q18",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "The area of the region $\\{(x, y) : y \\le \\pi - |x|, y \\le |x \\sin x|, y \\ge 0\\}$ is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q18. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$1 + \\frac{\\pi^2}{8}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$2 + \\frac{\\pi^2}{4}$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{\\pi^2}{8} - 1$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$4 + \\frac{\\pi^2}{2}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q19",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $\\int_{-2}^{2} (|\\sin x| + [x \\sin x]) dx = 2(3 - \\cos 2) + \\beta$, where $[\\cdot]$ is the greatest integer function. Then $\\beta \\sin \\left( \\frac{\\beta}{2} \\right)$ equals:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q19. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$1$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$2$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$4$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$8$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q20",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $y = y(x)$ be the solution of the differential equation $\\frac{dy}{dx} = (1 + x + x^2)(1 - y + y^2)$, $y(0) = \\frac{1}{2}$. Then $(2y(1) - 1)$ is equal to:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q20. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\sqrt{3} \\tan \\left( \\frac{11\\sqrt{3}}{6} \\right)$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{\\sqrt{3}}{2} \\tan \\left( \\frac{11\\sqrt{3}}{12} \\right)$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\sqrt{3} \\tan \\left( \\frac{11\\sqrt{3}}{12} \\right)$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{\\sqrt{3}}{2} \\tan \\left( \\frac{11\\sqrt{3}}{6} \\right)$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q21",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "A coin is tossed 8 times. If the probability that exactly 4 heads appear in the first six tosses and exactly 3 heads appear in the last five tosses is $p$, then $96p$ is equal to \\_\\_\\_\\_\\_.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q21. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$8$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$9$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$10$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$12$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q22",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Consider the parabola $P : y^2 = 4kx$ and the ellipse $E : \\frac{x^2}{a^2} + \\frac{y^2}{b^2} = 1$. Let the line segment joining the points of intersection of $P$ and $E$, be their latus rectums. If the eccentricity of $E$ is $e$, then $e^2 + 2\\sqrt{2}$ is equal to \\_\\_\\_\\_\\_.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q22. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$1$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$2$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$3$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$4$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q23",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "If $A = \\frac{\\sin 3^\\circ}{\\cos 9^\\circ} + \\frac{\\sin 9^\\circ}{\\cos 27^\\circ} + \\frac{\\sin 27^\\circ}{\\cos 81^\\circ}$ and $B = \\tan 81^\\circ - \\tan 3^\\circ$, then $\\frac{B}{A}$ is equal to \\_\\_\\_\\_\\_.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q23. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$1$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$2$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$3$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$4$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q24",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "Let $\\vec{a}_k = (\\tan \\theta_k)\\hat{i} + \\hat{j}$ and $\\vec{b}_k = \\hat{i} - (\\cot \\theta_k)\\hat{j}$, where $\\theta_k = \\frac{2^{k-1}\\pi}{2^n + 1}$, for some $n \\in \\mathbb{N}, n > 5$. Then the value of $\\frac{\\sum_{k=1}^n |\\vec{a}_k|^2}{\\sum_{k=1}^n |\\vec{b}_k|^2}$ is \\_\\_\\_\\_\\_.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q24. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$1$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$2$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$3$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$4$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q25",
+    "chapterId": "ch_math_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "math",
+    "type": "single_mcq",
+    "prompt": "The number of points, at which the function $f(x) = \\max\\{6x, 2 + 3x^2\\} + |x - 1| \\left| \\cos \\left( x^2 - \\frac{1}{4} \\right) \\right|, x \\in (-\\pi, \\pi)$, is not differentiable, is \\_\\_\\_\\_\\_.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q25. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Mathematics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$5$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$7$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$9$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$11$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q26",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "In a screw gauge when the circular scale is given five complete rotations it moves linearly by $2.5$ mm. If the circular scale has $100$ divisions, the least count of screw gauge is _____ mm.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q26. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$1 \\times 10^{-2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$1 \\times 10^{-3}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$5 \\times 10^{-2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$5 \\times 10^{-3}$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q27",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The increase in the pressure required to decrease the volume $(\\Delta V)$ of water is $6.3 \\times 10^7 \\text{ N/m}^2$. The percentage decrease in the volume is _____. (Bulk modulus of water $= 2.1 \\times 10^9 \\text{ N/m}^2$.)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q27. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$2\\%$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$3\\%$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$6\\%$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$4\\%$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q28",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The time taken by a block of mass $m$ to slide down from the highest point to the lowest point on a rough inclined plane is $50\\%$ more compared to the time taken by the same block on identical inclined smooth plane. Both inclined planes are at $45^\\circ$ with the horizontal. The coefficient of kinetic friction between the rough inclined surface and block is _____.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q28. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$3/4$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$2/3$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$5/9$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$4/9$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q29",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Two nuclei of mass number $3$ combine with another nucleus of mass number $4$ to yield a nucleus of mass number $10$. If the binding energy per nucleon for the mass numbers $3$, $4$ and $10$ are $5.6$ MeV, $7.4$ MeV and $6.1$ MeV, respectively, then in the process, $\\Delta M c^2 = \\text{\\_\\_\\_\\_\\_}$ MeV.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q29. Correct Option: C.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$6.9$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$7.9$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$2.2$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$4.3$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q30",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A solid sphere of mass $M$ and radius $R$ is divided into two unequal parts. The smaller part having mass $M/8$ is converted into a sphere of radius $r$ and the larger part is converted into a circular disc of thickness $t$ and radius $2R$. If $I_1$ is moment of inertia of a sphere having radius $r$ about an axis through its centre and $I_2$ is the moment of inertia of a disc about its diameter, the ratio of their moment of inertia $I_2/I_1 = \\text{\\_\\_\\_\\_\\_}$.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q30. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$35$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$70$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$140$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$210$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q31",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "Two projectiles are projected with the same initial velocities at the $15^\\circ$ and $30^\\circ$ with respect to the horizontal. The ratio of their ranges is $1 : x$. The value of $x$ is:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q31. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\sqrt{2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\sqrt{3}$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$2\\sqrt{3}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{1}{\\sqrt{2}}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q32",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The graph shows variation of stopping potential $V_o$ with the frequency $\\nu$ of the incident radiation for three photosensitive metals $X_1, X_2$ and $X_3$. Which metal will give out electrons with greater kinetic energy, for the same wavelength of incident radiation?",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q32. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$X_1$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$X_2$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$X_3$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "All the metals will give out photo electrons with same kinetic energies.",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q33",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A slit of width $a$ is illuminated by light of wavelength $\\lambda$. The linear separation between $1^{\\text{st}}$ and $3^{\\text{rd}}$ minima in the diffraction pattern produced on a screen placed at a distance $D$ from the slit system is _____.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q33. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{D\\lambda}{a}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$1.5 \\frac{D\\lambda}{a}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$2 \\frac{D\\lambda}{a}$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$3 \\frac{D\\lambda}{a}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q34",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A string $A$ of length $0.314$ m and Young's modulus $2 \\times 10^{10} \\text{ N/m}^2$ is connected to another string $B$ of length and Young's modulus both twice of those of $A$. This series combination of strings is then suspended from a rigid support and its free end is fixed to a load of mass $0.8$ kg. The net change in length of the combination is _____ mm. (radius of both the strings is $0.2$ mm and acceleration due to gravity $= 10 \\text{ m/s}^2$) (Mass of both strings is to be neglected as compared to the mass of load)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q34. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$3$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$2$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$1.9$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$1$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q35",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "One gas of $n_1$ mole of molecules at temperature $T_1$, volume $V_1$, and pressure $P_1$, and another gas of $n_2$ mole of molecules at temperature $T_2$, volume $V_2$, and pressure $P_2$, are mixed resulting in pressure $P$ and volume $V$ of the mixture. The temperature of the mixture is _____.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q35. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$(T_1 + T_2)/2$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$T_1T_2PV / (T_2P_1V_1 + T_1P_2V_2)$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$(T_2P_1V_1 + T_1P_2V_2) / (T_1T_2PV)$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$|T_1 - T_2|/2$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q36",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "An ideal gas undergoes a process maintaining relation between pressure $(P)$ and volume $(V)$ as $P = P_o \\left( 1 + \\left(\\frac{V_o}{V}\\right)^2 \\right)^{-1}$, where $P_o$ and $V_o$ are constants. If two samples $A$ and $B$ (two moles each) with initial volumes $V_o$ and $3V_o$ respectively undergo above mentioned process and attain same pressure, then the difference at the temperatures of these samples, $T_B - T_A$ is _____. ($R =$ gas constant)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q36. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$\\frac{9P_oV_o}{8R}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$\\frac{11P_oV_o}{10R}$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$\\frac{7P_oV_o}{6R}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$\\frac{13P_oV_o}{11R}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q37",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A voltmeter with internal resistance of $x \\text{ } \\Omega$ can be used to measure upto $20$ V. In order to increase its measuring range to $30$ V, the required modification is to _____.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q37. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "connect resistor of $\\frac{x}{2} \\text{ } \\Omega$, in series with voltmeter.",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "connect resistor of $\\frac{x}{2} \\text{ } \\Omega$, in parallel to voltmeter.",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "connect a resistor of $x \\text{ } \\Omega$ in series with voltmeter.",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "connect resistor of $2x \\text{ } \\Omega$ in parallel to voltmeter.",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q38",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "![Logic Circuit](https://media.prothomalo.com/prothomalo-bangla%2F2024-06%2Fce1509fc-78f5-4418-9e69-ac9205df9873%2F1%20(2).png?w=622&auto=format%2Ccompress&fmt=avif)\nTwo 4 bits binary numbers, $A = 1101$ and $B = 1010$ are given in the inputs of a logic circuit shown in figure below. The output $(Y)$ will be:\n(Note: The circuit is an OR gate where input B has an inverter/NOT bubble).",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q38. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$Y = 1101$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$Y = 0010$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$Y = 0111$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$Y = 1000$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q39",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "![Concave Mirror Setup](https://cracku.in/media/uploads/image_1dtqvl1.png)\nA rod of length $10$ cm lies along the principle axis of a concave mirror of focal length $10$ cm as shown in figure. The nearest end of the rod is 20 cm from the pole. The length of the image is _____ cm.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q39. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$2.5$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$5$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$7.5$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$7$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q40",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A parallel plate air capacitor is connected to a battery. The plates are pulled apart at uniform speed $v$. If $x$ is the separation between the plates at any instant, then the time rate of change of electrostatic energy of the capacitor is proportional to $x^\\alpha$, where $\\alpha$ is _____.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q40. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$-2$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$1$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$-1$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$2$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q41",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "An insulated wire is wound so that it forms a flat coil with $N = 200$ turns. The radius of the innermost turn is $r_1 = 3$ cm, and of the outermost turn $r_2 = 6$ cm. If $20$ mA current flows in it then the magnetic moment will be $\\alpha \\times 10^{-2} \\text{ A.m}^2$. The value of $\\alpha$ is _____.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q41. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$4.4$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$2.64$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$3.25$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$1.2$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q42",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "![Diode Circuit](https://cracku.in/media/uploads/image_f7pe4AR.png)\nConsider a circuit consisting of a capacitor ($20 \\text{ } \\mu\\text{F}$), resistor ($100 \\text{ } \\Omega$) and two identical diodes as shown in figure. (A parallel combination of an upward and downward pointing diode, all in series with the R and C). The resistance of diode under forward biasing condition is $10 \\text{ } \\Omega$. The time constant of the circuit is $\\alpha \\times 10^{-3} \\text{ s}$. The value of $\\alpha$ is _____",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q42. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$2.2$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$2.0$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$2.1$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$2.4$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q43",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "![DC Circuit Bridge](https://cracku.in/media/uploads/image_KaCrJ2M.png)\nThe voltage and the current between $A$ and $B$ points shown in the circuit are _____. (Note: Applying Thevenin's / Millman's simplification to the multi-branch network leads to an equivalent voltage and short circuit current).",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q43. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$24 \\text{ V}, 12 \\text{ A}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$24 \\text{ V}, 4 \\text{ A}$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$18 \\text{ V}, 12 \\text{ A}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$27 \\text{ V}, 4 \\text{ A}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q44",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A telescope with objective diameter $R$ is used to observe a distant star emitting light of wavelength $500$ nm, at a resolution of $5 \\times 10^{-7}$ radian. The value of $R$ is _____ cm.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q44. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$61$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$122$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$244$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$305$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q45",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "![Polarization Reflection](https://cracku.in/media/uploads/image_yxbH5dW.png)\nAn unpolarized light is incident on the plane interface of air-dielectric medium shown in figure. If the incident angle is equal to Brewster angle, identify the expression representing reflected wave.\n(Given the plane of incidence corresponds to the x-z plane such that the reflected ray propagates towards $+x$ and $-z$.)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q45. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$(E_y \\hat{j})\\sin(kx - kz - \\omega t)$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$(E_x \\hat{i} + E_z \\hat{k})\\sin(kx + ky - \\omega t)$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$(E_x \\hat{j} + E_y \\hat{k})\\sin(ky + kz - \\omega t)$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$(E_x \\hat{i} + E_y \\hat{j} + E_z \\hat{k})\\sin(kx + ky - kz - \\omega t)$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q46",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A $1$ kg block subjected to two simultaneous forces $(2\\hat{i} + 3\\hat{j} + 4\\hat{k})$ N and $(3\\hat{i} - \\hat{j} - 2\\hat{k})$ N is moved a distance of $25$ m along $(3\\hat{i} - 4\\hat{j})$ direction. The work done in this process is _____ J.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q46. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$30$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$35$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$40$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$45$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q47",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The surface tension of a soap solution is $3.5 \\times 10^{-2}$ N/m. The work required to increase the radius of a soap bubble from $1$ cm to $2$ cm is $\\alpha \\times 10^{-6}$ J. The value of $\\alpha$ is _____. ($\\pi = 22/7$)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q47. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$264$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$132$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$528$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$314$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q48",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "The velocity of a particle executing simple harmonic motion along x-axis is described as $v^2 = 50 - x^2$, where $x$ represents displacement. If the time period of motion is $\\frac{x}{7}$ s, the value of $x$ is _____.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q48. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$22$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$44$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$88$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$7$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q49",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "A body of mass $2$ kg begins to move under the influence of time dependent force $\\vec{F} = (2t\\hat{i} + 6t^2\\hat{j})$ N, where $\\hat{i}$ and $\\hat{j}$ are unit vectors along x and y-axis respectively. The power produced by the force at $t = 2$ s is _____ W.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q49. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$150$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$200$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$250$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$300$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q50",
+    "chapterId": "ch_physics_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "physics",
+    "type": "single_mcq",
+    "prompt": "An inductor of $10$ mH, capacitor of $0.1 \\text{ } \\mu\\text{F}$ and a resistor of $100 \\text{ } \\Omega$ are connected in series across an a.c power supply $220$ V, $70$ Hz. The power factor of the given circuit is $0.5$. The difference in the inductive reactance and capacitance reactance is $\\sqrt{3}\\alpha \\text{ } \\Omega$. The value of $\\alpha$ is _____.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q50. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Physics"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$50$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$100$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$150$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$200$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q51",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Number of moles and number of molecules in $1.4187$ L of $SO_2$ at STP respectively are:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q51. Correct Option: B.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$0.1266; 3.812 \\times 10^{22}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$0.0633; 3.812 \\times 10^{22}$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$0.1266; 7.6238 \\times 10^{22}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$0.0633; 7.6238 \\times 10^{22}$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q52",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "What is the ratio of wave number of first line (lowest energy line) of Balmer series of H atomic spectrum to first line of its Brackett series?",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q52. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$5 : 1$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$5 : 0.81$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$5 : 1.75$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$5 : 27$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q53",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Which of the following is correct set of $4$ quantum numbers of $19^{\\text{th}}$ electron in Chromium (Atomic number $= 24$) in accordance with Aufbau principle?",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q53. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$n = 3, l = 2, m = +2, s = +\\frac{1}{2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$n = 3, l = 2, m = -2, s = +\\frac{1}{2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$n = 4, l = 1, m = 0, s = +\\frac{1}{2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$n = 4, l = 0, m = 0, s = +\\frac{1}{2}$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q54",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements:\nStatement I: For an ideal gas, heat capacity at constant volume is always greater than the heat capacity at constant pressure.\nStatement II: In a constant volume process, no work is produced and all the heat withdrawn goes into the chaotic motion and is reflected by a temperature increase of the ideal gas.\nIn the light of the above statements, choose the correct answer from the options given below",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q54. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both Statement I and Statement II are true",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Both Statement I and Statement II are false",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Statement I is true but Statement II is false",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Statement I is false but Statement II is true",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q55",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "At $T(K)$, the equilibrium constant of $A_2(g) + B_2(g) \\rightleftharpoons C(g)$ is $2.7 \\times 10^{-5}$. What is the equilibrium constant for $\\frac{1}{3} A_2(g) + \\frac{1}{3} B_2(g) \\rightleftharpoons \\frac{1}{3} C(g)$ at the same temperature?",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q55. Correct Option: D.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$(2.7 \\times 10^{-5})^3$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$6 \\times 10^{-2}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$\\sqrt{2.7 \\times 10^{-5}}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$3 \\times 10^{-2}$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q56",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "In order to oxidise a mixture of $1$ mole each of $FeC_2O_4$, $Fe_2(C_2O_4)_3$, $FeSO_4$ and $Fe_2(SO_4)_3$ in acidic medium, the number of moles of $KMnO_4$ required is",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q56. Correct Option: B.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$3$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$2$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$5$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$7$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q57",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Consider the first order reaction $R \\to P$. The fraction of molecules decomposed in the given first order reaction can be expressed as",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q57. Correct Option: D.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$1 - e^{k_1 t}$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$1 + e^{k_1 t}$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$1 + e^{-k_1 t}$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$1 - e^{-k_1 t}$",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q58",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "A monoatomic anion ($A^-$) has $45$ neutrons and $36$ electrons. Atomic mass, group in the periodic table and physical state at room temperature of the element ($A$) respectively are",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q58. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$80, 17$, liquid",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$81, 16$, solid",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$80, 16$, gas",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$81, 15$, gas",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q59",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements:\nStatement I: The covalency of oxygen is generally two but it can exceed upto four. The oxidation state of oxygen in $SO_2$ is $-2$ and in $OF_2$ it is $+2$.\nStatement II: The anomalous behaviour of oxygen when compared to the other elements of group $16$ is due to its small size and high electronegativity.\nIn the light of the above statements, choose the correct answer from the options given below",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q59. Correct Option: A.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both Statement I and Statement II are true",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "Both Statement I and Statement II are false",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Statement I is true but Statement II is false",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Statement I is false but Statement II is true",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q60",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "The correct statements among the following are,\nA. $Mo(VI)$ and $W(VI)$ are less stable than $Cr(VI)$.\nB. $Ce^{4+}$ and $Tb^{4+}$ are oxidant while $Eu^{2+}$ and $Yb^{2+}$ are reductant.\nC. $Cm$ and $Am$ have seven unpaired electrons.\nD. Actinoid contraction is greater from element to element than lanthanoid contraction.\nChoose the correct answer from the options given below:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q60. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A and B Only",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "C and D Only",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "B and D Only",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "A and C Only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q61",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Correct statements from the following are\nA. Potassium dichromate is an oxidising agent and it oxidises $FeSO_4$ to $Fe_2(SO_4)_3$ in acidic medium.\nB. Sodium dichromate can be used as primary standard in volumetric estimation.\nC. $CrO_4^{2-}$ and $Cr_2O_7^{2-}$ are interconvertible in aqueous solution by varying the $pH$ of the solution.\nD. $Cr-O-Cr$ bond angle in $Cr_2O_7^{2-}$ is $126^\\circ$.\nChoose the correct answer from the options given below:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q61. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A, B and C Only",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "A, C and D Only",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "A and C Only",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "B and D Only",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q62",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Match the LIST-I with LIST-II\nList-I (Complex ion)\nA. $[Cr(H_2O)_6]^{2+}$\nB. $[Co(H_2O)_6]^{2+}$\nC. $[Cu(H_2O)_6]^{2+}$\nD. $[Mn(H_2O)_6]^{2+}$\nList-II (Calculated spin only magnetic moment (BM))\nI. 3.87\nII. 5.92\nIII. 4.90\nIV. 1.73\nChoose the correct answer from the options given below:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q62. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A-I, B-III, C-IV, D-II",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "A-II, B-I, C-III, D-IV",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "A-IV, B-II, C-I, D-III",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "A-III, B-I, C-IV, D-II",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q63",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Increasing order of electron withdrawing power of following functional groups is:\na. $-CN$\nb. $-COOH$\nc. $-NO_2$\nd. $-I$",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q63. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$c < b < d < a$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$c < a < b < d$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$d < b < a < c$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$a < b < c < d$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q64",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "An alkene $(X)$ on ozonolysis followed by reduction gives following products: $H-CHO$ ($2$ moles), $H-CO-CO-CHO$, $CH_3-CO-CO-CH_3$. The alkene $(X)$ is expected to be a triene that undergoes cleavage.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q64. Correct Option: C.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "![Placeholder for structure corresponding to 1](https://cdn.prepp.in/uploads/production/images/content/2026_04_30/image_a8ff44e41777532051833.png)",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "![Placeholder for structure corresponding to 2](https://cdn.prepp.in/uploads/production/images/content/2026_04_30/image_f52dc6291777532063828.png)",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "![Placeholder for structure corresponding to 3](https://cdn.prepp.in/uploads/production/images/content/2026_04_30/image_76f170db1777532070834.png)",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "![Placeholder for structure corresponding to 4](https://cdn.prepp.in/uploads/production/images/content/2026_04_30/image_404ff7dd1777532077468.png)",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q65",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Match the LIST-I with LIST-II\nList-I (Name of reaction)\nA. Finkelstein reaction\nB. Swarts reaction\nC. Sandmeyer's reaction\nD. Fittig reaction\nList-II (Reagent or catalyst used)\nI. $SbF_3$\nII. $Na$, dry ether\nIII. $NaI$\nIV. $Cu_2Cl_2$\nChoose the correct answer from the options given below:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q65. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A-I, B-IV, C-III, D-II",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "A-III, B-I, C-IV, D-II",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "A-IV, B-II, C-I, D-III",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "A-I, B-III, C-II, D-IV",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q66",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Amongst a given set of organic compounds containing various substituted benzenes (such as phenols, anilines, ethers), the total number of compounds soluble in aqueous $NaOH$ at room temperature is $5$.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q66. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$5$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$4$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$6$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$3$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q67",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Product $C$ of the following reaction sequence will be\nAniline $\\xrightarrow{Br_2 / \\text{water}} A \\xrightarrow{NaNO_2 / HCl, 273-278 K} B \\xrightarrow{(i) HBF_4 \\ (ii) NaNO_2, Cu, \\Delta} C$",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q67. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "1-Bromo-4-nitrobenzene",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "1, 3, 5-Tribromo-2-nitrobenzene",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "4-Bromo-1-nitrobenzene",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "1, 3, 5-Tribromobenzene",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q68",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Given below are two statements:\nStatement I: The structure of Maltose is a non-reducing sugar.\nStatement II: The structure of Lactose is a reducing sugar.\nIn the light of the above statements, choose the correct answer from the options given below",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q68. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Both Statement I and Statement II are true",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Both Statement I and Statement II are false",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Statement I is true but Statement II is false",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Statement I is false but Statement II is true",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q69",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Match the LIST-I with LIST-II\nList-I (Name of amino acid)\nA. Arginine\nB. Aspartic acid\nC. Lysine\nD. Glutamic acid\nList-II (One letter symbol/type)\nI. D/Non-essential\nII. R/Essential\nIII. E/Non-essential\nIV. K/Essential\nChoose the correct answer from the options given below:",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q69. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "A-II, B-I, C-IV, D-III",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "A-IV, B-III, C-II, D-I",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "A-III, B-IV, C-I, D-II",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "A-II, B-IV, C-I, D-III",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q70",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Identify the colour of compound 'X' in the sequence of the reaction involving the condensation of Phthalic anhydride and Phenol in the presence of concentrated $H_2SO_4$, followed by addition of excess $NaOH$.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q70. Correct Option: D.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "Violet",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "Green",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "Red",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "Colourless",
+        "isCorrect": true
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q71",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "According to Lewis theory, the total number of $\\sigma$ bond-pairs and lone pair of electrons around the central atom of $XeO_6^{4-}$ ion is \\_\\_\\_\\_\\_.",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q71. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$4$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$6$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$8$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$10$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q72",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "Consider the following sequence of reactions to give the major product $(X)$:\nBenzene $\\xrightarrow{(i) \\ CH_3Cl / \\text{anhydrous } AlCl_3}$ $\\xrightarrow{(ii) \\ Cl_2 / FeCl_3}$ $\\xrightarrow{(iii) \\ K_2Cr_2O_7 / H_2SO_4}$ Product $(X)$\n$P$ g of the major product $(X)$ formed is reacted with $NaHCO_3$ solution to liberate a gas which occupied $11.2$ dm$^3$ at STP. $P = \\text{\\_\\_\\_\\_\\_}$ g. (Given molar mass in g mol$^{-1}$ H: $1$, C: $12$, O: $16$, Cl: $35.5$)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q72. Correct Option: A.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$78.25$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$156.5$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$39.12$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$100$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q73",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "$2.0$ g of a bromo hydrocarbon $(X)$ was subjected to Carius analysis, gave $3.36$ g of $AgBr$. The percentage of carbon in the compound $(X)$ is $26.7\\%$. Total number of carbon atoms in the empirical formula for compound $(X)$ is \\_\\_\\_\\_\\_.\n(Given molar mass in g mol$^{-1}$ H: $1$, C: $12$, Br: $80$, Ag: $108$)",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q73. Correct Option: B.",
+    "difficulty": "Easy",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$4$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$5$",
+        "isCorrect": true
+      },
+      {
+        "id": "c",
+        "text": "$6$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$2$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q74",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "The pH of a solution obtained by mixing $5$ mL of $0.1$ M $NH_4OH$ solution with $250$ mL of $0.1$ M $NH_4Cl$ solution is \\_\\_\\_\\_\\_ $\\times 10^{-2}$. (Nearest integer)\nGiven: $pK_b(NH_4OH) = 4.74$, $\\log 2 = 0.30$, $\\log 3 = 0.48$, $\\log 5 = 0.70$",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q74. Correct Option: A.",
+    "difficulty": "Medium",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$756$",
+        "isCorrect": true
+      },
+      {
+        "id": "b",
+        "text": "$644$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$474$",
+        "isCorrect": false
+      },
+      {
+        "id": "d",
+        "text": "$526$",
+        "isCorrect": false
+      }
+    ]
+  },
+  {
+    "id": "pyq_2026_apr04_s1_q75",
+    "chapterId": "ch_chemistry_pyq",
+    "topicId": "top_2026_apr04_s1",
+    "subjectId": "chemistry",
+    "type": "single_mcq",
+    "prompt": "A non-volatile, non-electrolyte solid solute when dissolved in $40$ g of a solvent, the vapour pressure of the solvent decreased from $760$ mm Hg to $750$ mm Hg. If the same solution boils at $320$ K, then the number of moles of the solvent present in the solution is \\_\\_\\_\\_\\_. (Nearest integer)\n[Given: boiling point of the pure solvent $= 319.5$ K, $K_b$ of the solvent $= 0.3$ K kg mol$^{-1}$]",
+    "explanation": "Detailed solution for JEE Main 2026 Apr 04 Shift 1 Q75. Correct Option: C.",
+    "difficulty": "Hard",
+    "examOrigin": "JEE Main 2026 Apr 04 Shift 1",
+    "year": 2026,
+    "tags": [
+      "JEE Main",
+      "PYQ",
+      "2026",
+      "JEE Main 2026 Apr 04 Shift 1",
+      "Chemistry"
+    ],
+    "options": [
+      {
+        "id": "a",
+        "text": "$3$",
+        "isCorrect": false
+      },
+      {
+        "id": "b",
+        "text": "$4$",
+        "isCorrect": false
+      },
+      {
+        "id": "c",
+        "text": "$5$",
+        "isCorrect": true
+      },
+      {
+        "id": "d",
+        "text": "$6$",
+        "isCorrect": false
+      }
+    ]
+  }
+];
