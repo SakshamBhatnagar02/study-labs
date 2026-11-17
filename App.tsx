@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Platform, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { Image, Platform, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeProvider, useTheme } from './src/theme';
 import { Header } from './src/components/common/Header';
 import { BottomNav, NavTab } from './src/components/navigation/BottomNav';
+import { SideDrawerModal } from './src/components/navigation/SideDrawerModal';
+import { SettingsModal } from './src/components/settings/SettingsModal';
 import { DashboardScreen } from './src/screens/DashboardScreen';
 import { StudyMaterialScreen } from './src/screens/StudyMaterialScreen';
 import { AskAITutorPayload, TestEngineScreen } from './src/screens/TestEngineScreen';
@@ -26,14 +28,18 @@ import { PYQExplorerScreen } from './src/screens/PYQExplorerScreen';
 import { ExamCalendarScreen } from './src/screens/ExamCalendarScreen';
 import { QuickCalculatorModal } from './src/components/common/QuickCalculatorModal';
 import { OnboardingAuthModal } from './src/components/auth/OnboardingAuthModal';
+import { WelcomeOnboardingScreen } from './src/components/auth/WelcomeOnboardingScreen';
 import { DEFAULT_USER, StorageService } from './src/services/storage';
 import { SoundManager } from './src/services/soundManager';
+import { UserWorkspaceService } from './src/services/userWorkspaceService';
+import { BRANDING_ASSETS } from './src/utils/avatarHelper';
 import { aggregateDailyActivity, computeStreakAndWeek } from './src/utils/activityStats';
 import { SubjectId, TestSessionLaunch, UserProfile } from './src/types';
 import { ChevronLeft } from 'lucide-react-native';
 
 function MainApp() {
   const { colors, mode } = useTheme();
+  const [authHydrated, setAuthHydrated] = useState(false);
   const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
   const [hasMountedTestTab, setHasMountedTestTab] = useState(false);
   const [aiPrefillPrompt, setAiPrefillPrompt] = useState<AskAITutorPayload | null>(null);
@@ -46,6 +52,8 @@ function MainApp() {
   const [liveStreakDays, setLiveStreakDays] = useState<number>(DEFAULT_USER.studyStreakDays);
   const [quickCalcOpen, setQuickCalcOpen] = useState(false);
   const [onboardingOpen, setOnboardingOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerSettingsOpen, setDrawerSettingsOpen] = useState(false);
 
   useEffect(() => {
     if (activeTab === 'test' && !hasMountedTestTab) {
@@ -74,28 +82,86 @@ function MainApp() {
   }, []);
 
   useEffect(() => {
+    let mounted = true;
     const hydrateGlobals = async () => {
-      const [settings, profile, goalCfg, logs] = await Promise.all([
-        StorageService.getSettings(),
-        StorageService.getUserProfile(),
-        StorageService.getDailyGoalConfig(),
-        StorageService.getAttemptLogs(),
-      ]);
-      SoundManager.setCachedSettings(settings);
-      setUserProfile(profile);
-      if (!profile.onboardingCompleted) {
-        setOnboardingOpen(true);
+      try {
+        const [settings, profile, goalCfg, logs] = await Promise.all([
+          StorageService.getSettings(),
+          StorageService.getUserProfile(),
+          StorageService.getDailyGoalConfig(),
+          StorageService.getAttemptLogs(),
+        ]);
+        if (!mounted) return;
+        SoundManager.setCachedSettings(settings);
+        setUserProfile(profile);
+        if (profile.onboardingCompleted) {
+          // Ensure user's B2 + Supabase workspace folders are always initialized
+          void UserWorkspaceService.provisionUserFolders(profile.id, profile.ioId);
+        }
+        const streak = computeStreakAndWeek(
+          aggregateDailyActivity(logs),
+          goalCfg.targetQuestions,
+          new Date(),
+          profile.studyStreakDays
+        );
+        setLiveStreakDays(streak.currentStreakDays);
+      } finally {
+        if (mounted) setAuthHydrated(true);
       }
-      const streak = computeStreakAndWeek(
-        aggregateDailyActivity(logs),
-        goalCfg.targetQuestions,
-        new Date(),
-        profile.studyStreakDays
-      );
-      setLiveStreakDays(streak.currentStreakDays);
     };
     hydrateGlobals();
+    return () => {
+      mounted = false;
+    };
   }, [activeTab]);
+
+  const handleProfileSaved = (updated: UserProfile) => {
+    setUserProfile(updated);
+    if (updated.onboardingCompleted) {
+      void UserWorkspaceService.provisionUserFolders(updated.id, updated.ioId);
+    }
+  };
+
+  // 1. Clean splash while hydrating persisted auth/onboarding status (prevents Home flash!)
+  if (!authHydrated) {
+    return (
+      <View style={styles.bootSplash}>
+        <StatusBar style="light" />
+        <Image
+          source={BRANDING_ASSETS.appLogo}
+          style={styles.bootLogo}
+          resizeMode="contain"
+        />
+        <Text style={styles.bootTitle}>Study Labs</Text>
+        <Text style={styles.bootSub}>study.io · Initializing Workspace...</Text>
+      </View>
+    );
+  }
+
+  // 2. Direct Full-Screen Onboarding with 9:16 Intro Animation Video + Google / Microsoft / GitHub Auth
+  if (!userProfile.onboardingCompleted) {
+    return (
+      <View style={{ flex: 1, backgroundColor: '#05070E' }}>
+        <StatusBar style="light" />
+        <WelcomeOnboardingScreen
+          initialProfile={userProfile}
+          onAuthenticated={(nextProfile, openWizard) => {
+            handleProfileSaved(nextProfile);
+            if (openWizard) {
+              setOnboardingOpen(true);
+            }
+          }}
+          onOpenEmailSetup={() => setOnboardingOpen(true)}
+        />
+        <OnboardingAuthModal
+          visible={onboardingOpen}
+          onClose={() => setOnboardingOpen(false)}
+          initialProfile={userProfile}
+          onSaved={handleProfileSaved}
+        />
+      </View>
+    );
+  }
 
   const isSubScreen = [
     'analytics',
@@ -103,12 +169,12 @@ function MainApp() {
     'playground',
     'leaderboard',
     'dailyGoal',
-    'notebooks',
     'clubs',
     'profile',
     'ebooks',
     'community',
     'admin',
+    'tracker',
   ].includes(activeTab);
 
   const getSubScreenTitle = () => {
@@ -118,23 +184,25 @@ function MainApp() {
       case 'syllabus':
         return 'Syllabus & Planner';
       case 'playground':
-        return 'STEM Graph Playground';
+        return '3D STEM Lab';
       case 'leaderboard':
-        return 'Leaderboards & Challenges';
+        return 'Leaderboards & Leagues';
       case 'dailyGoal':
-        return 'Daily Goal & Heatmap';
+        return 'Your Daily Goal';
       case 'notebooks':
         return 'Notebooks & My Notes';
       case 'clubs':
         return 'Study Clubs & Institutes';
       case 'profile':
-        return 'My Profile & Alerts';
+        return 'My Profile & Cloud Folders';
       case 'ebooks':
-        return 'Digital E-Books & Reader';
+        return 'Digital E-Books & Syllabi';
       case 'community':
         return 'Community & Doubt Exchange';
       case 'admin':
         return 'Admin Console & Telemetry';
+      case 'tracker':
+        return 'Offline Coaching Tracker';
       default:
         return '';
     }
@@ -152,6 +220,7 @@ function MainApp() {
         return (
           <DashboardScreen
             onNavigate={setActiveTab}
+            onOpenDrawer={() => setDrawerOpen(true)}
             onOpenOnboarding={() => setOnboardingOpen(true)}
             onOpenCustomTest={() => {
               setHasMountedTestTab(true);
@@ -212,7 +281,7 @@ function MainApp() {
       case 'pyqs':
         return (
           <PYQExplorerScreen
-            onBack={() => setActiveTab('tools')}
+            onBack={() => setActiveTab('dashboard')}
             onLaunchMockTest={(qs, title) =>
               launchTestSession({
                 title,
@@ -226,7 +295,7 @@ function MainApp() {
       case 'calendar':
         return (
           <ExamCalendarScreen
-            onBack={() => setActiveTab('tools')}
+            onBack={() => setActiveTab('dashboard')}
             onOpenSyllabus={() => setActiveTab('ebooks')}
           />
         );
@@ -255,7 +324,11 @@ function MainApp() {
           <ProfileScreen
             onNavigate={setActiveTab}
             onOpenOnboarding={() => setOnboardingOpen(true)}
-            onProfileUpdated={(updated) => setUserProfile(updated)}
+            onProfileUpdated={handleProfileSaved}
+            onAccountDeleted={() => {
+              setActiveTab('dashboard');
+              setUserProfile({ ...DEFAULT_USER, onboardingCompleted: false });
+            }}
           />
         );
       case 'ebooks':
@@ -277,6 +350,7 @@ function MainApp() {
       <Header
         userIoId={userProfile.ioId}
         streakDays={liveStreakDays}
+        onMenuPress={() => setDrawerOpen(true)}
         onProfilePress={() => setActiveTab('profile')}
         onStreakPress={() => setActiveTab('dailyGoal')}
         onLeaderboardPress={() => setActiveTab('leaderboard')}
@@ -327,8 +401,28 @@ function MainApp() {
         )}
       </View>
 
-      {/* Bottom Navigation */}
+      {/* Bottom Navigation (with Android Safe-Area Bottom Inset!) */}
       <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+
+      {/* MARKS-Style Left Side Drawer */}
+      <SideDrawerModal
+        visible={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        profile={userProfile}
+        onNavigate={setActiveTab}
+        onOpenSettings={() => setDrawerSettingsOpen(true)}
+        onOpenOnboarding={() => setOnboardingOpen(true)}
+      />
+
+      {/* Drawer-Triggered Global Settings Modal */}
+      <SettingsModal
+        visible={drawerSettingsOpen}
+        onClose={() => setDrawerSettingsOpen(false)}
+        onOpenReminderSettings={() => {
+          setDrawerSettingsOpen(false);
+          setActiveTab('dailyGoal');
+        }}
+      />
 
       {/* Global Popup Quick Calculator */}
       <QuickCalculatorModal
@@ -342,7 +436,7 @@ function MainApp() {
         visible={onboardingOpen}
         onClose={() => setOnboardingOpen(false)}
         initialProfile={userProfile}
-        onSaved={(updated) => setUserProfile(updated)}
+        onSaved={handleProfileSaved}
       />
     </SafeAreaView>
   );
@@ -361,6 +455,29 @@ export default function App() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
+  },
+  bootSplash: {
+    flex: 1,
+    backgroundColor: '#05070E',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+  },
+  bootLogo: {
+    width: 96,
+    height: 96,
+    borderRadius: 24,
+  },
+  bootTitle: {
+    color: '#FFFFFF',
+    fontSize: 22,
+    fontWeight: '900',
+    letterSpacing: -0.3,
+  },
+  bootSub: {
+    color: '#94A3B8',
+    fontSize: 12.5,
+    fontWeight: '600',
   },
   screenContainer: {
     flex: 1,

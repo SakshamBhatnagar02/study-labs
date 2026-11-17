@@ -20,6 +20,12 @@ import { DEFAULT_DAILY_GOAL, DEFAULT_USER, StorageService } from '../services/st
 import { SupabaseService } from '../services/supabase';
 import { SoundManager } from '../services/soundManager';
 import { HapticManager } from '../services/hapticManager';
+import {
+  PendingDeletionCode,
+  USER_FOLDER_CATEGORIES,
+  UserWorkspaceManifest,
+  UserWorkspaceService,
+} from '../services/userWorkspaceService';
 import { BOARD_DISPLAY_NAMES } from '../data/curriculumData';
 import { evaluateAchievementBadges } from '../utils/gamificationEngine';
 import { computeStorageQuotaUsage, formatByteSize, PLAN_CONFIGS } from '../utils/aiImageLibrary';
@@ -43,6 +49,7 @@ import {
 import { PRESET_AVATARS, resolveAvatarSource } from '../utils/avatarHelper';
 import {
   AlertCircle,
+  AlertTriangle,
   Award,
   Bell,
   BookMarked,
@@ -51,7 +58,10 @@ import {
   CheckCircle2,
   ChevronRight,
   Flame,
+  FolderOpen,
   Globe,
+  HardDrive,
+  KeyRound,
   LogOut,
   MessageSquare,
   Moon,
@@ -60,6 +70,7 @@ import {
   ShieldCheck,
   Sun,
   Target,
+  Trash2,
   Trophy,
   Upload,
   User,
@@ -71,6 +82,7 @@ interface ProfileScreenProps {
   onNavigate: (tab: NavTab) => void;
   onOpenOnboarding?: () => void;
   onProfileUpdated?: (profile: UserProfile) => void;
+  onAccountDeleted?: () => void;
 }
 
 const STREAM_OPTIONS: AcademicStream[] = [
@@ -86,6 +98,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   onNavigate,
   onOpenOnboarding,
   onProfileUpdated,
+  onAccountDeleted,
 }) => {
   const { colors, mode, setTheme } = useTheme();
   const [profile, setProfile] = useState<UserProfile>(DEFAULT_USER);
@@ -113,21 +126,38 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   const [gravatarAvailable, setGravatarAvailable] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
+  // Per-User Cloud Folders (B2 + Supabase) & Verified-Code Account Deletion state
+  const [workspaceManifest, setWorkspaceManifest] = useState<UserWorkspaceManifest | null>(null);
+  const [preservedCommunityCount, setPreservedCommunityCount] = useState(0);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [preservePublicUploads, setPreservePublicUploads] = useState(true);
+  const [pendingDeletion, setPendingDeletion] = useState<PendingDeletionCode | null>(null);
+  const [deletionCodeInput, setDeletionCodeInput] = useState('');
+  const [deletionBusy, setDeletionBusy] = useState(false);
+  const [deletionError, setDeletionError] = useState<string | null>(null);
+  const [deletionNotice, setDeletionNotice] = useState<string | null>(null);
+
   const loadData = useCallback(async () => {
-    const [prof, cfg, attemptLogs, imgs, tier, clubsWs] = await Promise.all([
+    const [prof, cfg, attemptLogs, imgs, tier, clubsWs, preserved] = await Promise.all([
       StorageService.getUserProfile(),
       StorageService.getDailyGoalConfig(),
       StorageService.getAttemptLogs(),
       StorageService.getGeneratedImages(),
       StorageService.getUserPlanTier(),
       StorageService.getClubsWorkspace(),
+      UserWorkspaceService.getPreservedCommunityFiles(),
     ]);
+    const wsManifest =
+      (await UserWorkspaceService.getUserWorkspace(prof.id)) ||
+      (await UserWorkspaceService.provisionUserFolders(prof.id, prof.ioId));
     setProfile(prof);
     setGoalConfig(cfg);
     setLogs(attemptLogs);
     setSavedImages(imgs);
     setPlanTier(tier);
     setJoinedClubsCount(clubsWs.joinedClubIds.length);
+    setWorkspaceManifest(wsManifest);
+    setPreservedCommunityCount(preserved.length);
     setDraftName(prof.name);
     setDraftEmail(prof.email || '');
     setDraftClass(prof.classGrade);
@@ -197,6 +227,63 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
     setAvatarCompressionNotice('Linked live Gravatar avatar (SHA-256 resolved).');
     HapticManager.triggerSuccess();
     SoundManager.play('click');
+  };
+
+  const handleRequestDeletionCode = async () => {
+    setDeletionBusy(true);
+    setDeletionError(null);
+    setDeletionNotice(null);
+    try {
+      const req = await UserWorkspaceService.requestAccountDeletionCode(
+        profile,
+        preservePublicUploads
+      );
+      setPendingDeletion(req);
+      SoundManager.play('notify');
+      HapticManager.triggerSelection();
+      if (req.deliveryStatus === 'sent') {
+        setDeletionNotice(`6-digit security code sent to ${req.email}. Enter it below to permanently delete your account.`);
+      } else {
+        setDeletionNotice(`Security confirmation code generated: ${req.code} (valid 15 min). Enter this exact code below to confirm.`);
+      }
+    } catch (err: any) {
+      setDeletionError(err?.message || 'Unable to generate deletion verification code.');
+    } finally {
+      setDeletionBusy(false);
+    }
+  };
+
+  const handleConfirmAccountDeletion = async () => {
+    setDeletionBusy(true);
+    setDeletionError(null);
+    try {
+      const outcome = await UserWorkspaceService.confirmPermanentAccountDeletion({
+        userId: profile.id,
+        enteredCode: deletionCodeInput,
+        preservePublicContributions: preservePublicUploads,
+      });
+      if (!outcome.success) {
+        setDeletionError(outcome.error || 'Verification failed.');
+        SoundManager.play('incorrect');
+        HapticManager.triggerError();
+        setDeletionBusy(false);
+        return;
+      }
+      SoundManager.play('notify');
+      HapticManager.triggerSuccess();
+      setDeleteModalOpen(false);
+      setPendingDeletion(null);
+      setDeletionCodeInput('');
+      setDeletionBusy(false);
+      if (onAccountDeleted) {
+        onAccountDeleted();
+      } else {
+        onOpenOnboarding?.();
+      }
+    } catch (err: any) {
+      setDeletionError(err?.message || 'Account deletion failed.');
+      setDeletionBusy(false);
+    }
   };
 
   const handleLogout = async () => {
@@ -652,19 +739,282 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
             style={{ marginTop: 12 }}
           />
 
-          {/* Account Log Out / Switch Scholar Button */}
-          <View style={{ marginTop: 16, borderTopWidth: 1, borderTopColor: colors.borderSubtle, paddingTop: 14 }}>
+          {/* Account Log Out / Switch Scholar & Cloud Folder Management */}
+          <View style={{ marginTop: 16, borderTopWidth: 1, borderTopColor: colors.borderSubtle, paddingTop: 14, gap: 10 }}>
             <Button
               title="Log Out / Switch Account"
               variant="outline"
               size="md"
               onPress={() => setShowLogoutConfirm(true)}
-              icon={<LogOut size={15} color={colors.error || '#EF4444'} />}
-              style={{ borderColor: colors.error || '#EF4444' }}
+              icon={<LogOut size={15} color={colors.primary} />}
             />
           </View>
         </Card>
+
+        {/* Per-User Cloud Folders (Backblaze B2 + Supabase DB) */}
+        <Card style={[styles.prefsCard, { borderColor: colors.border }]}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+              <HardDrive size={16} color={colors.primary} />
+              <Text style={[styles.cardHeading, { color: colors.text }]}>
+                My Cloud Folders (B2 & Supabase)
+              </Text>
+            </View>
+            <Badge
+              label={workspaceManifest?.syncedToB2 ? 'B2 + DB Active' : 'Provisioned'}
+              variant="success"
+              size="sm"
+            />
+          </View>
+          <Text style={{ fontSize: 11.5, color: colors.textSecondary, lineHeight: 17, marginBottom: 10 }}>
+            Root: {workspaceManifest?.rootB2Path || `users/${profile.id}/`} · Every notebook, uploaded book, solution & note is automatically organized inside your dedicated folder across Backblaze B2 & Supabase DB.
+          </Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+            {(workspaceManifest?.folders || []).map((folder) => {
+              const count = (workspaceManifest?.files || []).filter(
+                (f) => f.folderCategory === folder.category
+              ).length;
+              return (
+                <View
+                  key={folder.id}
+                  style={{
+                    width: '48%',
+                    padding: 10,
+                    borderRadius: 12,
+                    borderWidth: 1,
+                    borderColor: colors.borderSubtle,
+                    backgroundColor: colors.surface,
+                    gap: 3,
+                  }}
+                >
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                    <FolderOpen size={14} color={colors.primary} />
+                    <Text style={{ fontSize: 12, fontWeight: '800', color: colors.text }} numberOfLines={1}>
+                      /{folder.category}
+                    </Text>
+                  </View>
+                  <Text style={{ fontSize: 10.5, color: colors.textSecondary }} numberOfLines={1}>
+                    {folder.label}
+                  </Text>
+                  <Text style={{ fontSize: 10, fontWeight: '700', color: colors.primary }}>
+                    {count} {count === 1 ? 'file' : 'files'} synced
+                  </Text>
+                </View>
+              );
+            })}
+          </View>
+          {preservedCommunityCount > 0 && (
+            <Text style={{ fontSize: 11, color: colors.success, marginTop: 10, fontWeight: '600' }}>
+              ✓ {preservedCommunityCount} community-preserved book/solution resource(s) remain accessible to all Study Labs members.
+            </Text>
+          )}
+        </Card>
+
+        {/* Danger Zone — Permanent Account Deletion (Code-Verified) */}
+        <Card style={[styles.prefsCard, { borderColor: 'rgba(239, 68, 68, 0.45)' }]}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+            <AlertTriangle size={16} color="#EF4444" />
+            <Text style={[styles.cardHeading, { color: '#EF4444' }]}>
+              Danger Zone · Delete Account
+            </Text>
+          </View>
+          <Text style={{ fontSize: 11.5, color: colors.textSecondary, lineHeight: 17, marginBottom: 12 }}>
+            Permanently erase your account & personal folders from Backblaze B2 and Supabase DB using a mandatory 6-digit verification code. You can optionally choose to preserve your uploaded Books, Solutions & Public Notes for other members.
+          </Text>
+          <Button
+            title="Permanently Delete Account"
+            variant="outline"
+            size="md"
+            onPress={() => {
+              setDeletionError(null);
+              setDeletionNotice(null);
+              setPendingDeletion(null);
+              setDeletionCodeInput('');
+              setPreservePublicUploads(true);
+              setDeleteModalOpen(true);
+            }}
+            icon={<Trash2 size={15} color="#EF4444" />}
+            style={{ borderColor: '#EF4444' }}
+          />
+        </Card>
       </ScrollView>
+
+      {/* Verified-Code Permanent Account Deletion Modal */}
+      <Modal
+        visible={deleteModalOpen}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setDeleteModalOpen(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View
+            style={[
+              styles.logoutDialog,
+              { backgroundColor: colors.card, borderColor: 'rgba(239, 68, 68, 0.5)', maxWidth: 440 },
+            ]}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 9, flex: 1 }}>
+                <View
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 18,
+                    backgroundColor: 'rgba(239, 68, 68, 0.16)',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Trash2 size={18} color="#EF4444" />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 15.5, fontWeight: '800', color: colors.text }}>
+                    Delete Account Permanently
+                  </Text>
+                  <Text style={{ fontSize: 11, color: colors.textSecondary }}>
+                    Requires 6-digit security verification code
+                  </Text>
+                </View>
+              </View>
+              <TouchableOpacity onPress={() => setDeleteModalOpen(false)} hitSlop={8}>
+                <X size={18} color={colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={{ fontSize: 12, color: colors.textSecondary, lineHeight: 17, marginBottom: 12 }}>
+              This permanently wipes your profile, private notebooks, attempt history, and personal B2 & Supabase folders ({workspaceManifest?.rootB2Path || `users/${profile.id}/`}).
+            </Text>
+
+            {/* Preserve Public Books, Solutions & Notes Toggle */}
+            <TouchableOpacity
+              onPress={() => setPreservePublicUploads((v) => !v)}
+              activeOpacity={0.8}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'flex-start',
+                gap: 10,
+                padding: 11,
+                borderRadius: 12,
+                borderWidth: 1,
+                borderColor: preservePublicUploads ? colors.success : colors.border,
+                backgroundColor: colors.surface,
+                marginBottom: 12,
+              }}
+            >
+              <View
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: 6,
+                  marginTop: 1,
+                  borderWidth: 1.5,
+                  borderColor: preservePublicUploads ? colors.success : colors.textSecondary,
+                  backgroundColor: preservePublicUploads ? colors.success : 'transparent',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {preservePublicUploads && <Check size={13} color="#FFFFFF" />}
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 12.5, fontWeight: '800', color: colors.text }}>
+                  Preserve my uploaded Books, Solutions & Public Notes
+                </Text>
+                <Text style={{ fontSize: 11, color: colors.textSecondary, lineHeight: 15, marginTop: 2 }}>
+                  {preservePublicUploads
+                    ? 'Your public books, solutions & shared notes will be anonymized (community/preserved/) so other Study Labs members can still study from them while your personal account is wiped.'
+                    : 'Every single uploaded book, solution, note & private file will be permanently erased.'}
+                </Text>
+              </View>
+            </TouchableOpacity>
+
+            {/* Step 1: Request 6-digit Code */}
+            <Button
+              title={
+                pendingDeletion
+                  ? 'Resend 6-Digit Verification Code'
+                  : 'Send 6-Digit Deletion Code'
+              }
+              variant="outline"
+              size="sm"
+              disabled={deletionBusy}
+              onPress={() => void handleRequestDeletionCode()}
+              icon={<KeyRound size={14} color={colors.primary} />}
+              style={{ marginBottom: 10 }}
+            />
+
+            {deletionNotice && (
+              <View
+                style={{
+                  padding: 10,
+                  borderRadius: 10,
+                  backgroundColor: 'rgba(249, 115, 22, 0.12)',
+                  borderWidth: 1,
+                  borderColor: colors.primary,
+                  marginBottom: 10,
+                }}
+              >
+                <Text style={{ fontSize: 11.5, fontWeight: '700', color: colors.text }}>
+                  {deletionNotice}
+                </Text>
+              </View>
+            )}
+
+            {/* Step 2: Enter Code */}
+            {pendingDeletion && (
+              <View style={{ gap: 6, marginBottom: 10 }}>
+                <Text style={{ fontSize: 11, fontWeight: '800', color: colors.textSecondary }}>
+                  ENTER 6-DIGIT VERIFICATION CODE
+                </Text>
+                <TextInput
+                  value={deletionCodeInput}
+                  onChangeText={setDeletionCodeInput}
+                  keyboardType="number-pad"
+                  maxLength={6}
+                  placeholder="Enter 6-digit code"
+                  placeholderTextColor={colors.textSecondary}
+                  style={{
+                    borderWidth: 1,
+                    borderColor: '#EF4444',
+                    borderRadius: 12,
+                    paddingHorizontal: 14,
+                    paddingVertical: 10,
+                    fontSize: 16,
+                    fontWeight: '800',
+                    letterSpacing: 4,
+                    color: colors.text,
+                    backgroundColor: colors.surface,
+                    textAlign: 'center',
+                  }}
+                />
+              </View>
+            )}
+
+            {deletionError && (
+              <Text style={{ fontSize: 11.5, fontWeight: '700', color: '#EF4444', marginBottom: 10 }}>
+                {deletionError}
+              </Text>
+            )}
+
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <Button
+                title="Cancel"
+                variant="outline"
+                size="sm"
+                onPress={() => setDeleteModalOpen(false)}
+                style={{ flex: 1 }}
+              />
+              <Button
+                title={deletionBusy ? 'Wiping...' : 'Confirm Permanent Delete'}
+                size="sm"
+                disabled={deletionBusy || !pendingDeletion || deletionCodeInput.trim().length !== 6}
+                onPress={() => void handleConfirmAccountDeletion()}
+                style={{ flex: 1.4, backgroundColor: '#DC2626' }}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       {/* Logout Confirmation Dialog Modal */}
       <Modal

@@ -17,6 +17,7 @@ import {
   NATIONAL_EXAMS_CALENDAR,
   NationalExamMeta,
 } from '../data/examCalendarData';
+import { GLOBAL_EXAMS_IMPORT } from '../data/globalExamCalendarImport';
 import {
   ArrowLeft,
   Calendar,
@@ -41,10 +42,42 @@ export const ExamCalendarScreen: React.FC<ExamCalendarScreenProps> = ({
   const { colors, mode } = useTheme();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
+  const allCombinedExams: NationalExamMeta[] = useMemo(() => {
+    const existingIds = new Set(NATIONAL_EXAMS_CALENDAR.map((e) => e.id.toLowerCase()));
+    const mappedGlobal: NationalExamMeta[] = GLOBAL_EXAMS_IMPORT.filter(
+      (g) => !existingIds.has(g.id.toLowerCase())
+    ).map((g) => ({
+      id: `global_${g.id}`,
+      name: `${g.name} (${g.country})`,
+      shortName: g.shortName,
+      category:
+        g.category === 'medical'
+          ? 'medical'
+          : g.category === 'engineering'
+          ? 'engineering'
+          : 'general',
+      conductingBody: `${g.conductingBody} · ${g.region}`,
+      eligibility: g.eligibility || `Global / ${g.country} candidates`,
+      officialUrl: g.officialUrl || 'https://study.io',
+      color: g.countryCode === 'IN' ? '#F97316' : g.region === 'Global' ? '#8B5CF6' : '#3B82F6',
+      icon: 'globe',
+      syllabusAvailable: false,
+      dates: g.dates.map((d) => ({
+        label: d.label,
+        date: d.date,
+        type: (d.type as any) || 'exam',
+      })),
+    }));
+    return [...NATIONAL_EXAMS_CALENDAR, ...mappedGlobal];
+  }, []);
+
   const filteredExams = useMemo(() => {
-    if (selectedCategory === 'all') return NATIONAL_EXAMS_CALENDAR;
-    return NATIONAL_EXAMS_CALENDAR.filter((e) => e.category === selectedCategory);
-  }, [selectedCategory]);
+    if (selectedCategory === 'all') return allCombinedExams;
+    if (selectedCategory === 'global') {
+      return allCombinedExams.filter((e) => e.id.startsWith('global_'));
+    }
+    return allCombinedExams.filter((e) => e.category === selectedCategory);
+  }, [selectedCategory, allCombinedExams]);
 
   const computeDaysLeft = (targetDateStr: string): number => {
     const target = new Date(targetDateStr);
@@ -84,16 +117,18 @@ export const ExamCalendarScreen: React.FC<ExamCalendarScreenProps> = ({
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Category Filter Chips */}
         <View style={styles.categoryRow}>
-          {(['all', 'engineering', 'medical', 'general'] as const).map((cat) => {
+          {(['all', 'engineering', 'medical', 'general', 'global'] as const).map((cat) => {
             const isSelected = selectedCategory === cat;
             const label =
               cat === 'all'
-                ? 'All Exams'
+                ? `All (${allCombinedExams.length})`
                 : cat === 'engineering'
                 ? 'Engineering'
                 : cat === 'medical'
                 ? 'Medical'
-                : 'Central Univ.';
+                : cat === 'global'
+                ? 'Global (MIT)'
+                : 'Univ. / General';
             return (
               <TouchableOpacity
                 key={cat}

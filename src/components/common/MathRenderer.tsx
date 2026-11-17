@@ -296,8 +296,17 @@ export const RichMathText: React.FC<RichMathTextProps> = ({
 
   if (!clean) return null;
 
+  const shouldOfferPanZoom = useMemo(() => {
+    if (!allowPanModal) return false;
+    // Show Move/Zoom only when content actually has wide tables, block equations, or long derivations
+    const hasTable = /\|.+\|/.test(clean) && /\n\s*\|?[\s:-]+\|/.test(clean);
+    const hasBlockMath = /\$\$[\s\S]+\$\$|\\\[[\s\S]+\\\]|\\begin\{/.test(clean);
+    const isLongRich = clean.length > 260 && needsRichRenderer;
+    return hasTable || hasBlockMath || isLongRich;
+  }, [allowPanModal, clean, needsRichRenderer]);
+
   const renderPanToolbar = () =>
-    allowPanModal ? (
+    shouldOfferPanZoom ? (
       <View style={styles.panTriggerRow}>
         <Pressable
           focusable={false}

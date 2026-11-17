@@ -8,6 +8,11 @@ declare module '*.wav' {
   export default asset;
 }
 
+declare module '*.mp4' {
+  const asset: number;
+  export default asset;
+}
+
 declare module '*.png' {
   const asset: number;
   export default asset;
@@ -19,6 +24,11 @@ declare module '*.jpg' {
 }
 
 declare module '*.jpeg' {
+  const asset: number;
+  export default asset;
+}
+
+declare module '*.svg' {
   const asset: number;
   export default asset;
 }

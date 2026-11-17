@@ -231,4 +231,213 @@ CREATE TABLE IF NOT EXISTS public.safety_reports (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- =============================================================================
+-- 8. Per-User Cloud Folder Architecture (Backblaze B2 + Supabase Storage & DB)
+-- =============================================================================
+
+-- Dedicated folder registry created automatically on user registration
+CREATE TABLE IF NOT EXISTS public.user_storage_folders (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  category TEXT NOT NULL CHECK (category IN ('profile', 'notebooks', 'books', 'notes', 'solutions', 'visuals')),
+  b2_folder_path TEXT NOT NULL,
+  supabase_folder_path TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE (user_id, category)
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_storage_folders_user_id
+  ON public.user_storage_folders (user_id);
+
+-- Per-user uploaded content (notebooks, books, notes, solutions, visuals)
+-- Supports community preservation when an account is permanently deleted.
+CREATE TABLE IF NOT EXISTS public.user_uploaded_files (
+  id TEXT PRIMARY KEY,
+  user_id TEXT REFERENCES public.profiles(id) ON DELETE SET NULL,
+  original_author_label TEXT NOT NULL DEFAULT 'Study Labs Member',
+  folder_category TEXT NOT NULL CHECK (folder_category IN ('profile', 'notebooks', 'books', 'notes', 'solutions', 'visuals')),
+  file_name TEXT NOT NULL,
+  mime_type TEXT NOT NULL DEFAULT 'application/octet-stream',
+  size_bytes BIGINT NOT NULL DEFAULT 0,
+  b2_path TEXT NOT NULL,
+  b2_file_id TEXT,
+  supabase_path TEXT NOT NULL,
+  public_url TEXT,
+  is_public_shared BOOLEAN NOT NULL DEFAULT FALSE,
+  is_preserved_after_deletion BOOLEAN NOT NULL DEFAULT FALSE,
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'preserved_community', 'deleted')),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_uploaded_files_user_cat
+  ON public.user_uploaded_files (user_id, folder_category);
+
+CREATE INDEX IF NOT EXISTS idx_user_uploaded_files_community_preserved
+  ON public.user_uploaded_files (is_public_shared, is_preserved_after_deletion)
+  WHERE is_public_shared = TRUE OR is_preserved_after_deletion = TRUE;
+
+-- Verified-code permanent account deletion requests
+CREATE TABLE IF NOT EXISTS public.account_deletion_requests (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  verification_code TEXT NOT NULL,
+  preserve_public_contributions BOOLEAN NOT NULL DEFAULT TRUE,
+  expires_at TIMESTAMPTZ NOT NULL,
+  confirmed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_account_deletion_requests_user_id
+  ON public.account_deletion_requests (user_id);
+
+-- Enable RLS on all user workspace tables (Supabase Security Best Practices)
+ALTER TABLE public.user_storage_folders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_uploaded_files ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.account_deletion_requests ENABLE ROW LEVEL SECURITY;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'user_storage_folders' AND policyname = 'Users manage own folders') THEN
+    CREATE POLICY "Users manage own folders" ON public.user_storage_folders
+      FOR ALL TO authenticated
+      USING ((select auth.uid())::text = user_id)
+      WITH CHECK ((select auth.uid())::text = user_id);
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'user_uploaded_files' AND policyname = 'Users read own or shared community files') THEN
+    CREATE POLICY "Users read own or shared community files" ON public.user_uploaded_files
+      FOR SELECT TO authenticated
+      USING (
+        (select auth.uid())::text = user_id
+        OR is_public_shared = TRUE
+        OR is_preserved_after_deletion = TRUE
+      );
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'user_uploaded_files' AND policyname = 'Users insert own files') THEN
+    CREATE POLICY "Users insert own files" ON public.user_uploaded_files
+      FOR INSERT TO authenticated
+      WITH CHECK ((select auth.uid())::text = user_id);
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'user_uploaded_files' AND policyname = 'Users update own files') THEN
+    CREATE POLICY "Users update own files" ON public.user_uploaded_files
+      FOR UPDATE TO authenticated
+      USING ((select auth.uid())::text = user_id)
+      WITH CHECK ((select auth.uid())::text = user_id);
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'user_uploaded_files' AND policyname = 'Users delete own files') THEN
+    CREATE POLICY "Users delete own files" ON public.user_uploaded_files
+      FOR DELETE TO authenticated
+      USING ((select auth.uid())::text = user_id);
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'account_deletion_requests' AND policyname = 'Users manage own deletion requests') THEN
+    CREATE POLICY "Users manage own deletion requests" ON public.account_deletion_requests
+      FOR ALL TO authenticated
+      USING ((select auth.uid())::text = user_id)
+      WITH CHECK ((select auth.uid())::text = user_id);
+  END IF;
+END $$;
+
+-- RPC: Auto-provision user's 6 category folders across B2 & Supabase paths on registration
+CREATE OR REPLACE FUNCTION public.provision_user_workspace_folders(p_user_id TEXT)
+RETURNS VOID
+LANGUAGE plpgsql
+SECURITY INVOKER
+AS $$
+DECLARE
+  v_cat TEXT;
+  v_cats TEXT[] := ARRAY['profile', 'notebooks', 'books', 'notes', 'solutions', 'visuals'];
+BEGIN
+  FOREACH v_cat IN ARRAY v_cats LOOP
+    INSERT INTO public.user_storage_folders (id, user_id, category, b2_folder_path, supabase_folder_path)
+    VALUES (
+      'fld_' || p_user_id || '_' || v_cat,
+      p_user_id,
+      v_cat,
+      'users/' || p_user_id || '/' || v_cat || '/',
+      'users/' || p_user_id || '/' || v_cat || '/'
+    )
+    ON CONFLICT (user_id, category) DO NOTHING;
+  END LOOP;
+END;
+$$;
+
+-- RPC: Code-verified permanent account deletion with optional preservation of public books/solutions/notes
+CREATE OR REPLACE FUNCTION public.execute_verified_account_deletion(
+  p_user_id TEXT,
+  p_verification_code TEXT,
+  p_preserve_contributions BOOLEAN DEFAULT TRUE
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_req RECORD;
+  v_preserved_count INTEGER := 0;
+  v_deleted_files_count INTEGER := 0;
+BEGIN
+  IF (select auth.uid())::text IS DISTINCT FROM p_user_id THEN
+    RAISE EXCEPTION 'Unauthorized account deletion request';
+  END IF;
+
+  SELECT * INTO v_req
+  FROM public.account_deletion_requests
+  WHERE user_id = p_user_id
+    AND verification_code = p_verification_code
+    AND confirmed_at IS NULL
+    AND expires_at > NOW()
+  ORDER BY created_at DESC
+  LIMIT 1;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'Invalid or expired account deletion verification code';
+  END IF;
+
+  IF p_preserve_contributions THEN
+    -- Preserve uploaded books, solutions & public notes for other Study Labs members
+    UPDATE public.user_uploaded_files
+    SET
+      user_id = NULL,
+      original_author_label = 'Study Labs Community Alumni',
+      is_public_shared = TRUE,
+      is_preserved_after_deletion = TRUE,
+      status = 'preserved_community',
+      b2_path = 'community/preserved/' || folder_category || '/' || file_name,
+      supabase_path = 'community/preserved/' || folder_category || '/' || file_name,
+      updated_at = NOW()
+    WHERE user_id = p_user_id
+      AND folder_category IN ('books', 'solutions', 'notes')
+      AND is_public_shared = TRUE;
+    GET DIAGNOSTICS v_preserved_count = ROW_COUNT;
+  END IF;
+
+  -- Permanently delete all remaining personal files (private notebooks, visuals, profile, or all if preserve=false)
+  DELETE FROM public.user_uploaded_files
+  WHERE user_id = p_user_id;
+  GET DIAGNOSTICS v_deleted_files_count = ROW_COUNT;
+
+  -- Wipe personal folders, club memberships, syllabus & profile row
+  DELETE FROM public.club_members WHERE user_id = p_user_id;
+  DELETE FROM public.user_storage_folders WHERE user_id = p_user_id;
+  DELETE FROM public.account_deletion_requests WHERE user_id = p_user_id;
+  DELETE FROM public.profiles WHERE id = p_user_id;
+
+  RETURN jsonb_build_object(
+    'deleted', TRUE,
+    'preserved_contributions', v_preserved_count,
+    'wiped_personal_files', v_deleted_files_count
+  );
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.execute_verified_account_deletion(TEXT, TEXT, BOOLEAN) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.execute_verified_account_deletion(TEXT, TEXT, BOOLEAN) TO authenticated;
+
+
 

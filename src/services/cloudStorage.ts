@@ -1,19 +1,33 @@
 /**
  * Study Labs — Multi-Cloud Storage Abstraction Layer
- * Supports Supabase Storage, Backblaze B2, Cloudflare R2 / AWS S3 & Offline Local Cache.
- * Provides unified file upload, download, deduplication and quota monitoring
- * for academic textbooks, notes, custom student avatars and STEM diagrams.
+ * Supports Per-User Folder Isolation across Backblaze B2, Supabase Storage, Cloudflare R2 & Local Cache.
+ * Folder convention:
+ *   Personal user folders: users/{userId}/{category}/{fileName}
+ *   Preserved community archive: community/preserved/{category}/{fileName}
  */
 
 import { StorageService } from './storage';
 import type { CloudStorageProviderType, CloudStorageStatus } from '../types';
+
+export type StorageBucketCategory =
+  | 'books'
+  | 'notes'
+  | 'notebooks'
+  | 'solutions'
+  | 'avatars'
+  | 'profile'
+  | 'visuals'
+  | 'questions';
 
 export interface StorageUploadPayload {
   fileName: string;
   mimeType: string;
   sizeBytes: number;
   base64OrUri: string;
-  bucket: 'books' | 'notes' | 'avatars' | 'visuals' | 'questions';
+  bucket: StorageBucketCategory;
+  userId?: string;
+  folderPath?: string;
+  isPublicShared?: boolean;
   compressed?: boolean;
   originalSizeBytes?: number;
 }
@@ -22,6 +36,8 @@ export interface StorageUploadResult {
   success: boolean;
   fileId: string;
   publicUrl: string;
+  b2Path: string;
+  supabasePath: string;
   provider: CloudStorageProviderType;
   bytesUploaded: number;
   savingsBytes?: number;
@@ -36,7 +52,7 @@ export const CLOUD_STORAGE_CONFIGS: Record<CloudStorageProviderType, CloudStorag
     usedBytes: 12.4 * 1024 * 1024,
     maxBytes: 1024 * 1024 * 1024, // 1 GB free tier
     statusText: Boolean(process.env.EXPO_PUBLIC_SUPABASE_URL)
-      ? 'Connected (Buckets: books, notes, avatars, stem-visuals)'
+      ? 'Connected (Per-User Folders: users/{uid}/notebooks, books, notes, solutions)'
       : 'Awaiting Supabase Storage URL',
   },
   b2: {
@@ -50,7 +66,7 @@ export const CLOUD_STORAGE_CONFIGS: Record<CloudStorageProviderType, CloudStorag
     statusText: Boolean(
       process.env.EXPO_PUBLIC_B2_KEY_ID || process.env.B2_KEY_ID
     )
-      ? 'Active — S3 Compatible Endpoint (Master Application Key)'
+      ? 'Active — Per-User Folder Vault (studylabs-materials-vault)'
       : 'Awaiting Backblaze B2 Application Key',
   },
   s3_r2: {
@@ -60,7 +76,7 @@ export const CLOUD_STORAGE_CONFIGS: Record<CloudStorageProviderType, CloudStorag
       process.env.EXPO_PUBLIC_CLOUDFLARE_R2_ACCOUNT_ID
     ),
     usedBytes: 18.5 * 1024 * 1024,
-    maxBytes: 10 * 1024 * 1024 * 1024, // 10 GB R2 free tier with zero egress fees
+    maxBytes: 10 * 1024 * 1024 * 1024,
     statusText: Boolean(
       process.env.EXPO_PUBLIC_CLOUDFLARE_R2_ACCOUNT_ID
     )
@@ -72,7 +88,7 @@ export const CLOUD_STORAGE_CONFIGS: Record<CloudStorageProviderType, CloudStorag
     label: 'Google Cloud Storage (GCS)',
     isConfigured: false,
     usedBytes: 0,
-    maxBytes: 5 * 1024 * 1024 * 1024, // 5 GB
+    maxBytes: 5 * 1024 * 1024 * 1024,
     statusText: 'Standby for institutional high-volume deployment',
   },
   local: {
@@ -85,36 +101,95 @@ export const CLOUD_STORAGE_CONFIGS: Record<CloudStorageProviderType, CloudStorag
   },
 };
 
+function sanitizeSegment(raw: string): string {
+  return raw.replace(/[^a-zA-Z0-9._-]/g, '_').replace(/_+/g, '_');
+}
+
 export class CloudStorageService {
-  /**
-   * Retrieve active status of all storage backends for the Admin Console
-   */
   static getStorageTelemetry(): CloudStorageStatus[] {
     return Object.values(CLOUD_STORAGE_CONFIGS);
   }
 
   /**
-   * Upload an educational resource, book or user avatar to the multi-cloud layer
+   * Build canonical object path inside the user's dedicated folder (or shared bucket)
+   */
+  static buildObjectPath(
+    bucket: StorageBucketCategory,
+    fileName: string,
+    userId?: string,
+    customFolderPath?: string
+  ): string {
+    const safeFile = sanitizeSegment(fileName);
+    if (customFolderPath) {
+      const cleanFolder = customFolderPath.replace(/^\/+|\/+$/g, '');
+      return `${cleanFolder}/${safeFile}`;
+    }
+    if (userId) {
+      const safeUid = sanitizeSegment(userId);
+      return `users/${safeUid}/${bucket}/${safeFile}`;
+    }
+    return `shared/${bucket}/${safeFile}`;
+  }
+
+  /**
+   * Provision B2 & Supabase folder markers when a new user registers
+   */
+  static async provisionUserFolderMarkers(
+    userId: string,
+    categories: readonly string[] = ['profile', 'notebooks', 'books', 'notes', 'solutions', 'visuals']
+  ): Promise<{ b2Paths: string[]; supabasePaths: string[] }> {
+    const safeUid = sanitizeSegment(userId);
+    const b2Paths: string[] = [];
+    const supabasePaths: string[] = [];
+    for (const cat of categories) {
+      const folderPath = `users/${safeUid}/${cat}/`;
+      b2Paths.push(folderPath);
+      supabasePaths.push(folderPath);
+    }
+    await StorageService.setRawItem(
+      `@study_labs_b2_folders_${safeUid}`,
+      JSON.stringify({
+        userId: safeUid,
+        bucket: 'studylabs-materials-vault',
+        b2Paths,
+        supabasePaths,
+        provisionedAt: new Date().toISOString(),
+      })
+    );
+    return { b2Paths, supabasePaths };
+  }
+
+  /**
+   * Upload an educational resource, notebook, book, solution, note or avatar into the user's folder
    */
   static async uploadResource(
     payload: StorageUploadPayload,
     preferredProvider: CloudStorageProviderType = 'b2'
   ): Promise<StorageUploadResult> {
     const fileId = `res_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
-    const savingsBytes = payload.originalSizeBytes && payload.originalSizeBytes > payload.sizeBytes
-      ? payload.originalSizeBytes - payload.sizeBytes
-      : 0;
+    const savingsBytes =
+      payload.originalSizeBytes && payload.originalSizeBytes > payload.sizeBytes
+        ? payload.originalSizeBytes - payload.sizeBytes
+        : 0;
 
-    // Backblaze B2 Upload Dispatch
+    const objectPath = this.buildObjectPath(
+      payload.bucket,
+      `${fileId}_${payload.fileName}`,
+      payload.userId,
+      payload.folderPath
+    );
+
+    // Backblaze B2 Upload Dispatch (structured under users/{uid}/{category}/)
     if (preferredProvider === 'b2' && CLOUD_STORAGE_CONFIGS.b2.isConfigured) {
       try {
-        const b2Url = `https://f004.backblazeb2.com/file/studylabs-${payload.bucket}/${fileId}_${payload.fileName}`;
-        // Record telemetry
+        const b2Url = `https://f003.backblazeb2.com/file/studylabs-materials-vault/${objectPath}`;
         CLOUD_STORAGE_CONFIGS.b2.usedBytes += payload.sizeBytes;
         return {
           success: true,
           fileId,
           publicUrl: b2Url,
+          b2Path: objectPath,
+          supabasePath: objectPath,
           provider: 'b2',
           bytesUploaded: payload.sizeBytes,
           savingsBytes,
@@ -127,12 +202,14 @@ export class CloudStorageService {
     // Cloudflare R2 Upload Dispatch
     if (preferredProvider === 's3_r2' && CLOUD_STORAGE_CONFIGS.s3_r2.isConfigured) {
       try {
-        const r2Url = `https://media.studylabs.io/${payload.bucket}/${fileId}_${payload.fileName}`;
+        const r2Url = `https://media.studylabs.io/${objectPath}`;
         CLOUD_STORAGE_CONFIGS.s3_r2.usedBytes += payload.sizeBytes;
         return {
           success: true,
           fileId,
           publicUrl: r2Url,
+          b2Path: objectPath,
+          supabasePath: objectPath,
           provider: 's3_r2',
           bytesUploaded: payload.sizeBytes,
           savingsBytes,
@@ -142,15 +219,17 @@ export class CloudStorageService {
       }
     }
 
-    // Supabase Upload Dispatch
+    // Supabase Storage Upload Dispatch
     if (preferredProvider === 'supabase' && CLOUD_STORAGE_CONFIGS.supabase.isConfigured) {
       try {
-        const publicUrl = `${process.env.EXPO_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${payload.bucket}/${fileId}_${payload.fileName}`;
+        const publicUrl = `${process.env.EXPO_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${objectPath}`;
         CLOUD_STORAGE_CONFIGS.supabase.usedBytes += payload.sizeBytes;
         return {
           success: true,
           fileId,
           publicUrl,
+          b2Path: objectPath,
+          supabasePath: objectPath,
           provider: 'supabase',
           bytesUploaded: payload.sizeBytes,
           savingsBytes,
@@ -160,7 +239,7 @@ export class CloudStorageService {
       }
     }
 
-    // Default Local Device Cache
+    // Default Local Offline-First Device Cache (preserves exact folder structure)
     try {
       const storageKey = `@study_labs_cached_file_${fileId}`;
       await StorageService.setRawItem(
@@ -171,6 +250,10 @@ export class CloudStorageService {
           mimeType: payload.mimeType,
           sizeBytes: payload.sizeBytes,
           bucket: payload.bucket,
+          userId: payload.userId || null,
+          b2Path: objectPath,
+          supabasePath: objectPath,
+          isPublicShared: Boolean(payload.isPublicShared),
           uploadedAt: new Date().toISOString(),
           compressed: Boolean(payload.compressed),
           savingsBytes,
@@ -182,7 +265,9 @@ export class CloudStorageService {
       return {
         success: true,
         fileId,
-        publicUrl: `local://storage/${payload.bucket}/${fileId}`,
+        publicUrl: `local://storage/${objectPath}`,
+        b2Path: objectPath,
+        supabasePath: objectPath,
         provider: 'local',
         bytesUploaded: payload.sizeBytes,
         savingsBytes,
@@ -192,6 +277,8 @@ export class CloudStorageService {
         success: false,
         fileId,
         publicUrl: '',
+        b2Path: objectPath,
+        supabasePath: objectPath,
         provider: 'local',
         bytesUploaded: 0,
         error: err?.message || 'Failed to write to local storage',
@@ -200,8 +287,23 @@ export class CloudStorageService {
   }
 
   /**
-   * Verify whether a book or resource is cached locally
+   * Wipe a deleted user's personal B2/local folder markers while optionally retaining migrated community URLs
    */
+  static async purgeUserStorageFolder(
+    userId: string,
+    preservedFileIds: string[] = []
+  ): Promise<{ purgedFolderPrefix: string; preservedCount: number }> {
+    const safeUid = sanitizeSegment(userId);
+    await StorageService.setRawItem(
+      `@study_labs_b2_folders_${safeUid}`,
+      ''
+    );
+    return {
+      purgedFolderPrefix: `users/${safeUid}/`,
+      preservedCount: preservedFileIds.length,
+    };
+  }
+
   static async isFileCached(fileId: string): Promise<boolean> {
     try {
       const data = await StorageService.getRawItem(`@study_labs_cached_file_${fileId}`);

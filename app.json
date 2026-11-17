@@ -8,6 +8,11 @@
     "scheme": "studylabs",
     "userInterfaceStyle": "automatic",
     "primaryColor": "#F97316",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0B0F1A"
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "io.study.labs"
@@ -15,7 +20,7 @@
     "android": {
       "package": "io.study.labs",
       "adaptiveIcon": {
-        "backgroundColor": "#FFF7ED",
+        "backgroundColor": "#0B0F1A",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -36,7 +41,8 @@
     "plugins": [
       "expo-audio",
       "expo-asset",
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-video"
     ],
     "extra": {
       "eas": {

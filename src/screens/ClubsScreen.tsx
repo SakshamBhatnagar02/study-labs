@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  Image,
   Modal,
   Pressable,
   ScrollView,
@@ -11,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import { useTheme } from '../theme';
+import { BRANDING_ASSETS } from '../utils/avatarHelper';
 import { Badge } from '../components/common/Badge';
 import { Button } from '../components/common/Button';
 import { RichMathText } from '../components/common/MathRenderer';
@@ -983,46 +985,47 @@ export const ClubsScreen: React.FC<ClubsScreenProps> = ({
         </View>
 
         <View style={[styles.topActions, !isTablet && styles.topActionsCompact]}>
-          {/* Quick View-As Role Switcher (Demo / Institute RBAC Preview) */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={isTablet ? { maxWidth: isDesktop ? 360 : 210 } : { flex: 1, minWidth: 0 }}
-            contentContainerStyle={{ gap: 4, alignItems: 'center' }}
-          >
-            {ROLE_SIM_OPTIONS.map((r) => {
-              const active = simulatedRole === r;
-              const label = r === 'actual' ? 'My Role' : r.replace('Institute ', '');
-              return (
-                <TouchableOpacity
-                  focusable={false}
-                  key={r}
-                  onPress={async () => {
-                    await persistWorkspace({
-                      ...workspace,
-                      roleOverrideByClub: {
-                        ...workspace.roleOverrideByClub,
-                        [activeClub.id]: r,
+          {isTablet && (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ maxWidth: isDesktop ? 360 : 210 }}
+              contentContainerStyle={{ gap: 4, alignItems: 'center' }}
+            >
+              {ROLE_SIM_OPTIONS.map((r) => {
+                const active = simulatedRole === r;
+                const label = r === 'actual' ? 'My Role' : r.replace('Institute ', '');
+                return (
+                  <TouchableOpacity
+                    focusable={false}
+                    key={r}
+                    onPress={async () => {
+                      await persistWorkspace({
+                        ...workspace,
+                        roleOverrideByClub: {
+                          ...workspace.roleOverrideByClub,
+                          [activeClub.id]: r,
+                        },
+                      });
+                    }}
+                    style={[
+                      styles.roleSimPill,
+                      {
+                        backgroundColor: active ? colors.primary : colors.surface,
+                        borderColor: active ? colors.primary : colors.border,
                       },
-                    });
-                  }}
-                  style={[
-                    styles.roleSimPill,
-                    {
-                      backgroundColor: active ? colors.primary : colors.surface,
-                      borderColor: active ? colors.primary : colors.border,
-                    },
-                  ]}
-                >
-                  <Text style={{ fontSize: 10.5, fontWeight: '700', color: active ? '#FFFFFF' : colors.textSecondary }}>
-                    {label}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
+                    ]}
+                  >
+                    <Text style={{ fontSize: 10.5, fontWeight: '700', color: active ? '#FFFFFF' : colors.textSecondary }}>
+                      {label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          )}
 
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, flexShrink: 0 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexShrink: 0 }}>
             <TouchableOpacity
               focusable={false}
               onPress={() => setShowPinnedOnly((p) => !p)}
@@ -1083,6 +1086,58 @@ export const ClubsScreen: React.FC<ClubsScreenProps> = ({
         </View>
       </View>
 
+      {/* Dedicated Mobile Role Switcher Strip (prevents clipping on narrow screens!) */}
+      {!isTablet && (
+        <View
+          style={{
+            backgroundColor: colors.card,
+            borderBottomWidth: 1,
+            borderBottomColor: colors.border,
+            paddingHorizontal: 12,
+            paddingVertical: 7,
+          }}
+        >
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ gap: 6, alignItems: 'center', paddingRight: 12 }}
+          >
+            {ROLE_SIM_OPTIONS.map((r) => {
+              const active = simulatedRole === r;
+              const label = r === 'actual' ? 'My Role' : r.replace('Institute ', '');
+              return (
+                <TouchableOpacity
+                  focusable={false}
+                  key={r}
+                  onPress={async () => {
+                    await persistWorkspace({
+                      ...workspace,
+                      roleOverrideByClub: {
+                        ...workspace.roleOverrideByClub,
+                        [activeClub.id]: r,
+                      },
+                    });
+                  }}
+                  style={[
+                    styles.roleSimPill,
+                    {
+                      backgroundColor: active ? colors.primary : colors.surface,
+                      borderColor: active ? colors.primary : colors.border,
+                      paddingHorizontal: 10,
+                      paddingVertical: 5,
+                    },
+                  ]}
+                >
+                  <Text style={{ fontSize: 11, fontWeight: '700', color: active ? '#FFFFFF' : colors.textSecondary }}>
+                    {label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+      )}
+
       {toastMsg && (
         <View style={[styles.toastBar, { backgroundColor: mode === 'dark' ? '#052E16' : '#DCFCE7', borderBottomColor: colors.success }]}>
           <CheckCircle2 size={14} color={colors.success} />
@@ -1096,28 +1151,42 @@ export const ClubsScreen: React.FC<ClubsScreenProps> = ({
 
         {/* Main Channel Chat Feed */}
         <View style={styles.chatColumn}>
-          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 14, gap: 10 }}>
-            {/* Channel Welcome Card */}
-            <View style={[styles.welcomeCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
-                <Text style={{ fontSize: 16, fontWeight: '900', color: colors.text }}>
-                  Welcome to #{activeChannel?.name || 'general'}
-                </Text>
-                <Badge
-                  label={
-                    activeChannel?.accessMode === 'role_private'
-                      ? 'Role Private'
-                      : activeChannel?.accessMode === 'public_view'
-                      ? 'View-Only Mode'
-                      : 'Open Discussion'
-                  }
-                  variant={activeChannel?.isReadOnly ? 'warning' : 'success'}
-                  size="sm"
+          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 14, paddingBottom: 28, gap: 10 }}>
+            {/* Channel Welcome Card with Default Club Banner & Icon */}
+            <View style={[styles.welcomeCard, { backgroundColor: colors.surface, borderColor: colors.border, overflow: 'hidden', padding: 0 }]}>
+              <Image
+                source={BRANDING_ASSETS.defaultClubBanner}
+                style={{ width: '100%', height: 64 }}
+                resizeMode="cover"
+              />
+              <View style={{ padding: 12, flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <Image
+                  source={BRANDING_ASSETS.defaultClubIcon}
+                  style={{ width: 38, height: 38, borderRadius: 10 }}
+                  resizeMode="cover"
                 />
+                <View style={{ flex: 1, minWidth: 0 }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
+                    <Text style={{ fontSize: 15, fontWeight: '900', color: colors.text }}>
+                      Welcome to #{activeChannel?.name || 'general'}
+                    </Text>
+                    <Badge
+                      label={
+                        activeChannel?.accessMode === 'role_private'
+                          ? 'Role Private'
+                          : activeChannel?.accessMode === 'public_view'
+                          ? 'View-Only Mode'
+                          : 'Open Discussion'
+                      }
+                      variant={activeChannel?.isReadOnly ? 'warning' : 'success'}
+                      size="sm"
+                    />
+                  </View>
+                  <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 3 }}>
+                    {activeChannel?.topic}
+                  </Text>
+                </View>
               </View>
-              <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 3 }}>
-                {activeChannel?.topic}
-              </Text>
               {activeChannel?.type === 'rules' && (
                 <View style={{ marginTop: 8, gap: 4 }}>
                   {activeClub.rules.map((rule, idx) => (

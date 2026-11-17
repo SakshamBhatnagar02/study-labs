@@ -6,6 +6,7 @@
 
 import React, { useState } from 'react';
 import {
+  Image,
   Modal,
   ScrollView,
   StyleSheet,
@@ -15,6 +16,7 @@ import {
   View,
 } from 'react-native';
 import { useTheme } from '../../theme';
+import { BRANDING_ASSETS, HOLO_NAME, HOLO_REACTIONS } from '../../utils/avatarHelper';
 import { MathRenderer, RichMathText } from '../common/MathRenderer';
 import { Badge } from '../common/Badge';
 import { Button } from '../common/Button';
@@ -62,7 +64,7 @@ export const EBookReaderModal: React.FC<EBookReaderModalProps> = ({
   const [aiAssistantLogs, setAiAssistantLogs] = useState<Array<{ role: 'ai' | 'user'; text: string }>>([
     {
       role: 'ai',
-      text: 'Hello! I am your AI Reading Companion. Ask me to summarize this section, explain formulas, or generate chapter flashcards!',
+      text: `Hey! I am ${HOLO_NAME}, your Study Labs Reading Companion. Ask me to summarize this section, explain formulas, or generate chapter flashcards!`,
     },
   ]);
   const [selectedQuizAnswers, setSelectedQuizAnswers] = useState<Record<number, number>>({});
@@ -246,7 +248,7 @@ export const EBookReaderModal: React.FC<EBookReaderModalProps> = ({
               />
             </TouchableOpacity>
 
-            {/* AI Assistant Button */}
+            {/* HOLO AI Reading Companion Button */}
             <TouchableOpacity
               focusable={false}
               onPress={() => setAiPanelOpen((o) => !o)}
@@ -257,15 +259,33 @@ export const EBookReaderModal: React.FC<EBookReaderModalProps> = ({
                   borderColor: aiPanelOpen ? colors.primary : themeColors.border,
                 },
               ]}
-              accessibilityLabel="Open AI Reading Companion"
+              accessibilityLabel={`Open ${HOLO_NAME} Reading Companion`}
             >
-              <Sparkles size={16} color={aiPanelOpen ? '#FFFFFF' : colors.primary} />
+              <Image
+                source={HOLO_REACTIONS.studying}
+                style={{ width: 20, height: 20 }}
+                resizeMode="contain"
+              />
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* Main Reading Workspace with TOC Drawer & Content */}
+        {/* Main Reading Workspace with subtle Study Labs Watermark */}
         <View style={styles.workspaceBody}>
+          <Image
+            source={BRANDING_ASSETS.watermark}
+            style={{
+              position: 'absolute',
+              right: 14,
+              bottom: 14,
+              width: 72,
+              height: 72,
+              opacity: 0.08,
+              pointerEvents: 'none',
+              zIndex: 0,
+            }}
+            resizeMode="contain"
+          />
           {/* TOC Drawer Overlay / Column */}
           {tocDrawerOpen && (
             <View style={[styles.tocSidebar, { backgroundColor: themeColors.card, borderRightColor: themeColors.border }]}>

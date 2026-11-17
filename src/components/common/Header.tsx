@@ -7,6 +7,7 @@ import { SettingsModal } from '../settings/SettingsModal';
 interface HeaderProps {
   userIoId?: string;
   streakDays?: number;
+  onMenuPress?: () => void;
   onProfilePress?: () => void;
   onStreakPress?: () => void;
   onLeaderboardPress?: () => void;
@@ -15,8 +16,9 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  userIoId = 'STUDY-7734-IO',
-  streakDays = 14,
+  userIoId = '',
+  streakDays = 0,
+  onMenuPress,
   onProfilePress,
   onStreakPress,
   onLeaderboardPress,
@@ -43,27 +45,28 @@ export const Header: React.FC<HeaderProps> = ({
           },
         ]}
       >
-        {/* Brand & Cyber Logo Identity */}
+        {/* Brand & Cyber Logo Identity (tapping opens MARKS-style drawer or Profile) */}
         <Pressable
           focusable={false}
           onPress={() => {
-            onProfilePress?.();
+            if (onMenuPress) onMenuPress();
+            else onProfilePress?.();
           }}
           style={({ pressed }) => [
             styles.brandRow,
             { gap: isCompact ? 7 : 9 },
             pressed && { opacity: 0.78 },
           ]}
-          accessibilityLabel="Open My Profile"
+          accessibilityLabel="Open Study Labs Menu"
         >
           <View
             style={[
               styles.logoWrapper,
               {
                 borderColor: colors.primary,
-                width: isCompact ? 30 : 36,
-                height: isCompact ? 30 : 36,
-                borderRadius: isCompact ? 8 : 10,
+                width: isCompact ? 32 : 36,
+                height: isCompact ? 32 : 36,
+                borderRadius: isCompact ? 9 : 10,
               },
             ]}
           >
@@ -91,7 +94,7 @@ export const Header: React.FC<HeaderProps> = ({
               ]}
               numberOfLines={1}
             >
-              study.io · {userIoId}
+              {userIoId && userIoId.trim() ? `study.io · ${userIoId.trim()}` : 'study.io'}
             </Text>
           </View>
         </Pressable>

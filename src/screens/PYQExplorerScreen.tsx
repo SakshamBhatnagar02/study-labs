@@ -15,6 +15,7 @@ import { Button } from '../components/common/Button';
 import { SoundManager } from '../services/soundManager';
 import { HapticManager } from '../services/hapticManager';
 import { PYQ_JEE_QUESTIONS, PYQ_PAPERS_CATALOG, PYQPaperMeta } from '../data/pyqQuestionsData';
+import { OPEN_QUIZ_ATTRIBUTION, OPEN_QUIZ_BANK } from '../data/openQuizBankData';
 import { Question, SubjectId } from '../types';
 import {
   ArrowLeft,
@@ -47,14 +48,17 @@ export const PYQExplorerScreen: React.FC<PYQExplorerScreenProps> = ({
 
   const [selectedShift, setSelectedShift] = useState<string>('all');
   const [selectedSubject, setSelectedSubject] = useState<SubjectId | 'all'>('all');
+  const [bankSource, setBankSource] = useState<'pyq' | 'open_commons'>('pyq');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
   const [revealedSolutions, setRevealedSolutions] = useState<Record<string, boolean>>({});
 
+  const activePool = bankSource === 'open_commons' ? OPEN_QUIZ_BANK : PYQ_JEE_QUESTIONS;
+
   const filteredQuestions = useMemo(() => {
-    return PYQ_JEE_QUESTIONS.filter((q) => {
-      // Filter by paper shift
-      if (selectedShift !== 'all') {
+    return activePool.filter((q) => {
+      // Filter by paper shift (PYQ mode only)
+      if (bankSource === 'pyq' && selectedShift !== 'all') {
         const matchesShift = q.id.includes(selectedShift) || q.examOrigin?.includes(selectedShift);
         if (!matchesShift) return false;
       }
@@ -72,7 +76,7 @@ export const PYQExplorerScreen: React.FC<PYQExplorerScreenProps> = ({
       }
       return true;
     });
-  }, [selectedShift, selectedSubject, searchQuery]);
+  }, [activePool, bankSource, selectedShift, selectedSubject, searchQuery]);
 
   const activePaperMeta = useMemo(() => {
     if (selectedShift === 'all') return null;
@@ -346,6 +350,47 @@ export const PYQExplorerScreen: React.FC<PYQExplorerScreenProps> = ({
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           <View style={styles.headerControls}>
+            {/* Question Bank Source Switcher: JEE PYQ Vault vs Open Quiz Commons (CC BY-SA 4.0) */}
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              <TouchableOpacity
+                onPress={() => setBankSource('pyq')}
+                style={[
+                  styles.chip,
+                  {
+                    flex: 1,
+                    alignItems: 'center',
+                    backgroundColor: bankSource === 'pyq' ? colors.primary : colors.surface,
+                    borderColor: bankSource === 'pyq' ? colors.primary : colors.border,
+                  },
+                ]}
+              >
+                <Text style={[styles.chipText, { color: bankSource === 'pyq' ? '#FFFFFF' : colors.text }]}>
+                  JEE Main PYQs ({PYQ_JEE_QUESTIONS.length})
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setBankSource('open_commons')}
+                style={[
+                  styles.chip,
+                  {
+                    flex: 1,
+                    alignItems: 'center',
+                    backgroundColor: bankSource === 'open_commons' ? colors.primary : colors.surface,
+                    borderColor: bankSource === 'open_commons' ? colors.primary : colors.border,
+                  },
+                ]}
+              >
+                <Text style={[styles.chipText, { color: bankSource === 'open_commons' ? '#FFFFFF' : colors.text }]}>
+                  Open STEM & CS ({OPEN_QUIZ_BANK.length})
+                </Text>
+              </TouchableOpacity>
+            </View>
+            {bankSource === 'open_commons' && (
+              <Text style={{ fontSize: 11, color: colors.textSecondary }}>
+                Licensed under {OPEN_QUIZ_ATTRIBUTION.license} · {OPEN_QUIZ_ATTRIBUTION.sources.join(' & ')}
+              </Text>
+            )}
+
             {/* Hero Launch Banner */}
             <Card
               style={[

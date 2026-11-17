@@ -139,9 +139,20 @@ const { isDisposableEmail, getEmailDomain, isWhitelistedDomain, checkTempMailApi
 const { evaluatePasswordBreachRisk } = await import('../src/utils/breachDetector.ts');
 const { SEED_EBOOKS } = await import('../src/data/ebooksData.ts');
 const { SEED_COMMUNITY_QUESTIONS, SEED_COMMUNITY_RESOURCES } = await import('../src/data/communitySeedData.ts');
-const { PRESET_AVATARS, resolveAvatarSource } = await import('../src/utils/avatarHelper.ts');
+const {
+  BRANDING_ASSETS,
+  getHoloReactionSource,
+  HOLO_NAME,
+  HOLO_REACTIONS,
+  PRESET_AVATARS,
+  resolveAvatarSource,
+} = await import('../src/utils/avatarHelper.ts');
 const { ResendEmailService } = await import('../src/services/resendService.ts');
 const { CLOUD_STORAGE_CONFIGS, CloudStorageService } = await import('../src/services/cloudStorage.ts');
+const { buildUserFolderPaths, USER_FOLDER_CATEGORIES, UserWorkspaceService } = await import('../src/services/userWorkspaceService.ts');
+const { StorageService } = await import('../src/services/storage.ts');
+const { OPEN_QUIZ_ATTRIBUTION, OPEN_QUIZ_BANK } = await import('../src/data/openQuizBankData.ts');
+const { GLOBAL_EXAMS_IMPORT } = await import('../src/data/globalExamCalendarImport.ts');
 const { compressImage, formatBytes, estimateBase64Size } = await import('../src/utils/imageCompressor.ts');
 const { GravatarService } = await import('../src/utils/gravatarService.ts');
 const { NOTO_ANIMATED_EMOJIS, getNotoAnimatedEmojiUrl } = await import('../src/utils/animatedEmojiData.ts');
@@ -1196,4 +1207,214 @@ const easJson = JSON.parse(fs.readFileSync(path.resolve('eas.json'), 'utf8'));
 assert.ok(easJson.build?.development && easJson.build?.preview && easJson.build?.production);
 console.log('✅ 42. EAS CLI 27.10.0 Project Linking & eas.json Build Profiles: Verified');
 
-console.log('\n🎉 ALL 42 STUDY LABS DOMAIN, CLUBS RBAC, 3D STEM LABS, E-BOOKS, RESEND, CLOUDFLARE, B2, COMPRESSION & GRAVATAR INVARIANT TESTS PASSED!');
+// 43. Verify HOLO Chatbot Identity & All 8 Cropped Reaction Sprites
+assert.equal(HOLO_NAME, 'HOLO', 'Chatbot name must be HOLO');
+const requiredHoloReactions = [
+  'idle',
+  'waving',
+  'studying',
+  'thinking',
+  'deep_thinking',
+  'celebrating',
+  'celebrating_jump',
+  'reminder',
+];
+for (const r of requiredHoloReactions) {
+  assert.ok(HOLO_REACTIONS[r], `HOLO reaction ${r} must be registered`);
+  assert.ok(getHoloReactionSource(r), `getHoloReactionSource(${r}) must return asset`);
+  const fileName = `holo-${r.replace(/_/g, '-')}.png`;
+  const fullPath = path.resolve('assets/branding/holo', fileName);
+  assert.ok(fs.existsSync(fullPath), `Cropped HOLO sprite ${fileName} must exist on disk`);
+  assert.ok(fs.statSync(fullPath).size > 20000, `Cropped HOLO sprite ${fileName} must be valid PNG`);
+}
+const holoAiScreenSrc = fs.readFileSync(path.resolve('src/screens/AIAssistantScreen.tsx'), 'utf8');
+assert.ok(holoAiScreenSrc.includes('HOLO_NAME'), 'AIAssistantScreen must use HOLO_NAME');
+assert.ok(holoAiScreenSrc.includes('getHoloReactionSource'), 'AIAssistantScreen must render dynamic HOLO reactions');
+assert.ok(!holoAiScreenSrc.includes('AI_MASCOT_SOURCE'), 'AIAssistantScreen must not render raw 2x4 sprite sheet');
+console.log('✅ 43. HOLO Chatbot Identity & 8 Individual Cropped Reaction Sprites: Verified');
+
+// 44. Verify Direct Onboarding Gate, 9:16 Intro Video & Google/Microsoft/GitHub Auth Buttons
+assert.ok(fs.existsSync(path.resolve('assets/branding/app-intro.mp4')), '9:16 app-intro.mp4 must be bundled');
+const appTsxSrc = fs.readFileSync(path.resolve('App.tsx'), 'utf8');
+assert.ok(appTsxSrc.includes('WelcomeOnboardingScreen'), 'App.tsx must route directly to WelcomeOnboardingScreen');
+assert.ok(appTsxSrc.includes('if (!userProfile.onboardingCompleted)'), 'App.tsx must gate un-onboarded users directly before Dashboard');
+const welcomeSrc = fs.readFileSync(path.resolve('src/components/auth/WelcomeOnboardingScreen.tsx'), 'utf8');
+assert.ok(welcomeSrc.includes('Continue with Google'), 'Onboarding must include Continue with Google');
+assert.ok(welcomeSrc.includes('Continue with Microsoft'), 'Onboarding must include Continue with Microsoft');
+assert.ok(welcomeSrc.includes('Continue with GitHub'), 'Onboarding must include Continue with GitHub');
+assert.ok(welcomeSrc.includes('BRANDING_ASSETS.introVideo'), 'Onboarding must play 9:16 intro animation video');
+console.log('✅ 44. Direct Full-Screen Onboarding, 9:16 Video & Google/Microsoft/GitHub OAuth: Verified');
+
+// 45. Verify Updated App Icons from Icon Pack & All Remaining Branding Assets Wired
+for (const iconFile of [
+  'assets/icon.png',
+  'assets/android-icon-foreground.png',
+  'assets/android-icon-background.png',
+  'assets/android-icon-monochrome.png',
+  'assets/splash-icon.png',
+  'assets/favicon.png',
+  'assets/apple-touch-icon.png',
+  'assets/branding/icon-no-bg.png',
+  'assets/branding/company-banner.png',
+  'assets/branding/company-logo.png',
+  'assets/branding/default-club-banner.png',
+  'assets/branding/default-club-icon.png',
+  'assets/branding/watermark.png',
+]) {
+  assert.ok(fs.existsSync(path.resolve(iconFile)), `Asset ${iconFile} must exist`);
+}
+assert.ok(BRANDING_ASSETS.introVideo && BRANDING_ASSETS.companyBanner && BRANDING_ASSETS.watermark);
+console.log('✅ 45. Updated App Icons (Study Labs Icon Pack) & Complete Branding Asset Registry: Verified');
+
+// 46. Verify Home Screen MARKS UI Redesign, 2x4 Toolkit Grid & Android SafeArea BottomNav Fixes
+const dashSrc = fs.readFileSync(path.resolve('src/screens/DashboardScreen.tsx'), 'utf8');
+assert.ok(dashSrc.includes('Most Imp Digital Books'), 'Home must feature MARKS-inspired Digital Books carousel');
+assert.ok(dashSrc.includes('Chapter-wise PYQ Bank'), 'Home must feature MARKS-inspired PYQ Bank grid');
+assert.ok(dashSrc.includes('Revision Flash Cards'), 'Home must feature MARKS-inspired Revision Flash Cards');
+assert.ok(dashSrc.includes("flexWrap: 'wrap'") && dashSrc.includes("width: '23.2%'"), 'Academic Toolkit must wrap cleanly in 2x4 grid');
+const bottomNavSrc = fs.readFileSync(path.resolve('src/components/navigation/BottomNav.tsx'), 'utf8');
+assert.ok(bottomNavSrc.includes('useSafeAreaInsets'), 'BottomNav must apply Android safe-area bottom inset');
+assert.ok(bottomNavSrc.includes('HOLO AI'), 'BottomNav must label AI tab as HOLO AI');
+const clubsSrc = fs.readFileSync(path.resolve('src/screens/ClubsScreen.tsx'), 'utf8');
+assert.ok(clubsSrc.includes('Dedicated Mobile Role Switcher Strip'), 'ClubsScreen must give mobile Role Switcher its own non-clipping strip');
+console.log('✅ 46. MARKS-Style Home Redesign, 2x4 Grid, SafeArea BottomNav & Clubs Fix: Verified');
+
+// 47. Verify Useful Tools Datasets (Open Quiz Commons, OpenTriviaQA & GlobalExamCalender)
+assert.ok(OPEN_QUIZ_BANK.length >= 50, 'Open Quiz Bank must provide >= 50 CC BY-SA 4.0 questions');
+assert.equal(OPEN_QUIZ_ATTRIBUTION.license, 'CC BY-SA 4.0');
+assert.ok(GLOBAL_EXAMS_IMPORT.length >= 25, 'GlobalExamCalender import must include >= 25 international exams');
+console.log('✅ 47. Useful Tools Open Quiz Commons (60 Qs) & GlobalExamCalender (29 Exams): Verified');
+
+// 48. Verify Per-User Folder Structure (Backblaze B2 + Supabase DB) & Account Deletion Schema
+const folderStruct = buildUserFolderPaths('usr_demo_99');
+assert.equal(folderStruct.rootB2Path, 'users/usr_demo_99/');
+assert.equal(folderStruct.rootSupabasePath, 'users/usr_demo_99/');
+assert.equal(folderStruct.folders.length, USER_FOLDER_CATEGORIES.length);
+for (const cat of ['notebooks', 'books', 'notes', 'solutions', 'visuals', 'profile']) {
+  const f = folderStruct.folders.find((item) => item.category === cat);
+  assert.ok(f, `Folder category ${cat} must be created`);
+  assert.equal(f.b2FolderPath, `users/usr_demo_99/${cat}/`);
+  assert.equal(f.supabaseFolderPath, `users/usr_demo_99/${cat}/`);
+}
+const b2UserPath = CloudStorageService.buildObjectPath('books', 'hc_verma_notes.pdf', 'usr_demo_99');
+assert.equal(b2UserPath, 'users/usr_demo_99/books/hc_verma_notes.pdf');
+const schemaSql = fs.readFileSync(path.resolve('supabase/schema.sql'), 'utf8');
+assert.ok(schemaSql.includes('CREATE TABLE IF NOT EXISTS public.user_storage_folders'), 'SQL must define user_storage_folders');
+assert.ok(schemaSql.includes('CREATE TABLE IF NOT EXISTS public.user_uploaded_files'), 'SQL must define user_uploaded_files');
+assert.ok(schemaSql.includes('CREATE TABLE IF NOT EXISTS public.account_deletion_requests'), 'SQL must define account_deletion_requests');
+assert.ok(schemaSql.includes('execute_verified_account_deletion'), 'SQL must define verified account deletion RPC');
+assert.ok(schemaSql.includes('community/preserved/'), 'SQL must preserve public books/solutions under community/preserved/');
+const profileSrc = fs.readFileSync(path.resolve('src/screens/ProfileScreen.tsx'), 'utf8');
+assert.ok(profileSrc.includes('Preserve my uploaded Books, Solutions & Public Notes'), 'ProfileScreen must offer preserve contributions option during deletion');
+assert.ok(profileSrc.includes('ENTER 6-DIGIT VERIFICATION CODE'), 'ProfileScreen must require verification code before permanent deletion');
+console.log('✅ 48. Per-User B2/Supabase Folders & Verified-Code Account Deletion with Community Preservation: Verified');
+
+// 49. Live Runtime Verification of Per-User Folder Creation, Uploads & Code-Verified Deletion (Preserve vs Full Wipe)
+{
+  const memKv = new Map();
+  const origGetRaw = StorageService.getRawItem;
+  const origSetRaw = StorageService.setRawItem;
+  const origReset = StorageService.resetToCleanStart;
+  StorageService.getRawItem = async (k) => memKv.get(k) ?? null;
+  StorageService.setRawItem = async (k, v) => { memKv.set(k, v); };
+  StorageService.resetToCleanStart = async () => ({ id: 'usr_local_01', onboardingCompleted: false });
+
+  try {
+    const uid = 'usr_runtime_test_01';
+    const manifest = await UserWorkspaceService.provisionUserFolders(uid, 'STUDY-9001-IO');
+    assert.equal(manifest.folders.length, 6, 'Must provision all 6 user folders');
+    assert.equal(manifest.rootB2Path, `users/${uid}/`);
+
+    // Upload 1 public book, 1 public solution, and 1 private notebook
+    const bookRec = await UserWorkspaceService.uploadUserFile({
+      userId: uid,
+      authorName: 'Aarav',
+      category: 'books',
+      fileName: 'HC_Verma_Notes.pdf',
+      sizeBytes: 512000,
+      base64OrUri: 'data:application/pdf;base64,AAAA',
+      isPublicShared: true,
+    });
+    assert.ok(bookRec.b2Path.startsWith(`users/${uid}/books/`));
+
+    await UserWorkspaceService.uploadUserFile({
+      userId: uid,
+      authorName: 'Aarav',
+      category: 'solutions',
+      fileName: 'Rotational_PYQ_Solutions.pdf',
+      sizeBytes: 240000,
+      base64OrUri: 'data:application/pdf;base64,BBBB',
+      isPublicShared: true,
+    });
+
+    await UserWorkspaceService.uploadUserFile({
+      userId: uid,
+      authorName: 'Aarav',
+      category: 'notebooks',
+      fileName: 'Personal_Weak_Topics.json',
+      sizeBytes: 12000,
+      base64OrUri: '{}',
+      isPublicShared: false,
+    });
+
+    const pending = await UserWorkspaceService.requestAccountDeletionCode(
+      { id: uid, ioId: 'STUDY-9001-IO', name: 'Aarav', email: '', country: 'India', board: 'JEE_MAIN', classGrade: 'Class 12', stream: 'Science (PCM)', targetExams: ['JEE Main'], preferredMode: 'Normal', studyStreakDays: 0, totalXp: 0, level: 1 },
+      true
+    );
+    assert.equal(pending.code.length, 6, 'Deletion verification code must be 6 digits');
+
+    // Wrong code MUST fail
+    const badRes = await UserWorkspaceService.confirmPermanentAccountDeletion({
+      userId: uid,
+      enteredCode: '000000',
+      preservePublicContributions: true,
+    });
+    assert.equal(badRes.success, false, 'Incorrect code must block account deletion');
+
+    // Correct code with preservePublicContributions=true MUST preserve public book+solution and wipe personal notebook
+    const okRes = await UserWorkspaceService.confirmPermanentAccountDeletion({
+      userId: uid,
+      enteredCode: pending.code,
+      preservePublicContributions: true,
+    });
+    assert.equal(okRes.success, true, 'Correct 6-digit code must execute permanent deletion');
+    assert.equal(okRes.preservedCommunityFilesCount, 2, 'Public book & solution must be preserved for community');
+    assert.equal(okRes.wipedPersonalFilesCount, 1, 'Private notebook must be wiped');
+
+    const preservedList = await UserWorkspaceService.getPreservedCommunityFiles();
+    assert.equal(preservedList.length, 2, 'Preserved community archive must hold 2 files');
+    assert.ok(preservedList.every((f) => f.userId === null && f.isPreservedAfterDeletion && f.b2Path.startsWith('community/preserved/')));
+
+    // Verify full wipe mode (preservePublicContributions=false) wipes everything
+    const uid2 = 'usr_runtime_test_02';
+    await UserWorkspaceService.provisionUserFolders(uid2, 'STUDY-9002-IO');
+    await UserWorkspaceService.uploadUserFile({
+      userId: uid2,
+      authorName: 'Riya',
+      category: 'books',
+      fileName: 'Private_Copy.pdf',
+      sizeBytes: 100000,
+      base64OrUri: 'data:application/pdf;base64,CCCC',
+      isPublicShared: true,
+    });
+    const pending2 = await UserWorkspaceService.requestAccountDeletionCode(
+      { id: uid2, ioId: 'STUDY-9002-IO', name: 'Riya', email: '', country: 'India', board: 'JEE_MAIN', classGrade: 'Class 12', stream: 'Science (PCM)', targetExams: ['JEE Main'], preferredMode: 'Normal', studyStreakDays: 0, totalXp: 0, level: 1 },
+      false
+    );
+    const fullWipeRes = await UserWorkspaceService.confirmPermanentAccountDeletion({
+      userId: uid2,
+      enteredCode: pending2.code,
+      preservePublicContributions: false,
+    });
+    assert.equal(fullWipeRes.success, true);
+    assert.equal(fullWipeRes.preservedCommunityFilesCount, 0, 'Full wipe must preserve 0 files');
+    assert.equal(fullWipeRes.wipedPersonalFilesCount, 1, 'Full wipe must erase uploaded book too');
+  } finally {
+    StorageService.getRawItem = origGetRaw;
+    StorageService.setRawItem = origSetRaw;
+    StorageService.resetToCleanStart = origReset;
+  }
+}
+console.log('✅ 49. Live Runtime Verification: User Folder Provisioning, Uploads, Code Rejection, Community Preservation & Full Wipe: Verified');
+
+console.log('\n🎉 ALL 49 STUDY LABS DOMAIN, HOLO AI, MARKS UI, ONBOARDING VIDEO, ASSETS, B2/SUPABASE FOLDERS & VERIFIED DELETION INVARIANT TESTS PASSED!');

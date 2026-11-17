@@ -21,11 +21,35 @@ const isConfigured =
 let client: SupabaseClient | null = null;
 let initError: AppErrorInfo | undefined;
 
+const memoryAuthStore = new Map<string, string>();
+const safeAuthStorage = {
+  getItem: async (key: string): Promise<string | null> => {
+    if (typeof (AsyncStorage as any)?.getItem === 'function') {
+      return AsyncStorage.getItem(key);
+    }
+    return memoryAuthStore.get(key) ?? null;
+  },
+  setItem: async (key: string, value: string): Promise<void> => {
+    if (typeof (AsyncStorage as any)?.setItem === 'function') {
+      await AsyncStorage.setItem(key, value);
+      return;
+    }
+    memoryAuthStore.set(key, value);
+  },
+  removeItem: async (key: string): Promise<void> => {
+    if (typeof (AsyncStorage as any)?.removeItem === 'function') {
+      await AsyncStorage.removeItem(key);
+      return;
+    }
+    memoryAuthStore.delete(key);
+  },
+};
+
 if (isConfigured) {
   try {
     client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: {
-        storage: AsyncStorage,
+        storage: safeAuthStorage,
         persistSession: true,
         autoRefreshToken: true,
         detectSessionInUrl: false,

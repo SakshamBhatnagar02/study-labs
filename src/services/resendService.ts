@@ -226,8 +226,53 @@ export class ResendEmailService {
       to: toEmail,
       subject: 'Welcome to Study Labs — Your Next-Gen STEM Journey Begins!',
       html,
-      text: `Welcome to Study Labs, ${studentName}! Explore AI Master Tutor, 3D STEM Lab, and E-Books.`,
+      text: `Welcome to Study Labs, ${studentName}! Explore HOLO AI Tutor, 3D STEM Lab, and E-Books.`,
       tags: [{ name: 'category', value: 'onboarding_welcome' }],
+    });
+  }
+
+  /**
+   * Dispatch mandatory 6-digit security confirmation code for permanent account deletion
+   */
+  static async sendAccountDeletionCode(
+    toEmail: string,
+    deletionCode: string,
+    studentName: string = 'Scholar',
+    preservePublicContributions: boolean = true
+  ): Promise<ResendDeliveryResult> {
+    const html = `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; background: #0b0f19; color: #f8fafc; border-radius: 16px; overflow: hidden; border: 1px solid rgba(239, 68, 68, 0.35);">
+        <div style="background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%); padding: 28px 24px; text-align: center;">
+          <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 800;">Permanent Account Deletion Request</h1>
+          <p style="margin: 6px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 13px;">Study Labs Security Verification</p>
+        </div>
+        <div style="padding: 28px 24px; background: #0f172a;">
+          <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6;">
+            Hello <strong>${studentName}</strong>, enter the security confirmation code below in Study Labs to permanently erase your account and personal workspace folders from Backblaze B2 and Supabase:
+          </p>
+          <div style="margin: 24px 0; text-align: center;">
+            <div style="display: inline-block; background: #1e293b; border: 2px dashed #ef4444; padding: 14px 30px; border-radius: 12px; font-family: monospace; font-size: 30px; font-weight: 800; letter-spacing: 6px; color: #f87171;">
+              ${deletionCode}
+            </div>
+          </div>
+          <p style="color: #94a3b8; font-size: 12.5px; line-height: 1.5;">
+            Community Contributions Setting: <strong>${
+              preservePublicContributions
+                ? 'Your shared Books, Solutions & Public Notes will be anonymized and preserved so other students can continue learning.'
+                : 'ALL uploaded Books, Solutions, Notes & personal files will be permanently erased.'
+            }</strong>
+          </p>
+          <p style="color: #64748b; font-size: 12px;">This code expires in 15 minutes. If you did not request deletion, ignore this email.</p>
+        </div>
+      </div>
+    `;
+
+    return this.sendEmail({
+      to: toEmail,
+      subject: `Study Labs Account Deletion Code: ${deletionCode}`,
+      html,
+      text: `Your Study Labs permanent account deletion verification code is ${deletionCode}. Expires in 15 minutes.`,
+      tags: [{ name: 'category', value: 'account_deletion_code' }],
     });
   }
 }

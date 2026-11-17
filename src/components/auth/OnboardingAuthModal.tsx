@@ -21,6 +21,7 @@ import {
   PREFERRED_LANGUAGES,
 } from '../../data/curriculumData';
 import { StorageService } from '../../services/storage';
+import { UserWorkspaceService } from '../../services/userWorkspaceService';
 import { HapticManager } from '../../services/hapticManager';
 import { SoundManager } from '../../services/soundManager';
 import { resolveAvatarSource, PRESET_AVATARS, getGravatarAvatar } from '../../utils/avatarHelper';
@@ -358,6 +359,8 @@ export const OnboardingAuthModal: React.FC<OnboardingAuthModalProps> = ({
       onboardingCompleted: true,
     };
     await StorageService.saveUserProfile(updated);
+    // Automatically provision user's personal B2 & Supabase folders upon registration
+    await UserWorkspaceService.provisionUserFolders(updated.id, updated.ioId);
     SoundManager.play('notify');
     HapticManager.triggerSuccess();
     onSaved(updated);

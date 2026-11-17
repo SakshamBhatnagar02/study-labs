@@ -9,6 +9,18 @@ export interface PresetAvatar {
   accent: string;
 }
 
+export type HoloReaction =
+  | 'idle'
+  | 'waving'
+  | 'studying'
+  | 'thinking'
+  | 'deep_thinking'
+  | 'celebrating'
+  | 'celebrating_jump'
+  | 'reminder';
+
+export const HOLO_NAME = 'HOLO';
+
 // In Metro/React Native, require is available. In Node ESM test environment, provide fallback object.
 function getAssetSource(loader: () => ImageSourcePropType, fallbackUri: string): ImageSourcePropType {
   try {
@@ -21,14 +33,108 @@ function getAssetSource(loader: () => ImageSourcePropType, fallbackUri: string):
   return { uri: fallbackUri } as ImageSourcePropType;
 }
 
+function getRawAssetModule<T = any>(loader: () => T, fallback: T): T {
+  try {
+    if (typeof require !== 'undefined') {
+      return loader();
+    }
+  } catch {
+    // Non-fatal fallback for non-bundler test environments
+  }
+  return fallback;
+}
+
 /**
- * Dedicated Study Labs AI Tutor Mascot Source
- * (Exclusively for StudyBot / AI Tutor — not selectable as student user avatar)
+ * HOLO — Study Labs AI Tutor Individual Reaction Sprites
+ * Sliced cleanly with transparent background from the authentic Study IO AI Mascot sheet.
  */
-export const AI_MASCOT_SOURCE: ImageSourcePropType = getAssetSource(
-  () => require('../../assets/branding/ai-mascot.png'),
-  'ai-mascot.png'
-);
+export const HOLO_REACTIONS: Record<HoloReaction, ImageSourcePropType> = {
+  idle: getAssetSource(
+    () => require('../../assets/branding/holo/holo-idle.png'),
+    'holo-idle.png'
+  ),
+  waving: getAssetSource(
+    () => require('../../assets/branding/holo/holo-waving.png'),
+    'holo-waving.png'
+  ),
+  studying: getAssetSource(
+    () => require('../../assets/branding/holo/holo-studying.png'),
+    'holo-studying.png'
+  ),
+  thinking: getAssetSource(
+    () => require('../../assets/branding/holo/holo-thinking.png'),
+    'holo-thinking.png'
+  ),
+  deep_thinking: getAssetSource(
+    () => require('../../assets/branding/holo/holo-deep-thinking.png'),
+    'holo-deep-thinking.png'
+  ),
+  celebrating: getAssetSource(
+    () => require('../../assets/branding/holo/holo-celebrating.png'),
+    'holo-celebrating.png'
+  ),
+  celebrating_jump: getAssetSource(
+    () => require('../../assets/branding/holo/holo-celebrating-jump.png'),
+    'holo-celebrating-jump.png'
+  ),
+  reminder: getAssetSource(
+    () => require('../../assets/branding/holo/holo-reminder.png'),
+    'holo-reminder.png'
+  ),
+};
+
+export const HOLO_REACTION_LABELS: Record<HoloReaction, string> = {
+  idle: 'Ready to help',
+  waving: 'Hey! Ask HOLO anything',
+  studying: 'Reading & analyzing notes',
+  thinking: 'Working through steps',
+  deep_thinking: 'Deep STEM reasoning',
+  celebrating: 'Great job!',
+  celebrating_jump: 'Mastery unlocked!',
+  reminder: 'Daily goal reminder',
+};
+
+export function getHoloReactionSource(reaction: HoloReaction = 'waving'): ImageSourcePropType {
+  return HOLO_REACTIONS[reaction] || HOLO_REACTIONS.waving;
+}
+
+/**
+ * Default AI Mascot Source (uses HOLO's individual waving reaction, never the full sprite sheet)
+ */
+export const AI_MASCOT_SOURCE: ImageSourcePropType = HOLO_REACTIONS.waving;
+
+/**
+ * Complete Study Labs & study.io Branding Asset Registry
+ */
+export const BRANDING_ASSETS = {
+  appLogo: getAssetSource(() => require('../../assets/branding/app-logo.png'), 'app-logo.png'),
+  iconNoBg: getAssetSource(() => require('../../assets/branding/icon-no-bg.png'), 'icon-no-bg.png'),
+  companyLogo: getAssetSource(
+    () => require('../../assets/branding/company-logo.png'),
+    'company-logo.png'
+  ),
+  companyBanner: getAssetSource(
+    () => require('../../assets/branding/company-banner.png'),
+    'company-banner.png'
+  ),
+  defaultBookCover: getAssetSource(
+    () => require('../../assets/branding/default-book-cover.png'),
+    'default-book-cover.png'
+  ),
+  defaultClubBanner: getAssetSource(
+    () => require('../../assets/branding/default-club-banner.png'),
+    'default-club-banner.png'
+  ),
+  defaultClubIcon: getAssetSource(
+    () => require('../../assets/branding/default-club-icon.png'),
+    'default-club-icon.png'
+  ),
+  watermark: getAssetSource(() => require('../../assets/branding/watermark.png'), 'watermark.png'),
+  introVideo: getRawAssetModule(
+    () => require('../../assets/branding/app-intro.mp4'),
+    'app-intro.mp4'
+  ),
+};
 
 /**
  * High-Resolution Cropped Student & Faculty Preset Avatars
@@ -160,7 +266,7 @@ export const PRESET_AVATARS: PresetAvatar[] = [
     id: 'preset:app-logo',
     label: 'Study IO Emblem',
     role: 'student',
-    source: getAssetSource(() => require('../../assets/branding/app-logo.png'), 'app-logo.png'),
+    source: BRANDING_ASSETS.appLogo,
     accent: '#22D3EE',
   },
 ];
@@ -174,11 +280,17 @@ export function isGravatarUri(uri?: string): boolean {
 }
 
 /**
- * Check if identifier corresponds to the AI Mascot
+ * Check if identifier corresponds to the HOLO AI Mascot
  */
 export function isAiMascotUri(uri?: string): boolean {
   if (!uri) return false;
-  return uri === 'ai-mascot' || uri === 'preset:ai-mascot' || uri.includes('ai-mascot');
+  return (
+    uri === 'ai-mascot' ||
+    uri === 'preset:ai-mascot' ||
+    uri === 'holo' ||
+    uri.includes('ai-mascot') ||
+    uri.includes('holo-')
+  );
 }
 
 /**
@@ -196,7 +308,7 @@ export function resolveAvatarSource(
 ): ImageSourcePropType | { uri: string } | null {
   if (!avatarUri) return null;
   if (isAiMascotUri(avatarUri)) {
-    return AI_MASCOT_SOURCE;
+    return HOLO_REACTIONS.waving;
   }
   if (avatarUri.startsWith('gravatar:')) {
     const email = avatarUri.replace('gravatar:', '');

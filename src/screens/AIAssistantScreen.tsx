@@ -33,6 +33,7 @@ import {
 } from '../services/gemini';
 import { StorageService } from '../services/storage';
 import { HapticManager } from '../services/hapticManager';
+import { SoundManager } from '../services/soundManager';
 import { prepareAIUploadedAttachment } from '../utils/attachmentParser';
 import { buildApiErrorInfo } from '../utils/errorHandling';
 import {
@@ -40,7 +41,13 @@ import {
   computeStorageQuotaUsage,
   formatByteSize,
 } from '../utils/aiImageLibrary';
-import { AI_MASCOT_SOURCE } from '../utils/avatarHelper';
+import {
+  getHoloReactionSource,
+  HOLO_NAME,
+  HOLO_REACTION_LABELS,
+  HOLO_REACTIONS,
+  HoloReaction,
+} from '../utils/avatarHelper';
 import type {
   AIAttachmentKind,
   AIUploadedAttachment,
@@ -88,7 +95,7 @@ interface AIAssistantScreenProps {
 }
 
 const WELCOME_TEXT =
-  'Hello! I am your **Study Labs AI Master Tutor**.\n\n' +
+  `Hey! I am **${HOLO_NAME}**, your Study Labs AI Tutor.\n\n` +
   'Ask STEM doubts with full LaTeX typography, toggle **Web** for grounded search citations, attach & edit **Images / PDFs / PPTX**, or enable **Gen Visual** to generate Math graphs & Physics/Chemistry diagrams in your Image Library.';
 
 function createWelcomeMessage(): ChatMessage {
@@ -200,6 +207,17 @@ const ThinkingBubble: React.FC<{
         ]}
       >
         <View style={styles.thinkingTopRow}>
+          <Image
+            source={
+              isVisualGen
+                ? HOLO_REACTIONS.studying
+                : difficulty === 'Hard'
+                ? HOLO_REACTIONS.deep_thinking
+                : HOLO_REACTIONS.thinking
+            }
+            style={{ width: 34, height: 34 }}
+            resizeMode="contain"
+          />
           <Animated.View
             style={[
               styles.thinkingBadge,
@@ -216,7 +234,7 @@ const ThinkingBubble: React.FC<{
               <BrainCircuit size={14} color={colors.primary} />
             )}
             <Text style={[styles.thinkingBadgeText, { color: colors.primary }]}>
-              {isVisualGen ? 'Generating Visual' : 'Thinking'}
+              {isVisualGen ? `${HOLO_NAME} Drawing` : `${HOLO_NAME} Thinking`}
             </Text>
           </Animated.View>
 
@@ -299,6 +317,14 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({ prefillPro
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const [dismissedErrors, setDismissedErrors] = useState<Record<string, boolean>>({});
   const [expandedStepsByMsg, setExpandedStepsByMsg] = useState<Record<string, boolean>>({});
+  const [holoMoodOverride, setHoloMoodOverride] = useState<HoloReaction | null>(null);
+
+  const flashHoloReaction = (reaction: HoloReaction, durationMs = 4500) => {
+    setHoloMoodOverride(reaction);
+    setTimeout(() => {
+      setHoloMoodOverride((curr) => (curr === reaction ? null : curr));
+    }, durationMs);
+  };
 
   const scrollViewRef = useRef<React.ComponentRef<typeof ScrollView>>(null);
   const handledPrefillNonce = useRef<number | null>(null);
@@ -674,6 +700,9 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({ prefillPro
 
     const rawQuery = (textToSend ?? inputText).trim();
     const attachmentsToSend = overrideAttachments ?? stagedAttachments;
+    if (!skipUserBubble && (rawQuery || attachmentsToSend.length > 0)) {
+      SoundManager.playMessageSend();
+    }
 
     // Auto-detect explicit diagram/visual generation when toggled OR when user asks to plot/draw visual cleanly
     if (
@@ -778,7 +807,10 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({ prefillPro
       if (aiMsg.steps?.length || aiMsg.tips?.length) {
         setExpandedStepsByMsg((prev) => ({ ...prev, [aiMsgId]: true }));
       }
+      SoundManager.playMessageReceived();
+      flashHoloReaction(aiMsg.errorInfo ? 'reminder' : 'celebrating', 4000);
     } catch (err) {
+      flashHoloReaction('reminder', 5000);
       const errMsgId = replaceAssistantMsgId || `msg_err_${Date.now()}`;
       const errMsg: ChatMessage = {
         id: errMsgId,
@@ -912,6 +944,9 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({ prefillPro
     if (!activeSession) return;
     HapticManager.triggerSelection();
     const isAlreadyUp = msg.feedback?.rating === 'up';
+    if (!isAlreadyUp) {
+      flashHoloReaction('celebrating_jump', 4000);
+    }
     const nextFeedback: MessageFeedback | undefined = isAlreadyUp
       ? undefined
       : { rating: 'up', updatedAt: new Date().toISOString() };
@@ -1017,42 +1052,71 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({ prefillPro
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={80}
     >
-      {/* Header Banner with History, Image Library & New Chat */}
+      {/* Header Banner with HOLO Dynamic Reactions, History, Image Library & New Chat */}
       <View
         style={[
           styles.header,
           { backgroundColor: colors.card, borderBottomColor: colors.border },
         ]}
       >
-        <View style={styles.headerLeft}>
-          <View
-            style={[
-              styles.avatarIcon,
-              { backgroundColor: mode === 'dark' ? '#2A1711' : '#FFEDD5', overflow: 'hidden' },
-            ]}
-          >
-            <Image
-              source={AI_MASCOT_SOURCE}
-              style={{ width: 28, height: 28 }}
-              resizeMode="contain"
-            />
-          </View>
-          <View style={{ minWidth: 0, flexShrink: 1 }}>
-            <Text style={[styles.headerTitle, { color: colors.text }]} numberOfLines={1}>
-              AI Master Tutor
-            </Text>
-            <Text
-              style={[
-                styles.headerStatus,
-                { color: GeminiAIService.hasApiKey ? colors.success : colors.warning },
-              ]}
-              numberOfLines={1}
-            >
-              ● {GeminiAIService.hasApiKey ? 'Gemini Live Connected' : 'Offline STEM Solver'}
-              {webSearchEnabled ? ' · Web Search' : ''}
-            </Text>
-          </View>
-        </View>
+        {(() => {
+          const activeHoloReaction: HoloReaction = holoMoodOverride
+            ? holoMoodOverride
+            : isLoading
+            ? loadingIsVisual
+              ? 'studying'
+              : reasoningMode === 'pro' || difficultyOverride === 'Hard'
+              ? 'deep_thinking'
+              : 'thinking'
+            : attachmentError
+            ? 'reminder'
+            : stagedAttachments.length > 0 || webSearchEnabled || visualGenMode
+            ? 'studying'
+            : messages.length <= 1
+            ? 'waving'
+            : 'idle';
+
+          return (
+            <View style={styles.headerLeft}>
+              <View
+                style={[
+                  styles.avatarIcon,
+                  {
+                    width: 42,
+                    height: 42,
+                    borderRadius: 14,
+                    backgroundColor: mode === 'dark' ? '#241711' : '#FFF7ED',
+                    borderWidth: 1,
+                    borderColor: 'rgba(249, 115, 22, 0.35)',
+                    overflow: 'hidden',
+                  },
+                ]}
+              >
+                <Image
+                  source={getHoloReactionSource(activeHoloReaction)}
+                  style={{ width: 38, height: 38 }}
+                  resizeMode="contain"
+                />
+              </View>
+              <View style={{ minWidth: 0, flexShrink: 1 }}>
+                <Text style={[styles.headerTitle, { color: colors.text }]} numberOfLines={1}>
+                  {HOLO_NAME} · AI Tutor
+                </Text>
+                <Text
+                  style={[
+                    styles.headerStatus,
+                    { color: GeminiAIService.hasApiKey ? colors.success : colors.primary },
+                  ]}
+                  numberOfLines={1}
+                >
+                  ● {HOLO_REACTION_LABELS[activeHoloReaction]}
+                  {GeminiAIService.hasApiKey ? ' · Gemini Live' : ' · Offline Ready'}
+                  {webSearchEnabled ? ' · Web' : ''}
+                </Text>
+              </View>
+            </View>
+          );
+        })()}
 
         <View style={styles.headerActions}>
           <TouchableOpacity
@@ -1280,6 +1344,39 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({ prefillPro
                       ],
                 ]}
               >
+                {/* HOLO Dynamic Reaction Header on AI Messages */}
+                {!isUser && (
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 6 }}>
+                    <Image
+                      source={getHoloReactionSource(
+                        isWelcome
+                          ? 'waving'
+                          : m.errorInfo
+                          ? 'reminder'
+                          : m.feedback?.rating === 'up'
+                          ? 'celebrating_jump'
+                          : m.feedback?.rating === 'down'
+                          ? 'deep_thinking'
+                          : m.webSearchUsed || linkedImage
+                          ? 'studying'
+                          : isLatestAi
+                          ? 'celebrating'
+                          : 'idle'
+                      )}
+                      style={{ width: 26, height: 26 }}
+                      resizeMode="contain"
+                    />
+                    <Text style={{ fontSize: 12, fontWeight: '800', color: colors.primary }}>
+                      {HOLO_NAME}
+                    </Text>
+                    {m.modelLabel && (
+                      <Text style={{ fontSize: 10, fontWeight: '600', color: colors.textSecondary }}>
+                        · {m.modelLabel}
+                      </Text>
+                    )}
+                  </View>
+                )}
+
                 {/* Sent Attachments (Tappable to Preview & Edit AFTER Uploading!) */}
                 {m.attachments && m.attachments.length > 0 && (
                   <View style={styles.msgAttList}>
