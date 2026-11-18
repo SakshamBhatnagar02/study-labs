@@ -14,6 +14,9 @@ import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
 import { Badge } from '../components/common/Badge';
 import { SAMPLE_QUESTIONS, SUBJECTS } from '../data/curriculumData';
+import { PYQ_JEE_QUESTIONS } from '../data/pyqQuestionsData';
+import { OPEN_QUIZ_BANK } from '../data/openQuizBankData';
+import { TestsHubView } from '../components/tests/TestsHubView';
 import { DEFAULT_QUESTION_VIEW_SETTINGS, StorageService } from '../services/storage';
 import { SupabaseService } from '../services/supabase';
 import { GeminiAIService } from '../services/gemini';
@@ -209,6 +212,15 @@ export const TestEngineScreen: React.FC<TestEngineScreenProps> = ({
 }) => {
   const { colors, mode } = useTheme();
 
+  // Organized Tests Hub vs Active Question Player view state
+  // Defaults to 'hub' so tapping Tests tab shows organized Mocks, PYQ Papers & Custom Tests first!
+  const [testViewMode, setTestViewMode] = useState<'hub' | 'player'>(
+    initialSession ? 'player' : 'hub'
+  );
+  const [hasUserStartedSession, setHasUserStartedSession] = useState<boolean>(
+    Boolean(initialSession)
+  );
+
   // Active deck & session title + marking / rank targets
   const [sessionTitle, setSessionTitle] = useState('Study Labs Practice Bank');
   const [activeQuestionIds, setActiveQuestionIds] = useState<string[]>(
@@ -304,10 +316,12 @@ export const TestEngineScreen: React.FC<TestEngineScreenProps> = ({
   const mainScrollRef = useRef<React.ComponentRef<typeof ScrollView>>(null);
   const hasHydratedWorkspaceRef = useRef(false);
 
-  // Merge bank: Sample -> Cloud -> Local Custom/Edited (so local edits always win)
+  // Merge bank: Sample -> PYQ Bank (375) -> Open Quiz Commons (60) -> Cloud -> Local Custom/Edited
   const allQuestions = useMemo(() => {
     const map = new Map<string, Question>();
     for (const q of SAMPLE_QUESTIONS) map.set(q.id, q);
+    for (const q of PYQ_JEE_QUESTIONS) map.set(q.id, q);
+    for (const q of OPEN_QUIZ_BANK) map.set(q.id, q);
     for (const q of extraQuestions) map.set(q.id, q);
     return Array.from(map.values());
   }, [extraQuestions]);
@@ -509,6 +523,8 @@ export const TestEngineScreen: React.FC<TestEngineScreenProps> = ({
       setQuestionSeconds({});
       setCurrentIdx(nextIdx);
       setTimerRunning(viewSettings.autoStartTimer);
+      setHasUserStartedSession(true);
+      setTestViewMode('player');
       setTimeout(() => {
         mainScrollRef.current?.scrollTo({ y: 0, animated: false });
       }, 16);
@@ -547,9 +563,9 @@ export const TestEngineScreen: React.FC<TestEngineScreenProps> = ({
     setNoteFeedback(null);
   }, [currentQ.id, questionNotes]);
 
-  // Live session + per-question timer (pauses automatically when switching tabs or submitted)
+  // Live session + per-question timer (pauses automatically on Tests Hub, when switching tabs, or submitted)
   useEffect(() => {
-    if (!isFocused || isSubmitted || !timerRunning) return;
+    if (!isFocused || testViewMode !== 'player' || isSubmitted || !timerRunning) return;
     const interval = setInterval(() => {
       setSecondsElapsed((s) => s + 1);
       setQuestionSeconds((prev) => ({
@@ -558,7 +574,7 @@ export const TestEngineScreen: React.FC<TestEngineScreenProps> = ({
       }));
     }, 1000);
     return () => clearInterval(interval);
-  }, [isFocused, isSubmitted, timerRunning, currentQ.id]);
+  }, [isFocused, testViewMode, isSubmitted, timerRunning, currentQ.id]);
 
   const navigateToQuestion = (nextIndex: number) => {
     const targetQ = questions[nextIndex];
@@ -1399,6 +1415,23 @@ export const TestEngineScreen: React.FC<TestEngineScreenProps> = ({
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
+      {testViewMode === 'hub' ? (
+        <TestsHubView
+          allQuestions={allQuestions}
+          savedCustomTests={savedCustomTests}
+          testAttempts={testAttempts}
+          hasActiveSession={hasUserStartedSession && !isSubmitted}
+          activeSessionTitle={sessionTitle}
+          activeQuestionCount={questions.length}
+          activeAnsweredCount={Object.keys(submittedAnswers).length}
+          onResumeActiveSession={() => setTestViewMode('player')}
+          onOpenCustomBuilder={openCustomBuilderModal}
+          onOpenHistory={() => setHistoryModalOpen(true)}
+          onOpenQuestionManager={() => openQuestionManager('list')}
+          onLaunchOrganizedTest={(params) => applySessionLaunch(params)}
+        />
+      ) : (
+        <>
       {/* Top Test Header */}
       <View
         style={[
@@ -1406,6 +1439,16 @@ export const TestEngineScreen: React.FC<TestEngineScreenProps> = ({
           { backgroundColor: colors.card, borderBottomColor: colors.border },
         ]}
       >
+        <TouchableOpacity
+          onPress={() => setTestViewMode('hub')}
+          style={[
+            styles.headerIconBtn,
+            { backgroundColor: colors.surface, borderColor: colors.border, marginRight: 6 },
+          ]}
+          accessibilityLabel="Back to Tests Hub"
+        >
+          <ChevronLeft size={16} color={colors.primary} />
+        </TouchableOpacity>
         <View style={{ flex: 1, minWidth: 0 }}>
           <Text style={[styles.testHeading, { color: colors.text }]} numberOfLines={1}>
             {sessionTitle}
@@ -2374,6 +2417,8 @@ export const TestEngineScreen: React.FC<TestEngineScreenProps> = ({
           />
         )}
       </View>
+        </>
+      )}
 
       {/* MODAL 1: QUESTION VIEW SETTINGS */}
       <Modal

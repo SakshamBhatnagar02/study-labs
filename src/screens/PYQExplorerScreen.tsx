@@ -12,6 +12,7 @@ import { useTheme } from '../theme';
 import { Card } from '../components/common/Card';
 import { Badge } from '../components/common/Badge';
 import { Button } from '../components/common/Button';
+import { RichMathText } from '../components/common/MathRenderer';
 import { SoundManager } from '../services/soundManager';
 import { HapticManager } from '../services/hapticManager';
 import { PYQ_JEE_QUESTIONS, PYQ_PAPERS_CATALOG, PYQPaperMeta } from '../data/pyqQuestionsData';
@@ -172,10 +173,15 @@ export const PYQExplorerScreen: React.FC<PYQExplorerScreenProps> = ({
           </Text>
         </View>
 
-        {/* Question Prompt */}
-        <Text style={[styles.promptText, { color: colors.text }]}>
-          {item.prompt}
-        </Text>
+        {/* Question Prompt (KaTeX LaTeX & Diagram Renderer) */}
+        <View style={{ marginBottom: 4 }}>
+          <RichMathText
+            content={item.prompt}
+            color={colors.text}
+            fontSize={14.5}
+            lineHeight={22}
+          />
+        </View>
 
         {/* Options */}
         {item.options && item.options.length > 0 ? (
@@ -232,9 +238,17 @@ export const PYQExplorerScreen: React.FC<PYQExplorerScreenProps> = ({
                       {opt.id.toUpperCase()}
                     </Text>
                   </View>
-                  <Text style={[styles.optText, { color: colors.text }]}>
-                    {opt.text}
-                  </Text>
+                  <View style={{ flex: 1 }}>
+                    <RichMathText
+                      content={opt.text}
+                      color={colors.text}
+                      fontSize={13.5}
+                      lineHeight={20}
+                      compact
+                      nonInteractive
+                      allowPanModal={false}
+                    />
+                  </View>
                   {isAnswered && opt.isCorrect && (
                     <CheckCircle2 size={16} color={colors.success} style={{ marginLeft: 'auto' }} />
                   )}
@@ -306,13 +320,28 @@ export const PYQExplorerScreen: React.FC<PYQExplorerScreenProps> = ({
                 Solution & Key Concept
               </Text>
             </View>
-            <Text style={[styles.solutionBody, { color: colors.textSecondary }]}>
-              {item.explanation}
-            </Text>
+            <RichMathText
+              content={item.explanation}
+              color={colors.textSecondary}
+              fontSize={13}
+              lineHeight={20}
+              compact
+            />
             {correctOpt && (
-              <Text style={[styles.correctHighlight, { color: colors.success }]}>
-                Correct Option: ({correctOpt.id.toUpperCase()}) {correctOpt.text}
-              </Text>
+              <View style={{ marginTop: 6 }}>
+                <Text style={[styles.correctHighlight, { color: colors.success, marginBottom: 2 }]}>
+                  Correct Option: ({correctOpt.id.toUpperCase()})
+                </Text>
+                <RichMathText
+                  content={correctOpt.text}
+                  color={colors.success}
+                  fontSize={13}
+                  lineHeight={19}
+                  compact
+                  nonInteractive
+                  allowPanModal={false}
+                />
+              </View>
             )}
           </View>
         )}

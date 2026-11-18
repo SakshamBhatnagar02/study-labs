@@ -123,6 +123,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) 
             >
               {label}
             </Text>
+            {isActive && (
+              <View style={[styles.activeBar, { backgroundColor: colors.primary }]} />
+            )}
           </Pressable>
         );
       })}
@@ -148,8 +151,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 2,
+    paddingBottom: 5,
     borderRadius: 14,
     overflow: 'hidden',
+    position: 'relative',
+  },
+  activeBar: {
+    position: 'absolute',
+    bottom: 0,
+    width: '60%',
+    height: 2.5,
+    borderTopLeftRadius: 3,
+    borderTopRightRadius: 3,
   },
   iconWrapper: {
     paddingHorizontal: 10,

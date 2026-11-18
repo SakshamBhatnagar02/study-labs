@@ -7,6 +7,8 @@ import { SettingsModal } from '../settings/SettingsModal';
 interface HeaderProps {
   userIoId?: string;
   streakDays?: number;
+  desktopMode?: boolean;
+  pageTitle?: string;
   onMenuPress?: () => void;
   onProfilePress?: () => void;
   onStreakPress?: () => void;
@@ -18,6 +20,8 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   userIoId = '',
   streakDays = 0,
+  desktopMode = false,
+  pageTitle = 'Home',
   onMenuPress,
   onProfilePress,
   onStreakPress,
@@ -45,59 +49,79 @@ export const Header: React.FC<HeaderProps> = ({
           },
         ]}
       >
-        {/* Brand & Cyber Logo Identity (tapping opens MARKS-style drawer or Profile) */}
-        <Pressable
-          focusable={false}
-          onPress={() => {
-            if (onMenuPress) onMenuPress();
-            else onProfilePress?.();
-          }}
-          style={({ pressed }) => [
-            styles.brandRow,
-            { gap: isCompact ? 7 : 9 },
-            pressed && { opacity: 0.78 },
-          ]}
-          accessibilityLabel="Open Study Labs Menu"
-        >
-          <View
-            style={[
-              styles.logoWrapper,
-              {
-                borderColor: colors.primary,
-                width: isCompact ? 32 : 36,
-                height: isCompact ? 32 : 36,
-                borderRadius: isCompact ? 9 : 10,
-              },
-            ]}
-          >
-            <Image
-              source={require('../../../assets/icon.png')}
-              style={styles.logoImage}
-              resizeMode="cover"
-            />
-          </View>
-          <View style={{ flex: 1, minWidth: 0 }}>
-            <View style={styles.titleRow}>
-              <Text style={[styles.brandTitle, { color: colors.text, fontSize: isCompact ? 15 : 17 }]}>
-                Study
-              </Text>
-              <Text
-                style={[styles.brandTitleOrange, { color: colors.primary, fontSize: isCompact ? 15 : 17 }]}
+        {/* Left Slot: Desktop Page Breadcrumb OR Mobile Brand & Drawer Trigger */}
+        {desktopMode ? (
+          <View style={styles.desktopTitleWrap}>
+            <Text style={[styles.desktopPageTitle, { color: colors.text }]} numberOfLines={1}>
+              {pageTitle}
+            </Text>
+            {Boolean(userIoId && userIoId.trim()) && (
+              <View
+                style={[
+                  styles.desktopIdPill,
+                  { backgroundColor: colors.surface, borderColor: colors.border },
+                ]}
               >
-                Labs
+                <Text style={[styles.desktopIdText, { color: colors.textSecondary }]} numberOfLines={1}>
+                  {userIoId.trim()}
+                </Text>
+              </View>
+            )}
+          </View>
+        ) : (
+          <Pressable
+            focusable={false}
+            onPress={() => {
+              if (onMenuPress) onMenuPress();
+              else onProfilePress?.();
+            }}
+            style={({ pressed }) => [
+              styles.brandRow,
+              { gap: isCompact ? 7 : 9 },
+              pressed && { opacity: 0.78 },
+            ]}
+            accessibilityLabel="Open Study Labs Menu"
+          >
+            <View
+              style={[
+                styles.logoWrapper,
+                {
+                  borderColor: colors.primary,
+                  width: isCompact ? 32 : 36,
+                  height: isCompact ? 32 : 36,
+                  borderRadius: isCompact ? 9 : 10,
+                },
+              ]}
+            >
+              <Image
+                source={require('../../../assets/icon.png')}
+                style={styles.logoImage}
+                resizeMode="cover"
+              />
+            </View>
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <View style={styles.titleRow}>
+                <Text style={[styles.brandTitle, { color: colors.text, fontSize: isCompact ? 15 : 17 }]}>
+                  Study
+                </Text>
+                <Text
+                  style={[styles.brandTitleOrange, { color: colors.primary, fontSize: isCompact ? 15 : 17 }]}
+                >
+                  Labs
+                </Text>
+              </View>
+              <Text
+                style={[
+                  styles.companySubtitle,
+                  { color: colors.textSecondary, fontSize: isCompact ? 9 : 10 },
+                ]}
+                numberOfLines={1}
+              >
+                {userIoId && userIoId.trim() ? `study.io · ${userIoId.trim()}` : 'study.io'}
               </Text>
             </View>
-            <Text
-              style={[
-                styles.companySubtitle,
-                { color: colors.textSecondary, fontSize: isCompact ? 9 : 10 },
-              ]}
-              numberOfLines={1}
-            >
-              {userIoId && userIoId.trim() ? `study.io · ${userIoId.trim()}` : 'study.io'}
-            </Text>
-          </View>
-        </Pressable>
+          </Pressable>
+        )}
 
         {/* Action Badges */}
         <View style={[styles.actionsRow, { gap: isCompact ? 4 : 6 }]}>
@@ -265,6 +289,28 @@ const styles = StyleSheet.create({
     minWidth: 0,
     borderRadius: 12,
     overflow: 'hidden',
+  },
+  desktopTitleWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    flex: 1,
+    minWidth: 0,
+  },
+  desktopPageTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    letterSpacing: -0.3,
+  },
+  desktopIdPill: {
+    paddingHorizontal: 9,
+    paddingVertical: 3,
+    borderRadius: 999,
+    borderWidth: 1,
+  },
+  desktopIdText: {
+    fontSize: 11,
+    fontWeight: '700',
   },
   logoWrapper: {
     width: 36,

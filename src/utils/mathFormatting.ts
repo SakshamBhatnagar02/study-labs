@@ -6,17 +6,27 @@
 export function normalizeMathDelimiters(raw: string): string {
   if (!raw) return '';
   return raw
+    .replace(/[\u200B\u200C\u200D\uFEFF]/g, '')
     .replace(/\r\n/g, '\n')
     .replace(/\\\[([\s\S]*?)\\\]/g, (_m, inner) => `$$${inner}$$`)
     .replace(/\\\(([\s\S]*?)\\\)/g, (_m, inner) => `$${inner}$`);
+}
+
+function sanitizeInlineSvg(svgMarkup: string): string {
+  return svgMarkup
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<foreignObject[\s\S]*?<\/foreignObject>/gi, '')
+    .replace(/\son[a-z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+    .replace(/javascript\s*:/gi, '');
 }
 
 export function hasRichMathOrMarkdown(raw: string): boolean {
   if (!raw) return false;
   const text = normalizeMathDelimiters(raw);
   if (/(^|[^\\])\$[\s\S]+?\$/.test(text)) return true;
+  if (/<svg[\s>][\s\S]*?<\/svg>/i.test(text)) return true;
   if (
-    /\\(frac|int|sum|sqrt|vec|hat|text|mathbf|sin|cos|tan|theta|pi|alpha|beta|gamma|mu|lambda|Phi|Delta|times|cdot|implies|approx|overset|ddot|longleftrightarrow)/.test(
+    /\\(frac|int|sum|sqrt|vec|hat|bar|text|mathbf|mathrm|sin|cos|tan|log|ln|theta|pi|alpha|beta|gamma|mu|lambda|epsilon|omega|Phi|Delta|times|cdot|pm|leq|geq|neq|infty|triangle|implies|approx|overset|ddot|longleftrightarrow|dots)/.test(
       text
     )
   ) {
@@ -127,6 +137,22 @@ export function markdownAndLatexToBodyHtml(raw: string, accentColor: string): st
         const inner = normalized.slice(i + 3, endFence).replace(/^[a-zA-Z0-9_-]*\n/, '');
         working += stashToken(`<pre class="code-block"><code>${escapeHtml(inner)}</code></pre>`);
         i = endFence + 3;
+        continue;
+      }
+    }
+
+    if (normalized.slice(i, i + 4).toLowerCase() === '<svg') {
+      const endSvg = normalized.toLowerCase().indexOf('</svg>', i + 4);
+      if (endSvg !== -1) {
+        const rawSvg = normalized.slice(i, endSvg + 6);
+        const safeSvg = sanitizeInlineSvg(rawSvg);
+        working +=
+          '\n' +
+          stashToken(
+            `<div class="svg-diagram" style="margin:8px 0;padding:8px;border-radius:10px;background:#FFFFFF;overflow-x:auto;text-align:center;">${safeSvg}</div>`
+          ) +
+          '\n';
+        i = endSvg + 6;
         continue;
       }
     }

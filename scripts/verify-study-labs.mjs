@@ -1237,7 +1237,7 @@ console.log('✅ 43. HOLO Chatbot Identity & 8 Individual Cropped Reaction Sprit
 assert.ok(fs.existsSync(path.resolve('assets/branding/app-intro.mp4')), '9:16 app-intro.mp4 must be bundled');
 const appTsxSrc = fs.readFileSync(path.resolve('App.tsx'), 'utf8');
 assert.ok(appTsxSrc.includes('WelcomeOnboardingScreen'), 'App.tsx must route directly to WelcomeOnboardingScreen');
-assert.ok(appTsxSrc.includes('if (!userProfile.onboardingCompleted)'), 'App.tsx must gate un-onboarded users directly before Dashboard');
+assert.ok(appTsxSrc.includes('if (requiresAuthOnboarding)'), 'App.tsx must gate unauthenticated/un-onboarded users directly before Dashboard');
 const welcomeSrc = fs.readFileSync(path.resolve('src/components/auth/WelcomeOnboardingScreen.tsx'), 'utf8');
 assert.ok(welcomeSrc.includes('Continue with Google'), 'Onboarding must include Continue with Google');
 assert.ok(welcomeSrc.includes('Continue with Microsoft'), 'Onboarding must include Continue with Microsoft');
@@ -1417,4 +1417,48 @@ console.log('✅ 48. Per-User B2/Supabase Folders & Verified-Code Account Deleti
 }
 console.log('✅ 49. Live Runtime Verification: User Folder Provisioning, Uploads, Code Rejection, Community Preservation & Full Wipe: Verified');
 
-console.log('\n🎉 ALL 49 STUDY LABS DOMAIN, HOLO AI, MARKS UI, ONBOARDING VIDEO, ASSETS, B2/SUPABASE FOLDERS & VERIFIED DELETION INVARIANT TESTS PASSED!');
+// 50. Verify Organized MARKS-Style Tests Hub (Tests tab no longer dumps straight into raw questions)
+const testEngineHubSrc = fs.readFileSync(path.resolve('src/screens/TestEngineScreen.tsx'), 'utf8');
+assert.ok(testEngineHubSrc.includes("useState<'hub' | 'player'>"), 'TestEngineScreen must manage hub vs player viewMode');
+assert.ok(testEngineHubSrc.includes("initialSession ? 'player' : 'hub'"), 'TestEngineScreen must default to organized hub view');
+assert.ok(testEngineHubSrc.includes('TestsHubView'), 'TestEngineScreen must render TestsHubView');
+assert.ok(testEngineHubSrc.includes('PYQ_JEE_QUESTIONS') && testEngineHubSrc.includes('OPEN_QUIZ_BANK'), 'TestEngineScreen must merge PYQ and Open Quiz banks into active pool');
+const hubSrc = fs.readFileSync(path.resolve('src/components/tests/TestsHubView.tsx'), 'utf8');
+assert.ok(hubSrc.includes('Create Your Own Test') && hubSrc.includes('PYQ Mock Tests'), 'TestsHubView must include MARKS-style Create Your Own Test and PYQ Mock Tests hubs');
+console.log('✅ 50. Organized MARKS-Style Tests Hub, PYQ Shift Mock Browser & Merged Pool: Verified');
+
+// 51. Verify Mandatory MARKS-Style Onboarding Gate (No Guest Bypass) & OAuth Failure Fallbacks
+assert.ok(appTsxSrc.includes('requiresAuthOnboarding') && appTsxSrc.includes("userProfile.authProvider === 'guest'"), 'App.tsx must strictly block unauthenticated/guest bypass');
+assert.ok(!welcomeSrc.includes('Explore Offline'), 'WelcomeOnboardingScreen must NOT offer an unauthenticated bypass into the app');
+assert.ok(welcomeSrc.includes('MarksOnboardingWizard'), 'WelcomeOnboardingScreen must launch the MARKS-style multi-step onboarding wizard after auth');
+assert.ok(welcomeSrc.includes('Use Email + OTP Fallback') && welcomeSrc.includes('Retry'), 'WelcomeOnboardingScreen must render OAuth/login failure fallback UI');
+const wizardSrc = fs.readFileSync(path.resolve('src/components/auth/MarksOnboardingWizard.tsx'), 'utf8');
+assert.ok(wizardSrc.includes('What are you preparing for?') && wizardSrc.includes('Which class are you in?') && wizardSrc.includes('Proceed to Dashboard'), 'MarksOnboardingWizard must include full MARKS-style step-by-step onboarding');
+console.log('✅ 51. Mandatory MARKS-Style Auth Gate, OAuth Failure Fallbacks & 7-Step Onboarding Wizard: Verified');
+
+// 52. Verify Full KaTeX LaTeX & Inline SVG Rendering in PYQ Explorer + Zero-Width Sanitization
+const pyqScreenSrc = fs.readFileSync(path.resolve('src/screens/PYQExplorerScreen.tsx'), 'utf8');
+assert.ok(pyqScreenSrc.includes('RichMathText'), 'PYQExplorerScreen must render prompts, options & solutions via RichMathText KaTeX engine');
+assert.ok(pyqScreenSrc.includes('content={item.prompt}') && pyqScreenSrc.includes('content={opt.text}') && pyqScreenSrc.includes('content={item.explanation}'), 'PYQExplorerScreen must wrap prompt, options, and explanation in RichMathText');
+assert.equal(normalizeMathDelimiters('$e\u200B$'), '$e$', 'Zero-width characters inside LaTeX must be stripped cleanly');
+assert.equal(hasRichMathOrMarkdown('<svg width="100" height="50"></svg>'), true, 'Inline SVG physics diagrams must trigger rich math/diagram renderer');
+const svgRendered = markdownAndLatexToBodyHtml('Lens diagram:\n<svg width="100" height="50" onclick="alert(1)"><script>bad()</script><circle cx="20" cy="20" r="10"/></svg>', '#F97316');
+assert.ok(svgRendered.includes('<svg ') && !svgRendered.includes('<script>') && !svgRendered.includes('onclick='), 'Inline SVG must render cleanly while stripping XSS script/event handlers');
+console.log('✅ 52. PYQ Bank KaTeX LaTeX Rendering, Inline SVG Diagrams & Zero-Width Sanitization: Verified');
+
+// 53. Verify MARKS Web PWA Responsive PC (Desktop) & Mobile Shell Parity
+const desktopSidebarSrc = fs.readFileSync(path.resolve('src/components/navigation/DesktopSidebar.tsx'), 'utf8');
+const bottomNavPwaSrc = fs.readFileSync(path.resolve('src/components/navigation/BottomNav.tsx'), 'utf8');
+const headerCompSrc = fs.readFileSync(path.resolve('src/components/common/Header.tsx'), 'utf8');
+assert.ok(desktopSidebarSrc.includes('collapsed ? 72 : 256'), 'DesktopSidebar must match MARKS Web PWA 256px expanded / 72px collapsed rail');
+assert.ok(appTsxSrc.includes('DesktopSidebar') && appTsxSrc.includes('isDesktopShell') && appTsxSrc.includes('!isDesktopShell && <BottomNav'), 'App.tsx must show DesktopSidebar on PC/Tablet (>=768px) and hide BottomNav on Desktop');
+assert.ok(appTsxSrc.includes("e.shiftKey && e.key.toLowerCase() === 'd'"), 'App.tsx must support Shift+D theme toggle shortcut matching MARKS Web PWA');
+assert.ok(appTsxSrc.includes('maxWidth: desktopContentMaxWidth'), 'App.tsx must center main workspace inside a max-width measure on PC');
+assert.ok(headerCompSrc.includes('desktopMode'), 'Header must avoid duplicate brand logo in desktop sidebar mode');
+assert.ok(bottomNavPwaSrc.includes('activeBar'), 'BottomNav must render MARKS V3 active indicator bar on Mobile');
+assert.ok(hubSrc.includes('maxWidth: 848') && hubSrc.includes('heroGridDesktop'), 'TestsHubView must match MARKS /tests 848px centered column & 2-column desktop cards');
+assert.ok(welcomeSrc.includes('isDesktopSplit') && welcomeSrc.includes('desktopVideoFrame'), 'WelcomeOnboardingScreen must render clean 2-column Desktop showcase + auth split on PC');
+assert.ok(!desktopSidebarSrc.includes('window.alert') && !desktopSidebarSrc.includes('window.confirm'), 'DesktopSidebar must never invoke browser alert/confirm');
+console.log('✅ 53. MARKS Web PWA Responsive PC (256px/72px Sidebar, Centered Max-Width, Shift+D) & Mobile Parity: Verified');
+
+console.log('\n🎉 ALL 53 STUDY LABS INVARIANT TESTS PASSED!');

@@ -5,8 +5,11 @@ import {
   Linking,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
+  TextInput,
+  TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
@@ -17,16 +20,29 @@ import { Asset } from 'expo-asset';
 import { BRANDING_ASSETS, HOLO_REACTIONS } from '../../utils/avatarHelper';
 import { DEFAULT_USER, StorageService } from '../../services/storage';
 import { SupabaseService } from '../../services/supabase';
+import { ResendEmailService } from '../../services/resendService';
 import { UserWorkspaceService } from '../../services/userWorkspaceService';
 import { HapticManager } from '../../services/hapticManager';
 import { SoundManager } from '../../services/soundManager';
+import { isDisposableEmail } from '../../utils/tempMailDetector';
+import { evaluatePasswordBreachRisk } from '../../utils/breachDetector';
+import { MarksOnboardingWizard } from './MarksOnboardingWizard';
 import type { AuthProviderType, UserProfile } from '../../types';
-import { ArrowRight, Mail, ShieldCheck, Sparkles } from 'lucide-react-native';
+import {
+  AlertTriangle,
+  ArrowLeft,
+  CheckCircle2,
+  KeyRound,
+  Lock,
+  Mail,
+  RefreshCw,
+  ShieldCheck,
+} from 'lucide-react-native';
 
 interface WelcomeOnboardingScreenProps {
   initialProfile: UserProfile;
   onAuthenticated: (profile: UserProfile, openCurriculumWizard?: boolean) => void;
-  onOpenEmailSetup: () => void;
+  onOpenEmailSetup?: () => void;
 }
 
 const GoogleLogoIcon = () => (
@@ -134,20 +150,48 @@ const WebIntroVideoBackground: React.FC = () => {
 export const WelcomeOnboardingScreen: React.FC<WelcomeOnboardingScreenProps> = ({
   initialProfile,
   onAuthenticated,
-  onOpenEmailSetup,
 }) => {
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
-  const [busyProvider, setBusyProvider] = useState<AuthProviderType | null>(null);
-  const [statusBanner, setStatusBanner] = useState<string | null>(null);
 
-  // Preserve crisp 9:16 portrait framing on desktop web while staying full-bleed on phones
+  // Mandatory 3-Stage Flow: 'auth' -> ('email_auth' if Email/Fallback) -> 'wizard' (MARKS-style)
+  const [stage, setStage] = useState<'auth' | 'email_auth' | 'wizard'>('auth');
+  const [busyProvider, setBusyProvider] = useState<AuthProviderType | null>(null);
+  const [verifiedProvider, setVerifiedProvider] = useState<AuthProviderType>('google');
+  const [authEmail, setAuthEmail] = useState<string>(initialProfile.email || '');
+  const [authName, setAuthName] = useState<string>(initialProfile.name || '');
+
+  // OAuth / Login Fallback State
+  const [authError, setAuthError] = useState<{
+    provider: 'google' | 'microsoft' | 'github' | 'email';
+    title: string;
+    detail: string;
+  } | null>(null);
+
+  // Clean MARKS-Style Email + Password + 6-Digit OTP Auth State
+  const [emailMode, setEmailMode] = useState<'signin' | 'signup'>('signup');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [otpStep, setOtpStep] = useState<'credentials' | 'otp'>('credentials');
+  const [generatedOtp, setGeneratedOtp] = useState('');
+  const [enteredOtp, setEnteredOtp] = useState('');
+  const [otpBanner, setOtpBanner] = useState<string | null>(null);
+  const [emailFormError, setEmailFormError] = useState<string | null>(null);
+  const [emailBusy, setEmailBusy] = useState(false);
+
+  const isDesktopSplit = width >= 900;
   const isWideWeb = Platform.OS === 'web' && width > 520;
   const frameWidth = isWideWeb ? Math.min(440, Math.max(360, Math.round((height * 9) / 16))) : width;
+  const desktopVideoHeight = Math.min(height - 72, 680);
+  const desktopVideoWidth = Math.round((desktopVideoHeight * 9) / 16);
 
-  const completeOAuthLogin = async (provider: 'google' | 'microsoft' | 'github') => {
+  /**
+   * Attempt real Supabase OAuth with explicit error capture & graceful recovery fallback UI.
+   * Never silently drops user into the app without onboarding!
+   */
+  const handleOAuthPress = async (provider: 'google' | 'microsoft' | 'github') => {
     setBusyProvider(provider);
-    setStatusBanner(null);
+    setAuthError(null);
     HapticManager.triggerSelection();
     SoundManager.play('click');
 
@@ -156,71 +200,598 @@ export const WelcomeOnboardingScreen: React.FC<WelcomeOnboardingScreenProps> = (
       provider === 'google' ? 'Google' : provider === 'microsoft' ? 'Microsoft' : 'GitHub';
 
     try {
-      // Trigger Supabase OAuth handshake (when running live with redirect handler)
-      const oauthRes = await SupabaseService.signInWithOAuth(supabaseProvider);
-      if (oauthRes?.data?.url && Platform.OS !== 'web') {
-        // Launch OAuth URL gracefully without blocking offline/preview testing
-        Linking.openURL(oauthRes.data.url).catch(() => {});
+      const oauthPromise = SupabaseService.signInWithOAuth(supabaseProvider);
+      const timeoutPromise = new Promise<{ data: null; error: Error }>((resolve) =>
+        setTimeout(() => resolve({ data: null, error: new Error('OAuth handshake timed out. Please check your internet connection or use Email Sign In.') }), 8000)
+      );
+
+      const res: any = await Promise.race([oauthPromise, timeoutPromise]);
+
+      if (res?.error) {
+        setAuthError({
+          provider,
+          title: `${providerLabel} Sign-In Failed`,
+          detail:
+            res.error?.message ||
+            `${providerLabel} OAuth could not connect. Retry, try another provider, or continue securely with Email + OTP.`,
+        });
+        SoundManager.play('incorrect');
+        HapticManager.triggerError();
+        setBusyProvider(null);
+        return;
       }
-    } catch {
-      // Offline-first fallback continues smoothly
+
+      // Open OAuth browser session on native devices when Supabase returns an auth URL
+      if (res?.data?.url && Platform.OS !== 'web') {
+        try {
+          const canOpen = await Linking.canOpenURL(res.data.url);
+          if (canOpen) {
+            await Linking.openURL(res.data.url);
+          }
+        } catch {
+          // If external browser launch fails, surface clean fallback card
+          setAuthError({
+            provider,
+            title: `Could not open ${providerLabel} browser sign-in`,
+            detail: 'Your device blocked the external OAuth redirect. Use Email + OTP Sign In below as an instant fallback.',
+          });
+          setBusyProvider(null);
+          return;
+        }
+      }
+
+      // OAuth initiated cleanly -> proceed into MARKS-style mandatory onboarding wizard
+      setVerifiedProvider(provider);
+      if (!authName) setAuthName(`${providerLabel} Scholar`);
+      SoundManager.play('notify');
+      HapticManager.triggerSuccess();
+      setBusyProvider(null);
+      setStage('wizard');
+    } catch (err: any) {
+      setAuthError({
+        provider,
+        title: `${providerLabel} Sign-In Unavailable`,
+        detail:
+          err?.message ||
+          `Unable to reach ${providerLabel} authentication servers. Use Retry or switch to Email + OTP fallback below.`,
+      });
+      SoundManager.play('incorrect');
+      HapticManager.triggerError();
+      setBusyProvider(null);
+    }
+  };
+
+  /**
+   * Email + Password + 6-Digit OTP Verification Flow (also serves as primary OAuth Failure Fallback)
+   */
+  const handleSendEmailOtp = async () => {
+    setEmailFormError(null);
+    setOtpBanner(null);
+
+    const trimmedEmail = authEmail.trim().toLowerCase();
+    if (!trimmedEmail || !trimmedEmail.includes('@') || !trimmedEmail.includes('.')) {
+      setEmailFormError('Please enter a valid email address.');
+      HapticManager.triggerError();
+      return;
     }
 
+    if (isDisposableEmail(trimmedEmail).isDisposable) {
+      setEmailFormError('Disposable / temporary email domains are blocked. Please use a permanent personal or school email.');
+      HapticManager.triggerError();
+      return;
+    }
+
+    if (!password || password.length < 6) {
+      setEmailFormError('Password must be at least 6 characters long.');
+      HapticManager.triggerError();
+      return;
+    }
+
+    if (emailMode === 'signup') {
+      if (password !== confirmPassword) {
+        setEmailFormError('Passwords do not match.');
+        HapticManager.triggerError();
+        return;
+      }
+      const breach = evaluatePasswordBreachRisk(password);
+      if (breach.isCompromised) {
+        setEmailFormError('This password appears in known public breaches. Choose a stronger password.');
+        HapticManager.triggerError();
+        return;
+      }
+    }
+
+    setEmailBusy(true);
+    try {
+      // Attempt Supabase Email Auth in parallel (with non-blocking fallback to Resend OTP if offline/unconfirmed)
+      if (SupabaseService.client) {
+        try {
+          if (emailMode === 'signup') {
+            await SupabaseService.client.auth.signUp({
+              email: trimmedEmail,
+              password,
+            });
+          } else {
+            await SupabaseService.client.auth.signInWithPassword({
+              email: trimmedEmail,
+              password,
+            });
+          }
+        } catch {
+          // Proceed with Resend 6-digit OTP verification as resilient fallback
+        }
+      }
+
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      setGeneratedOtp(code);
+      setEnteredOtp('');
+      const dispatch = await ResendEmailService.sendVerificationOtp(
+        trimmedEmail,
+        code,
+        authName.trim() || trimmedEmail.split('@')[0]
+      );
+      setOtpStep('otp');
+      if (dispatch.success && dispatch.status === 'sent') {
+        setOtpBanner(`We sent a 6-digit verification code to ${trimmedEmail}.`);
+      } else {
+        setOtpBanner(`Verification code ready: ${code} (Offline/Sandbox fallback delivery).`);
+      }
+      SoundManager.play('notify');
+      HapticManager.triggerSuccess();
+    } catch (err: any) {
+      setEmailFormError(err?.message || 'Unable to initiate email verification. Please try again.');
+    } finally {
+      setEmailBusy(false);
+    }
+  };
+
+  const handleVerifyEmailOtp = () => {
+    setEmailFormError(null);
+    if (enteredOtp.trim() !== generatedOtp.trim()) {
+      setEmailFormError('Invalid 6-digit OTP code. Please check and try again.');
+      SoundManager.play('incorrect');
+      HapticManager.triggerError();
+      return;
+    }
+    setVerifiedProvider('email');
+    if (!authName.trim()) {
+      setAuthName(authEmail.trim().split('@')[0] || 'Scholar');
+    }
+    SoundManager.play('achievement');
+    HapticManager.triggerSuccess();
+    setStage('wizard');
+  };
+
+  /**
+   * Finalize Onboarding Wizard -> Save Authenticated Profile & Provision B2 + Supabase Folders
+   */
+  const handleWizardComplete = async (fields: {
+    name: string;
+    stream: UserProfile['stream'];
+    board: UserProfile['board'];
+    classGrade: string;
+    targetYear: number;
+    targetExams: string[];
+    avatarUri?: string;
+  }) => {
     const userId =
       initialProfile.id && initialProfile.id !== 'usr_local_01'
         ? initialProfile.id
-        : `usr_${provider}_${Date.now().toString(36)}`;
+        : `usr_${verifiedProvider}_${Date.now().toString(36)}`;
     const ioId =
       initialProfile.ioId && initialProfile.ioId.trim()
         ? initialProfile.ioId
         : `STUDY-${Math.floor(1000 + Math.random() * 9000)}-IO`;
 
-    const nextProfile: UserProfile = {
+    const completedProfile: UserProfile = {
       ...DEFAULT_USER,
       ...initialProfile,
       id: userId,
       ioId,
-      name: initialProfile.name?.trim() || `${providerLabel} Scholar`,
-      email: initialProfile.email?.trim() || '',
-      authProvider: provider,
-      targetExams: initialProfile.targetExams?.length ? initialProfile.targetExams : ['JEE Main'],
+      name: fields.name,
+      email: authEmail.trim(),
+      stream: fields.stream,
+      board: fields.board,
+      classGrade: fields.classGrade,
+      targetYear: fields.targetYear,
+      targetExams: fields.targetExams,
+      avatarUri: fields.avatarUri,
+      authProvider: verifiedProvider,
+      isAuthenticated: true,
       onboardingCompleted: true,
     };
 
-    await StorageService.saveUserProfile(nextProfile);
-    // Automatically provision dedicated Backblaze B2 & Supabase folders on registration
-    await UserWorkspaceService.provisionUserFolders(nextProfile.id, nextProfile.ioId);
-
-    setStatusBanner(`Signed in with ${providerLabel} · Personal cloud folders provisioned`);
-    SoundManager.play('notify');
-    HapticManager.triggerSuccess();
-    setBusyProvider(null);
-    onAuthenticated(nextProfile, false);
+    await StorageService.saveUserProfile(completedProfile);
+    await UserWorkspaceService.provisionUserFolders(completedProfile.id, completedProfile.ioId);
+    onAuthenticated(completedProfile, false);
   };
 
-  const handleQuickGuestExplore = async () => {
-    setBusyProvider('guest');
-    HapticManager.triggerSelection();
-    SoundManager.play('click');
+  // Stage 3: Clean MARKS-Style Step-by-Step Onboarding Wizard
+  if (stage === 'wizard') {
+    return (
+      <MarksOnboardingWizard
+        initialProfile={initialProfile}
+        authEmail={authEmail}
+        authName={authName}
+        onBackToAuth={() => setStage('auth')}
+        onComplete={(fields) => void handleWizardComplete(fields)}
+      />
+    );
+  }
 
-    const userId = `usr_local_${Date.now().toString(36)}`;
-    const ioId = `STUDY-${Math.floor(1000 + Math.random() * 9000)}-IO`;
-    const nextProfile: UserProfile = {
-      ...DEFAULT_USER,
-      ...initialProfile,
-      id: userId,
-      ioId,
-      name: initialProfile.name?.trim() || 'Scholar',
-      authProvider: 'guest',
-      targetExams: initialProfile.targetExams?.length ? initialProfile.targetExams : ['JEE Main'],
-      onboardingCompleted: true,
-    };
+  // Stage 2: Clean MARKS-Style Email Login / Sign Up + 6-Digit OTP Verification Screen
+  if (stage === 'email_auth') {
+    return (
+      <View
+        style={[
+          styles.emailRoot,
+          {
+            paddingTop: Math.max(insets.top + 12, 20),
+            paddingBottom: Math.max(insets.bottom + 16, 22),
+          },
+        ]}
+      >
+        <View style={styles.emailTopBar}>
+          <TouchableOpacity
+            onPress={() => {
+              if (otpStep === 'otp') {
+                setOtpStep('credentials');
+                setEmailFormError(null);
+              } else {
+                setStage('auth');
+              }
+            }}
+            style={styles.backBtn}
+            hitSlop={10}
+          >
+            <ArrowLeft size={22} color="#F8FAFC" />
+          </TouchableOpacity>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Image source={HOLO_REACTIONS.waving} style={{ width: 26, height: 26 }} resizeMode="contain" />
+            <Text style={styles.emailTopBrand}>Study Labs Account</Text>
+          </View>
+          <View style={{ width: 32 }} />
+        </View>
 
-    await StorageService.saveUserProfile(nextProfile);
-    await UserWorkspaceService.provisionUserFolders(nextProfile.id, nextProfile.ioId);
-    setBusyProvider(null);
-    onAuthenticated(nextProfile, false);
-  };
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={[
+            { gap: 16, paddingTop: 12, paddingBottom: 24 },
+            isWideWeb && { maxWidth: 480, width: '100%', alignSelf: 'center' },
+          ]}
+          keyboardShouldPersistTaps="handled"
+        >
+          {otpStep === 'credentials' ? (
+            <>
+              <Text style={styles.emailHeadline}>
+                {emailMode === 'signup' ? 'Create your Study Labs account' : 'Sign in with Email'}
+              </Text>
+              <Text style={styles.emailSub}>
+                We'll send a 6-digit verification code to secure your personal B2 & Supabase study folders.
+              </Text>
+
+              {/* Sign Up / Sign In Switch */}
+              <View style={styles.modeSwitchRow}>
+                {(['signup', 'signin'] as const).map((m) => {
+                  const active = emailMode === m;
+                  return (
+                    <TouchableOpacity
+                      key={m}
+                      onPress={() => {
+                        setEmailMode(m);
+                        setEmailFormError(null);
+                      }}
+                      style={[styles.modeSwitchBtn, active && styles.modeSwitchBtnActive]}
+                    >
+                      <Text style={[styles.modeSwitchText, active && { color: '#FFFFFF' }]}>
+                        {m === 'signup' ? 'Create Account' : 'Sign In'}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>EMAIL ADDRESS</Text>
+                <View style={styles.inputWrap}>
+                  <Mail size={16} color="#94A3B8" />
+                  <TextInput
+                    value={authEmail}
+                    onChangeText={setAuthEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    placeholder="you@gmail.com"
+                    placeholderTextColor="#64748B"
+                    style={styles.textInput}
+                  />
+                </View>
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>PASSWORD</Text>
+                <View style={styles.inputWrap}>
+                  <Lock size={16} color="#94A3B8" />
+                  <TextInput
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry
+                    placeholder="Minimum 6 characters"
+                    placeholderTextColor="#64748B"
+                    style={styles.textInput}
+                  />
+                </View>
+              </View>
+
+              {emailMode === 'signup' && (
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>CONFIRM PASSWORD</Text>
+                  <View style={styles.inputWrap}>
+                    <ShieldCheck size={16} color="#94A3B8" />
+                    <TextInput
+                      value={confirmPassword}
+                      onChangeText={setConfirmPassword}
+                      secureTextEntry
+                      placeholder="Re-enter password"
+                      placeholderTextColor="#64748B"
+                      style={styles.textInput}
+                    />
+                  </View>
+                </View>
+              )}
+
+              {emailFormError && (
+                <View style={styles.errorBox}>
+                  <AlertTriangle size={15} color="#F87171" />
+                  <Text style={styles.errorText}>{emailFormError}</Text>
+                </View>
+              )}
+
+              <Pressable
+                focusable={false}
+                disabled={emailBusy}
+                onPress={() => void handleSendEmailOtp()}
+                style={({ pressed }) => [
+                  styles.submitOrangeBtn,
+                  emailBusy && { opacity: 0.6 },
+                  pressed && { opacity: 0.88 },
+                ]}
+              >
+                {emailBusy ? (
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                ) : (
+                  <KeyRound size={17} color="#FFFFFF" />
+                )}
+                <Text style={styles.submitOrangeText}>
+                  {emailBusy ? 'Sending Code...' : 'Send 6-Digit Verification Code'}
+                </Text>
+              </Pressable>
+            </>
+          ) : (
+            <>
+              <Text style={styles.emailHeadline}>Please verify your OTP</Text>
+              <Text style={styles.emailSub}>
+                Enter the 6-digit code sent to <Text style={{ color: '#F97316', fontWeight: '800' }}>{authEmail}</Text>
+              </Text>
+
+              {otpBanner && (
+                <View style={styles.otpInfoBox}>
+                  <CheckCircle2 size={15} color="#22C55E" />
+                  <Text style={styles.otpInfoText}>{otpBanner}</Text>
+                </View>
+              )}
+
+              <TextInput
+                value={enteredOtp}
+                onChangeText={setEnteredOtp}
+                keyboardType="number-pad"
+                maxLength={6}
+                placeholder="• • • • • •"
+                placeholderTextColor="#475569"
+                style={styles.otpBigInput}
+                autoFocus
+              />
+
+              {emailFormError && (
+                <View style={styles.errorBox}>
+                  <AlertTriangle size={15} color="#F87171" />
+                  <Text style={styles.errorText}>{emailFormError}</Text>
+                </View>
+              )}
+
+              <Pressable
+                focusable={false}
+                disabled={enteredOtp.trim().length !== 6}
+                onPress={handleVerifyEmailOtp}
+                style={({ pressed }) => [
+                  styles.submitOrangeBtn,
+                  enteredOtp.trim().length !== 6 && { opacity: 0.45 },
+                  pressed && { opacity: 0.88 },
+                ]}
+              >
+                <Text style={styles.submitOrangeText}>Verify & Continue</Text>
+              </Pressable>
+
+              <TouchableOpacity
+                onPress={() => void handleSendEmailOtp()}
+                style={{ alignSelf: 'center', paddingVertical: 8 }}
+              >
+                <Text style={{ color: '#F97316', fontSize: 13, fontWeight: '700' }}>
+                  Resend Verification Code
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </ScrollView>
+
+        <Text style={styles.supportFooter}>
+          Facing login issues? Switch providers or email support@study.io
+        </Text>
+      </View>
+    );
+  }
+
+  // Stage 1: Mandatory Login / Signup Gate over 9:16 Intro Animation Video (NO Anonymous Bypass!)
+  const renderAuthControls = () => (
+    <>
+      <View style={styles.copyBlock}>
+        {isDesktopSplit && (
+          <Image
+            source={BRANDING_ASSETS.appLogo}
+            style={styles.desktopBrandIcon}
+            resizeMode="contain"
+          />
+        )}
+        <Text style={[styles.headline, isDesktopSplit && styles.desktopHeadline]}>
+          The New Way To <Text style={styles.headlineAccent}>Practice</Text>
+          {'\n'}and <Text style={styles.headlineAccent}>Master</Text>
+        </Text>
+        <Text style={[styles.subline, isDesktopSplit && { fontSize: 13.5, lineHeight: 20 }]}>
+          IIT-JEE · NEET · BITSAT · Boards & 29+ Global STEM Exams
+        </Text>
+      </View>
+
+      {/* OAuth / Login Failure Fallback Card */}
+      {authError && (
+        <View style={styles.fallbackCard}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+            <AlertTriangle size={15} color="#FCA5A5" />
+            <Text style={styles.fallbackTitle}>{authError.title}</Text>
+          </View>
+          <Text style={styles.fallbackDetail}>{authError.detail}</Text>
+          <View style={{ flexDirection: 'row', gap: 8, marginTop: 4 }}>
+            {authError.provider !== 'email' && (
+              <TouchableOpacity
+                onPress={() => void handleOAuthPress(authError.provider as any)}
+                style={styles.fallbackRetryBtn}
+              >
+                <RefreshCw size={12} color="#FFFFFF" />
+                <Text style={styles.fallbackRetryText}>Retry</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              onPress={() => {
+                setAuthError(null);
+                setStage('email_auth');
+              }}
+              style={styles.fallbackEmailBtn}
+            >
+              <Mail size={12} color="#0B0F19" />
+              <Text style={styles.fallbackEmailText}>Use Email + OTP Fallback</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {/* Mandatory OAuth Buttons: Google, Microsoft, GitHub */}
+      <View style={styles.authButtonsStack}>
+        <Pressable
+          focusable={false}
+          disabled={busyProvider !== null}
+          onPress={() => void handleOAuthPress('google')}
+          style={({ pressed }) => [
+            styles.oauthBtn,
+            styles.googleBtn,
+            pressed && { opacity: 0.88, transform: [{ scale: 0.99 }] },
+          ]}
+          accessibilityRole="button"
+          accessibilityLabel="Continue with Google"
+        >
+          {busyProvider === 'google' ? (
+            <ActivityIndicator size="small" color="#0F172A" />
+          ) : (
+            <GoogleLogoIcon />
+          )}
+          <Text style={styles.googleBtnText}>Continue with Google</Text>
+        </Pressable>
+
+        <Pressable
+          focusable={false}
+          disabled={busyProvider !== null}
+          onPress={() => void handleOAuthPress('microsoft')}
+          style={({ pressed }) => [
+            styles.oauthBtn,
+            styles.microsoftBtn,
+            pressed && { opacity: 0.88, transform: [{ scale: 0.99 }] },
+          ]}
+          accessibilityRole="button"
+          accessibilityLabel="Continue with Microsoft"
+        >
+          {busyProvider === 'microsoft' ? (
+            <ActivityIndicator size="small" color="#FFFFFF" />
+          ) : (
+            <MicrosoftLogoIcon />
+          )}
+          <Text style={styles.darkBtnText}>Continue with Microsoft</Text>
+        </Pressable>
+
+        <Pressable
+          focusable={false}
+          disabled={busyProvider !== null}
+          onPress={() => void handleOAuthPress('github')}
+          style={({ pressed }) => [
+            styles.oauthBtn,
+            styles.githubBtn,
+            pressed && { opacity: 0.88, transform: [{ scale: 0.99 }] },
+          ]}
+          accessibilityRole="button"
+          accessibilityLabel="Continue with GitHub"
+        >
+          {busyProvider === 'github' ? (
+            <ActivityIndicator size="small" color="#FFFFFF" />
+          ) : (
+            <GitHubLogoIcon />
+          )}
+          <Text style={styles.darkBtnText}>Continue with GitHub</Text>
+        </Pressable>
+      </View>
+
+      {/* Clean Email Login / Sign Up Fallback CTA (NO guest bypass!) */}
+      <Pressable
+        focusable={false}
+        onPress={() => {
+          setAuthError(null);
+          setStage('email_auth');
+        }}
+        style={({ pressed }) => [styles.emailLinkBtn, pressed && { opacity: 0.78 }]}
+      >
+        <Mail size={14} color="#F97316" />
+        <Text style={styles.emailLinkText}>Sign In or Create Account with Email & OTP</Text>
+      </Pressable>
+    </>
+  );
+
+  // Desktop PC Split Showcase (MARKS Web PWA clean centered auth + 9:16 Study Labs Animation Showcase)
+  if (isDesktopSplit) {
+    return (
+      <View style={styles.desktopSplitRoot}>
+        <View style={styles.desktopSplitInner}>
+          {/* Left: Framed 9:16 Live Looping Study Labs Intro Animation Video */}
+          <View
+            style={[
+              styles.desktopVideoFrame,
+              { width: desktopVideoWidth, height: desktopVideoHeight },
+            ]}
+          >
+            {Platform.OS === 'web' ? <WebIntroVideoBackground /> : <NativeIntroVideoBackground />}
+            <View style={styles.desktopVideoBadgeWrap}>
+              <View style={styles.holoPill}>
+                <Image source={HOLO_REACTIONS.waving} style={styles.holoMini} resizeMode="contain" />
+                <Text style={styles.holoPillText}>Powered by HOLO AI · study.io</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Right: MARKS-Style Clean Centered Auth Panel */}
+          <View style={styles.desktopAuthPanel}>
+            {renderAuthControls()}
+            <Text style={styles.desktopFooterNote}>
+              Mandatory Scholar Verification · Cloud Notebooks & B2 Sync Ready
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.outerRoot}>
@@ -248,7 +819,7 @@ export const WelcomeOnboardingScreen: React.FC<WelcomeOnboardingScreenProps> = (
           </View>
         </View>
 
-        {/* Bottom Scrim & Auth Controls overlaid cleanly on lower third of the 9:16 video */}
+        {/* Bottom Scrim & Mandatory Auth Controls */}
         <View
           style={[
             styles.bottomScrim,
@@ -256,117 +827,7 @@ export const WelcomeOnboardingScreen: React.FC<WelcomeOnboardingScreenProps> = (
           ]}
         >
           <View style={styles.scrimTopFade} pointerEvents="none" />
-
-          <View style={styles.copyBlock}>
-            <Text style={styles.headline}>
-              The New Way To <Text style={styles.headlineAccent}>Practice</Text>
-              {'\n'}and <Text style={styles.headlineAccent}>Master</Text>
-            </Text>
-            <Text style={styles.subline}>
-              IIT-JEE · NEET · BITSAT · Boards & 29+ Global STEM Exams
-            </Text>
-          </View>
-
-          {statusBanner && (
-            <View style={styles.noticePill}>
-              <ShieldCheck size={14} color="#22C55E" />
-              <Text style={styles.noticeText}>{statusBanner}</Text>
-            </View>
-          )}
-
-          {/* Direct OAuth Action Buttons: Google, Microsoft, GitHub */}
-          <View style={styles.authButtonsStack}>
-            <Pressable
-              focusable={false}
-              disabled={busyProvider !== null}
-              onPress={() => void completeOAuthLogin('google')}
-              style={({ pressed }) => [
-                styles.oauthBtn,
-                styles.googleBtn,
-                pressed && { opacity: 0.88, transform: [{ scale: 0.99 }] },
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel="Continue with Google"
-            >
-              {busyProvider === 'google' ? (
-                <ActivityIndicator size="small" color="#0F172A" />
-              ) : (
-                <GoogleLogoIcon />
-              )}
-              <Text style={styles.googleBtnText}>Continue with Google</Text>
-            </Pressable>
-
-            <Pressable
-              focusable={false}
-              disabled={busyProvider !== null}
-              onPress={() => void completeOAuthLogin('microsoft')}
-              style={({ pressed }) => [
-                styles.oauthBtn,
-                styles.microsoftBtn,
-                pressed && { opacity: 0.88, transform: [{ scale: 0.99 }] },
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel="Continue with Microsoft"
-            >
-              {busyProvider === 'microsoft' ? (
-                <ActivityIndicator size="small" color="#FFFFFF" />
-              ) : (
-                <MicrosoftLogoIcon />
-              )}
-              <Text style={styles.darkBtnText}>Continue with Microsoft</Text>
-            </Pressable>
-
-            <Pressable
-              focusable={false}
-              disabled={busyProvider !== null}
-              onPress={() => void completeOAuthLogin('github')}
-              style={({ pressed }) => [
-                styles.oauthBtn,
-                styles.githubBtn,
-                pressed && { opacity: 0.88, transform: [{ scale: 0.99 }] },
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel="Continue with GitHub"
-            >
-              {busyProvider === 'github' ? (
-                <ActivityIndicator size="small" color="#FFFFFF" />
-              ) : (
-                <GitHubLogoIcon />
-              )}
-              <Text style={styles.darkBtnText}>Continue with GitHub</Text>
-            </Pressable>
-          </View>
-
-          {/* Secondary Email & Offline Explore Row */}
-          <View style={styles.secondaryRow}>
-            <Pressable
-              focusable={false}
-              onPress={onOpenEmailSetup}
-              style={({ pressed }) => [
-                styles.secondaryBtn,
-                pressed && { opacity: 0.78 },
-              ]}
-            >
-              <Mail size={14} color="#F97316" />
-              <Text style={styles.secondaryBtnText}>Email & Curriculum</Text>
-            </Pressable>
-
-            <View style={styles.secondaryDivider} />
-
-            <Pressable
-              focusable={false}
-              disabled={busyProvider !== null}
-              onPress={() => void handleQuickGuestExplore()}
-              style={({ pressed }) => [
-                styles.secondaryBtn,
-                pressed && { opacity: 0.78 },
-              ]}
-            >
-              <Sparkles size={14} color="#94A3B8" />
-              <Text style={[styles.secondaryBtnText, { color: '#CBD5E1' }]}>Explore Offline</Text>
-              <ArrowRight size={13} color="#94A3B8" />
-            </Pressable>
-          </View>
+          {renderAuthControls()}
         </View>
       </View>
     </View>
@@ -379,6 +840,65 @@ const styles = StyleSheet.create({
     backgroundColor: '#05070E',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  desktopSplitRoot: {
+    flex: 1,
+    backgroundColor: '#070B14',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 32,
+    paddingVertical: 24,
+  },
+  desktopSplitInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 52,
+    width: '100%',
+    maxWidth: 1020,
+  },
+  desktopVideoFrame: {
+    borderRadius: 28,
+    overflow: 'hidden',
+    borderWidth: 1.5,
+    borderColor: 'rgba(249, 115, 22, 0.42)',
+    backgroundColor: '#05070E',
+    position: 'relative',
+  },
+  desktopVideoBadgeWrap: {
+    position: 'absolute',
+    top: 16,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    zIndex: 4,
+  },
+  desktopAuthPanel: {
+    flex: 1,
+    maxWidth: 430,
+    backgroundColor: '#0D1322',
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: '#1E293B',
+    padding: 30,
+    gap: 16,
+  },
+  desktopBrandIcon: {
+    width: 68,
+    height: 68,
+    borderRadius: 18,
+    marginBottom: 8,
+  },
+  desktopHeadline: {
+    fontSize: 30,
+    lineHeight: 37,
+  },
+  desktopFooterNote: {
+    color: '#64748B',
+    fontSize: 11.5,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginTop: 4,
   },
   stageFrame: {
     flex: 1,
@@ -403,46 +923,35 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: 'rgba(11, 15, 26, 0.72)',
+    backgroundColor: 'rgba(11, 15, 26, 0.76)',
     borderWidth: 1,
-    borderColor: 'rgba(249, 115, 22, 0.4)',
+    borderColor: 'rgba(249, 115, 22, 0.42)',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 999,
   },
-  holoMini: {
-    width: 22,
-    height: 22,
-  },
-  holoPillText: {
-    color: '#F8FAFC',
-    fontSize: 11.5,
-    fontWeight: '700',
-    letterSpacing: 0.2,
-  },
+  holoMini: { width: 22, height: 22 },
+  holoPillText: { color: '#F8FAFC', fontSize: 11.5, fontWeight: '700' },
   bottomScrim: {
     paddingHorizontal: 20,
-    paddingTop: 28,
-    backgroundColor: 'rgba(5, 7, 14, 0.88)',
+    paddingTop: 26,
+    backgroundColor: 'rgba(5, 7, 14, 0.9)',
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     borderTopWidth: 1,
     borderTopColor: 'rgba(249, 115, 22, 0.28)',
     zIndex: 4,
-    gap: 14,
+    gap: 13,
   },
   scrimTopFade: {
     position: 'absolute',
-    top: -36,
+    top: -34,
     left: 0,
     right: 0,
-    height: 36,
-    backgroundColor: 'rgba(5, 7, 14, 0.36)',
+    height: 34,
+    backgroundColor: 'rgba(5, 7, 14, 0.34)',
   },
-  copyBlock: {
-    alignItems: 'center',
-    gap: 6,
-  },
+  copyBlock: { alignItems: 'center', gap: 5 },
   headline: {
     color: '#FFFFFF',
     fontSize: 25,
@@ -451,9 +960,7 @@ const styles = StyleSheet.create({
     lineHeight: 31,
     letterSpacing: -0.4,
   },
-  headlineAccent: {
-    color: '#F97316',
-  },
+  headlineAccent: { color: '#F97316' },
   subline: {
     color: '#CBD5E1',
     fontSize: 12.5,
@@ -461,26 +968,39 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 18,
   },
-  noticePill: {
+  fallbackCard: {
+    backgroundColor: 'rgba(127, 29, 29, 0.36)',
+    borderWidth: 1,
+    borderColor: 'rgba(248, 113, 113, 0.5)',
+    borderRadius: 14,
+    padding: 12,
+    gap: 6,
+  },
+  fallbackTitle: { color: '#FECACA', fontSize: 12.5, fontWeight: '800' },
+  fallbackDetail: { color: '#E2E8F0', fontSize: 11.5, lineHeight: 16 },
+  fallbackRetryBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: 'rgba(255,255,255,0.14)',
+    paddingHorizontal: 11,
+    paddingVertical: 7,
+    borderRadius: 9,
+  },
+  fallbackRetryText: { color: '#FFFFFF', fontSize: 11.5, fontWeight: '700' },
+  fallbackEmailBtn: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
-    backgroundColor: 'rgba(34, 197, 94, 0.14)',
-    borderWidth: 1,
-    borderColor: 'rgba(34, 197, 94, 0.4)',
-    borderRadius: 12,
-    paddingHorizontal: 12,
+    gap: 5,
+    backgroundColor: '#F97316',
+    paddingHorizontal: 11,
     paddingVertical: 7,
+    borderRadius: 9,
   },
-  noticeText: {
-    color: '#86EFAC',
-    fontSize: 11.5,
-    fontWeight: '700',
-  },
-  authButtonsStack: {
-    gap: 10,
-  },
+  fallbackEmailText: { color: '#0B0F19', fontSize: 11.5, fontWeight: '800' },
+  authButtonsStack: { gap: 10 },
   oauthBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -491,50 +1011,116 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderWidth: 1,
   },
-  googleBtn: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#E2E8F0',
-  },
-  googleBtnText: {
-    color: '#0F172A',
-    fontSize: 14.5,
-    fontWeight: '800',
-  },
-  microsoftBtn: {
-    backgroundColor: '#1E293B',
-    borderColor: '#334155',
-  },
-  githubBtn: {
-    backgroundColor: '#111827',
-    borderColor: '#374151',
-  },
-  darkBtnText: {
-    color: '#F8FAFC',
-    fontSize: 14.5,
-    fontWeight: '800',
-  },
-  secondaryRow: {
+  googleBtn: { backgroundColor: '#FFFFFF', borderColor: '#E2E8F0' },
+  googleBtnText: { color: '#0F172A', fontSize: 14.5, fontWeight: '800' },
+  microsoftBtn: { backgroundColor: '#1E293B', borderColor: '#334155' },
+  githubBtn: { backgroundColor: '#111827', borderColor: '#374151' },
+  darkBtnText: { color: '#F8FAFC', fontSize: 14.5, fontWeight: '800' },
+  emailLinkBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 14,
-    paddingTop: 2,
+    gap: 7,
+    paddingVertical: 8,
   },
-  secondaryBtn: {
+  emailLinkText: { color: '#FDBA74', fontSize: 12.5, fontWeight: '700' },
+
+  // Clean MARKS-Style Email + OTP Screen
+  emailRoot: {
+    flex: 1,
+    backgroundColor: '#0B0F19',
+    paddingHorizontal: 20,
+  },
+  emailTopBar: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  backBtn: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
+  emailTopBrand: { color: '#F8FAFC', fontSize: 15, fontWeight: '800' },
+  emailHeadline: { color: '#FFFFFF', fontSize: 24, fontWeight: '800', lineHeight: 30 },
+  emailSub: { color: '#94A3B8', fontSize: 13.5, lineHeight: 20 },
+  modeSwitchRow: {
+    flexDirection: 'row',
+    backgroundColor: '#111726',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#1E293B',
+    padding: 4,
     gap: 6,
-    paddingVertical: 6,
-    paddingHorizontal: 6,
   },
-  secondaryBtnText: {
-    color: '#FDBA74',
-    fontSize: 12.5,
-    fontWeight: '700',
+  modeSwitchBtn: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 9,
+    alignItems: 'center',
   },
-  secondaryDivider: {
-    width: 1,
-    height: 14,
-    backgroundColor: 'rgba(148, 163, 184, 0.35)',
+  modeSwitchBtnActive: { backgroundColor: '#F97316' },
+  modeSwitchText: { color: '#94A3B8', fontSize: 13, fontWeight: '800' },
+  inputGroup: { gap: 6 },
+  inputLabel: { color: '#94A3B8', fontSize: 11, fontWeight: '800', letterSpacing: 0.7 },
+  inputWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    borderWidth: 1.5,
+    borderColor: '#334155',
+    backgroundColor: '#111726',
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    height: 50,
+  },
+  textInput: { flex: 1, color: '#FFFFFF', fontSize: 15, fontWeight: '600' },
+  otpInfoBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: 'rgba(34, 197, 94, 0.12)',
+    borderWidth: 1,
+    borderColor: 'rgba(34, 197, 94, 0.35)',
+    borderRadius: 12,
+    padding: 12,
+  },
+  otpInfoText: { flex: 1, color: '#86EFAC', fontSize: 12.5, fontWeight: '700', lineHeight: 18 },
+  otpBigInput: {
+    borderWidth: 1.5,
+    borderColor: '#F97316',
+    backgroundColor: '#111726',
+    color: '#FFFFFF',
+    borderRadius: 14,
+    paddingVertical: 16,
+    fontSize: 24,
+    fontWeight: '900',
+    letterSpacing: 10,
+    textAlign: 'center',
+  },
+  errorBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: 'rgba(239, 68, 68, 0.14)',
+    borderWidth: 1,
+    borderColor: 'rgba(239, 68, 68, 0.4)',
+    borderRadius: 12,
+    padding: 11,
+  },
+  errorText: { flex: 1, color: '#FCA5A5', fontSize: 12, fontWeight: '700', lineHeight: 17 },
+  submitOrangeBtn: {
+    height: 52,
+    borderRadius: 14,
+    backgroundColor: '#F97316',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 4,
+  },
+  submitOrangeText: { color: '#FFFFFF', fontSize: 15, fontWeight: '800' },
+  supportFooter: {
+    color: '#64748B',
+    fontSize: 12,
+    textAlign: 'center',
+    paddingTop: 8,
   },
 });

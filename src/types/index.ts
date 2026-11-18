@@ -80,6 +80,7 @@ export interface UserProfile {
   avatarUri?: string;
   avatarColor?: string;
   authProvider?: AuthProviderType;
+  isAuthenticated?: boolean;
   onboardingCompleted?: boolean;
 }
 

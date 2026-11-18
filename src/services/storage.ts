@@ -143,6 +143,7 @@ export const DEFAULT_USER: UserProfile = {
   language: 'English',
   avatarColor: '#F97316',
   authProvider: 'guest',
+  isAuthenticated: false,
   onboardingCompleted: false,
 };
 

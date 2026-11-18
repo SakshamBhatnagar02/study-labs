@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Platform, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { Image, Platform, StyleSheet, View, Text, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeProvider, useTheme } from './src/theme';
 import { Header } from './src/components/common/Header';
 import { BottomNav, NavTab } from './src/components/navigation/BottomNav';
+import { DesktopSidebar } from './src/components/navigation/DesktopSidebar';
 import { SideDrawerModal } from './src/components/navigation/SideDrawerModal';
 import { SettingsModal } from './src/components/settings/SettingsModal';
 import { DashboardScreen } from './src/screens/DashboardScreen';
@@ -38,7 +39,13 @@ import { SubjectId, TestSessionLaunch, UserProfile } from './src/types';
 import { ChevronLeft } from 'lucide-react-native';
 
 function MainApp() {
-  const { colors, mode } = useTheme();
+  const { colors, mode, toggleTheme } = useTheme();
+  const { width } = useWindowDimensions();
+  const isDesktopShell = width >= 768;
+  const isWideDesktop = width >= 1024;
+  const [sidebarPrefCollapsed, setSidebarPrefCollapsed] = useState<boolean | null>(null);
+  const sidebarCollapsed = sidebarPrefCollapsed ?? !isWideDesktop;
+
   const [authHydrated, setAuthHydrated] = useState(false);
   const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
   const [hasMountedTestTab, setHasMountedTestTab] = useState(false);
@@ -80,6 +87,22 @@ function MainApp() {
       document.head.appendChild(styleEl);
     }
   }, []);
+
+  // MARKS Web PWA parity: Shift + D toggles Light / Dark theme on Web desktop
+  useEffect(() => {
+    if (Platform.OS !== 'web' || typeof document === 'undefined') return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const tag = target?.tagName?.toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || target?.isContentEditable) return;
+      if (e.shiftKey && e.key.toLowerCase() === 'd') {
+        e.preventDefault();
+        toggleTheme();
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [toggleTheme]);
 
   useEffect(() => {
     let mounted = true;
@@ -138,26 +161,21 @@ function MainApp() {
     );
   }
 
-  // 2. Direct Full-Screen Onboarding with 9:16 Intro Animation Video + Google / Microsoft / GitHub Auth
-  if (!userProfile.onboardingCompleted) {
+  // 2. Mandatory Full-Screen Onboarding Gate (User MUST sign in/sign up & complete onboarding wizard before accessing app!)
+  const requiresAuthOnboarding =
+    !userProfile.onboardingCompleted ||
+    userProfile.isAuthenticated === false ||
+    userProfile.authProvider === 'guest';
+
+  if (requiresAuthOnboarding) {
     return (
       <View style={{ flex: 1, backgroundColor: '#05070E' }}>
         <StatusBar style="light" />
         <WelcomeOnboardingScreen
           initialProfile={userProfile}
-          onAuthenticated={(nextProfile, openWizard) => {
+          onAuthenticated={(nextProfile) => {
             handleProfileSaved(nextProfile);
-            if (openWizard) {
-              setOnboardingOpen(true);
-            }
           }}
-          onOpenEmailSetup={() => setOnboardingOpen(true)}
-        />
-        <OnboardingAuthModal
-          visible={onboardingOpen}
-          onClose={() => setOnboardingOpen(false)}
-          initialProfile={userProfile}
-          onSaved={handleProfileSaved}
         />
       </View>
     );
@@ -342,69 +360,142 @@ function MainApp() {
     }
   };
 
+  const getPageTitle = (): string => {
+    const sub = getSubScreenTitle();
+    if (sub) return sub;
+    switch (activeTab) {
+      case 'dashboard':
+        return 'Home Dashboard';
+      case 'pyqs':
+        return 'Chapter-wise PYQ Bank';
+      case 'test':
+        return 'Study Labs Tests';
+      case 'study':
+        return 'Learn & Formula Decks';
+      case 'notebooks':
+        return 'Notebooks & My Notes';
+      case 'ai':
+        return 'HOLO AI Tutor';
+      case 'tools':
+        return 'STEM Tools & Calculators';
+      case 'calendar':
+        return 'Global Exam Calendar';
+      default:
+        return 'Study Labs';
+    }
+  };
+
+  const isWideCanvasTab = activeTab === 'test' || activeTab === 'playground' || activeTab === 'ai';
+  const desktopContentMaxWidth = isWideCanvasTab ? 1140 : 920;
+
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.card }]} edges={['top', 'left', 'right']}>
+    <SafeAreaView
+      style={[
+        styles.safeArea,
+        { backgroundColor: isDesktopShell ? colors.background : colors.card },
+      ]}
+      edges={['top', 'left', 'right']}
+    >
       <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
 
-      {/* Top Application Header */}
-      <Header
-        userIoId={userProfile.ioId}
-        streakDays={liveStreakDays}
-        onMenuPress={() => setDrawerOpen(true)}
-        onProfilePress={() => setActiveTab('profile')}
-        onStreakPress={() => setActiveTab('dailyGoal')}
-        onLeaderboardPress={() => setActiveTab('leaderboard')}
-        onClubsPress={() => setActiveTab('clubs')}
-        onQuickCalcPress={() => setQuickCalcOpen(true)}
-      />
-
-      {/* Sub-screen Navigation Bar */}
-      {isSubScreen && (
-        <View style={[styles.subHeader, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
-          <TouchableOpacity
-            onPress={() => {
-              setActiveTab('dashboard');
-            }}
-            style={styles.backButton}
-            activeOpacity={0.7}
-          >
-            <ChevronLeft size={20} color={colors.primary} />
-            <Text style={[styles.backText, { color: colors.primary }]}>Back to Home</Text>
-          </TouchableOpacity>
-          <Text style={[styles.subHeaderTitle, { color: colors.textPrimary }]} numberOfLines={1}>
-            {getSubScreenTitle()}
-          </Text>
-        </View>
-      )}
-
-      {/* Screen Body */}
-      <View style={[styles.screenContainer, { backgroundColor: colors.background }]}>
-        {activeTab !== 'test' && renderNonTestScreen()}
-        {hasMountedTestTab && (
-          <View
-            style={[
-              styles.testKeepAliveWrap,
-              activeTab !== 'test' && styles.hiddenTab,
-            ]}
-          >
-            <TestEngineScreen
-              isFocused={activeTab === 'test'}
-              initialSession={testLaunchSession}
-              openBuilderNonce={customTestBuilderNonce}
-              onBuilderOpened={() => setCustomTestBuilderNonce(0)}
-              onAskAI={(payload) => {
-                setAiPrefillPrompt(payload);
-                setActiveTab('ai');
-              }}
-            />
-          </View>
+      <View style={[styles.appShell, isDesktopShell && styles.appShellDesktop]}>
+        {/* MARKS Web PWA Desktop/Tablet Persistent Left Sidebar (256px expanded / 72px collapsed) */}
+        {isDesktopShell && (
+          <DesktopSidebar
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            collapsed={sidebarCollapsed}
+            onToggleCollapse={() => setSidebarPrefCollapsed((prev) => !(prev ?? !isWideDesktop))}
+            profile={userProfile}
+            streakDays={liveStreakDays}
+            onOpenSettings={() => setDrawerSettingsOpen(true)}
+          />
         )}
+
+        {/* Right Main Column (Full-width on Mobile, fluid minmax(0,1fr) on PC) */}
+        <View style={[styles.mainColumn, { backgroundColor: colors.background }]}>
+          {/* Top Application Header */}
+          <Header
+            userIoId={userProfile.ioId}
+            streakDays={liveStreakDays}
+            desktopMode={isDesktopShell}
+            pageTitle={getPageTitle()}
+            onMenuPress={() => setDrawerOpen(true)}
+            onProfilePress={() => setActiveTab('profile')}
+            onStreakPress={() => setActiveTab('dailyGoal')}
+            onLeaderboardPress={() => setActiveTab('leaderboard')}
+            onClubsPress={() => setActiveTab('clubs')}
+            onQuickCalcPress={() => setQuickCalcOpen(true)}
+          />
+
+          {/* Sub-screen Navigation Bar */}
+          {isSubScreen && (
+            <View style={[styles.subHeader, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+              <View
+                style={[
+                  styles.subHeaderInner,
+                  isDesktopShell && { maxWidth: desktopContentMaxWidth, alignSelf: 'center', width: '100%' },
+                ]}
+              >
+                <TouchableOpacity
+                  onPress={() => {
+                    setActiveTab('dashboard');
+                  }}
+                  style={styles.backButton}
+                  activeOpacity={0.7}
+                >
+                  <ChevronLeft size={20} color={colors.primary} />
+                  <Text style={[styles.backText, { color: colors.primary }]}>Back to Home</Text>
+                </TouchableOpacity>
+                <Text style={[styles.subHeaderTitle, { color: colors.textPrimary }]} numberOfLines={1}>
+                  {getSubScreenTitle()}
+                </Text>
+              </View>
+            </View>
+          )}
+
+          {/* Screen Body (Centered Max-Width Workspace on PC, Full-Bleed on Mobile) */}
+          <View style={[styles.screenContainer, { backgroundColor: colors.background }]}>
+            <View
+              style={[
+                styles.workspaceMeasure,
+                isDesktopShell && {
+                  maxWidth: desktopContentMaxWidth,
+                  alignSelf: 'center',
+                  width: '100%',
+                  paddingHorizontal: 12,
+                },
+              ]}
+            >
+              {activeTab !== 'test' && renderNonTestScreen()}
+              {hasMountedTestTab && (
+                <View
+                  style={[
+                    styles.testKeepAliveWrap,
+                    activeTab !== 'test' && styles.hiddenTab,
+                  ]}
+                >
+                  <TestEngineScreen
+                    isFocused={activeTab === 'test'}
+                    initialSession={testLaunchSession}
+                    openBuilderNonce={customTestBuilderNonce}
+                    onBuilderOpened={() => setCustomTestBuilderNonce(0)}
+                    onAskAI={(payload) => {
+                      setAiPrefillPrompt(payload);
+                      setActiveTab('ai');
+                    }}
+                  />
+                </View>
+              )}
+            </View>
+          </View>
+
+          {/* Bottom Navigation: Mobile Only (Hidden on Desktop/Tablet where Left Sidebar is active!) */}
+          {!isDesktopShell && <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />}
+        </View>
       </View>
 
-      {/* Bottom Navigation (with Android Safe-Area Bottom Inset!) */}
-      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
-
-      {/* MARKS-Style Left Side Drawer */}
+      {/* MARKS-Style Left Side Drawer (Mobile) */}
       <SideDrawerModal
         visible={drawerOpen}
         onClose={() => setDrawerOpen(false)}
@@ -454,6 +545,27 @@ export default function App() {
 
 const styles = StyleSheet.create({
   safeArea: {
+    flex: 1,
+  },
+  appShell: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+  appShellDesktop: {
+    flexDirection: 'row',
+  },
+  mainColumn: {
+    flex: 1,
+    minWidth: 0,
+  },
+  workspaceMeasure: {
+    flex: 1,
+    width: '100%',
+  },
+  subHeaderInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     flex: 1,
   },
   bootSplash: {
